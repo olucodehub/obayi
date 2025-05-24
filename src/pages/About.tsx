@@ -8,27 +8,27 @@ const About: React.FC = () => {
   const primaryCyan = '#4DD0E1';
   const teamMembers = [
     {
-      name: 'Dr. Sarah Johnson',
+      name: 'Bolarinwa Iruemiobe',
       role: 'Founder & Executive Director',
-      bio: 'Former educator with 15 years of experience in international development.',
+      bio: 'Leads Obayi’s mission with visionary direction, guiding its mission to empower students through education.',
       imageUrl: 'https://images.pexels.com/photos/5792641/pexels-photo-5792641.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
     },
     {
-      name: 'Michael Okonkwo',
-      role: 'Director of Programs',
-      bio: 'Educational specialist with deep knowledge of African educational systems.',
+      name: 'Nelson Egbunu',
+      role: 'Programs Director',
+      bio: 'Oversees Obayi’s programs, ensuring strategic alignment, impactful delivery, and mission-driven execution.',
       imageUrl: 'https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
     },
     {
-      name: 'Emily Chen',
-      role: 'Chief Operations Officer',
-      bio: 'Brings 10 years of experience in nonprofit management and strategic planning.',
+      name: 'Joy Aghogho',
+      role: 'Project Coordinator',
+      bio: 'Supports Obayi’s mission through hands-on project delivery and student-centered resource coordination.',
       imageUrl: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
     },
     {
-      name: 'David Mukasa',
-      role: 'Regional Director, East Africa',
-      bio: 'Coordinates programs across Kenya, Uganda, and Tanzania.',
+      name: 'Queen Adebisi',
+      role: 'Social Media Lead',
+      bio: 'Leads Obayi’s social media, sharing stories that inspire, inform, and amplify our mission.',
       imageUrl: 'https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
     }
   ];
