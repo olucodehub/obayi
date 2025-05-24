@@ -15,16 +15,22 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 overflow-hidden">
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-20" 
+            // style={{ 
+            //   backgroundImage: "url('https://images.pexels.com/photos/935944/pexels-photo-935944.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750')" 
+            // }}
             style={{ 
-              backgroundImage: "url('https://images.pexels.com/photos/935944/pexels-photo-935944.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750')" 
+              backgroundImage: "url('/images/home/bible.png')" 
             }}
           />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            {/* <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               Educate, Empower, Transform
-            </h1>
+            </h1> */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-blue-100">
+            Educate, Empower, Transform
+          </h1>
             <p className="text-lg md:text-xl text-blue-100 mb-8">
               Join Obayi Charity in our mission to help low-income children in Africa escape poverty through education and sustainable support programs.
             </p>
@@ -60,20 +66,20 @@ const Home: React.FC = () => {
                 <GraduationCap className={`h-12 w-12 text-[#4DD0E1]`} />
               </div>
               <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">2,500+</p>
-              <p className="text-gray-600">Children Educated</p>
+              <p className="text-gray-600">Children Impacted</p>
             </div>
             <div className="p-4">
               <div className="flex justify-center mb-4">
                 <Book className={`h-12 w-12 text-[${iconColor}]`} />
               </div>
-              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">45</p>
+              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">15</p>
               <p className="text-gray-600">Schools Supported</p>
             </div>
             <div className="p-4">
               <div className="flex justify-center mb-4">
                 <Users className={`h-12 w-12 text-[${iconColor}]`} />
               </div>
-              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">500+</p>
+              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">50+</p>
               <p className="text-gray-600">Active Sponsors</p>
             </div>
             <div className="p-4">
@@ -115,8 +121,9 @@ const Home: React.FC = () => {
             </div>
             <div className="relative">
               <img 
-                src="https://images.pexels.com/photos/8471859/pexels-photo-8471859.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
-                alt="Children in classroom" 
+                // src="https://images.pexels.com/photos/8471859/pexels-photo-8471859.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                src="/images/home/mainpagepic.jpg" 
+                alt="Children in school" 
                 className="rounded-lg shadow-xl"
               />
               <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
@@ -146,21 +153,24 @@ const Home: React.FC = () => {
             <ProgramCard
               title="Scholarships"
               description="Removing financial barriers with scholarships that ensure ensure equitable access to education for students from economically disadvantaged backgrounds."
-              imageUrl="https://images.pexels.com/photos/8471744/pexels-photo-8471744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
+              // imageUrl="https://images.pexels.com/photos/8471744/pexels-photo-8471744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
+              imageUrl="/images/home/ladykids.jpg"
               location=""
               impact="Supplied 2,000 students with materials in 2024"
             />
             <ProgramCard
               title="Support"
               description=" Equipping local educators with the tools, training, and resources needed to create engaging, effective, and inclusive learning environments for students."
-              imageUrl="https://images.pexels.com/photos/8472001/pexels-photo-8472001.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
+              // imageUrl="https://images.pexels.com/photos/8472001/pexels-photo-8472001.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
+              imageUrl="/images/home/studentbags.jpg"
               location=""
               impact="Launched initial educator support in underserved communities"
             />
             <ProgramCard
               title="Structure"
               description=" Building safe, student-friendly classrooms and renovating educational facilities to foster a stable learning environment in underserved regions."
-              imageUrl="https://images.pexels.com/photos/256455/pexels-photo-256455.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
+              // imageUrl="https://images.pexels.com/photos/256455/pexels-photo-256455.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
+               imageUrl="/images/home/smallkids.jpg"
               location=""
               impact="Enhanced public school spaces to improve students’ daily learning experience"
             />

@@ -22,7 +22,7 @@ const Donate: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <Heart className="h-16 w-16 mx-auto mb-6 text-white" />
-            <h1 className="text-4xl font-bold mb-6">Your Support Changes Lives</h1>
+            <h1 className="text-4xl font-bold mb-6 text-blue-100">Your Support Changes Lives</h1>
             <p className="text-lg text-cyan-100 mb-0">
               Every donation helps us provide education, resources, and hope to children in need across Africa.
             </p>

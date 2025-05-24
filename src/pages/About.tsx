@@ -47,9 +47,12 @@ const About: React.FC = () => {
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-blue-100">
               About Obayi Charity
             </h1>
+            {/* <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-blue-100">
+            About Obayi Charity
+          </h1> */}
             <p className="text-xl text-gray-300 mb-0">
               Building brighter futures through education and community support
             </p>
@@ -73,22 +76,26 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
             <div className="relative">
               <div className="grid grid-cols-2 gap-4">
                 <img 
-                  src="https://images.pexels.com/photos/1206101/pexels-photo-1206101.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  // src="https://images.pexels.com/photos/1206101/pexels-photo-1206101.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  src="/images/about/volunteers.jpg" 
                   alt="Children in classroom" 
                   className="rounded-lg shadow-md"
                 />
                 <img 
-                  src="https://images.pexels.com/photos/8471744/pexels-photo-8471744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  // src="https://images.pexels.com/photos/8471744/pexels-photo-8471744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  src="/images/about/all.jpg" 
                   alt="School supplies" 
                   className="rounded-lg shadow-md mt-8"
                 />
                 <img 
-                  src="https://images.pexels.com/photos/1620760/pexels-photo-1620760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  // src="https://images.pexels.com/photos/1620760/pexels-photo-1620760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  src="/images/about/clap.png" 
                   alt="Teacher with students" 
                   className="rounded-lg shadow-md"
                 />
                 <img 
-                  src="https://images.pexels.com/photos/296301/pexels-photo-296301.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  // src="https://images.pexels.com/photos/296301/pexels-photo-296301.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750" 
+                  src="/images/about/bags.jpg"
                   alt="School building" 
                   className="rounded-lg shadow-md mt-8"
                 />

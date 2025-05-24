@@ -50,10 +50,10 @@ const FAQ: React.FC = () => {
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-cyan-700 to-cyan-600 text-white py-16">
+      <section className="relative bg-[#4DD0E1]  text-white py-16">  
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-6">Frequently Asked Questions</h1>
+            <h1 className="text-4xl font-bold mb-6 text-blue-100">Frequently Asked Questions</h1>
             <p className="text-xl text-cyan-100">
               Find answers to common questions about our charity and programs
             </p>
@@ -61,7 +61,7 @@ const FAQ: React.FC = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* FAQ Section */}s
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
@@ -106,7 +106,7 @@ const FAQ: React.FC = () => {
             <div className="flex justify-center space-x-4">
               <a 
                 href="/contact" 
-                className="px-6 py-3 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors"
+                className="px-6 py-3 bg-[#4DD0E1] text-white rounded-md hover:bg-cyan-700 transition-colors"
               >
                 Contact Us
               </a>

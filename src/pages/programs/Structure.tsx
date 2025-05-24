@@ -18,7 +18,7 @@ const Structure: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <Building className="h-16 w-16 mx-auto mb-6 text-cyan-200" />
-            <h1 className="text-4xl font-bold mb-6">Infrastructure Programs</h1>
+            <h1 className="text-4xl font-bold mb-6 text-blue-100">Infrastructure Programs</h1>
             <p className="text-xl text-cyan-100">
               Building the foundation for better education
             </p>

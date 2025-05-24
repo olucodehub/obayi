@@ -11,15 +11,19 @@ const Support: React.FC = () => {
         <div className="absolute inset-0 overflow-hidden">
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-20" 
+            // style={{ 
+            //   backgroundImage: "url('https://images.pexels.com/photos/1206101/pexels-photo-1206101.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750')" 
+            // }}
+
             style={{ 
-              backgroundImage: "url('https://images.pexels.com/photos/1206101/pexels-photo-1206101.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750')" 
+              backgroundImage: "url('/images/programs/bags.png')" 
             }}
           />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <Heart className="h-16 w-16 mx-auto mb-6 text-cyan-200" />
-            <h1 className="text-4xl font-bold mb-6">Give a bag outreach </h1>
+            <h1 className="text-4xl font-bold mb-6 text-blue-100">Give a bag outreach </h1>
             <p className="text-xl text-cyan-100">
               The Power of a School Bag
             </p>
