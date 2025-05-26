@@ -144,7 +144,7 @@ const Scholarships: React.FC = () => {
             <GraduationCap className="h-16 w-16 mx-auto mb-6 text-cyan-200" />
             <h1 className="text-4xl font-bold mb-6 text-blue-100">Adopt a Star Child</h1>
             <p className="text-xl text-cyan-100">
-              Not every bright future shines on its own.
+              Creating Lasting Impact, One child, One life, One future at a time.
             </p>
           </div>
         </div>
