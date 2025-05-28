@@ -2,6 +2,10 @@
 // import { CreditCard, Heart, BarChart3, Clock, Building } from 'lucide-react';
 // import Button from '../components/Button';
 
+// const bankDetails = `Bank: Providus Bank
+// Account Name: Obayi For Education Foundation
+// Account Number: 1306973690`;
+
 // const Donate: React.FC = () => {
 //   const [donationType, setDonationType] = useState<'one-time' | 'monthly'>('one-time');
 
@@ -11,6 +15,16 @@
 
 //   const handleStripeDonation = () => {
 //     window.open('https://donate.stripe.com/bIYg0pgJn6Cf6Aw9AB', '_blank');
+//   };
+
+//   const handleCopyAccountDetails = async () => {
+//     try {
+//       await navigator.clipboard.writeText(bankDetails);
+//       alert('Account details copied to clipboard!'); // Provide user feedback
+//     } catch (err) {
+//       console.error('Failed to copy text: ', err);
+//       alert('Failed to copy text.');
+//     }
 //   };
 
 //   const donationOptions = [
@@ -36,7 +50,7 @@
 //       title: "School Bag Support",
 //       amount: 2,
 //       period: "one-time",
-//       description: "Provides a school bag to a student"
+//       description: "Provides one school bag to a student"
 //     },
 //     {
 //       title: "School Uniform",
@@ -101,7 +115,7 @@
 //               We believe in transparency and accountability. Here's how your donation makes a difference:
 //             </p>
 //           </div>
-          
+
 //           <div className="grid md:grid-cols-3 gap-8">
 //             <div className="bg-gray-50 p-6 rounded-lg text-center">
 //               <BarChart3 className="h-12 w-12 mx-auto text-cyan-600 mb-4" />
@@ -110,7 +124,7 @@
 //                 of your donation goes directly to our educational programs supporting children
 //               </p>
 //             </div>
-            
+
 //             <div className="bg-gray-50 p-6 rounded-lg text-center">
 //               <Clock className="h-12 w-12 mx-auto text-cyan-600 mb-4" />
 //               <h3 className="text-xl font-bold mb-2">£10 Monthly</h3>
@@ -118,7 +132,7 @@
 //                 provides a child with education, school supplies, and support for an entire year
 //               </p>
 //             </div>
-            
+
 //             <div className="bg-gray-50 p-6 rounded-lg text-center">
 //               <Heart className="h-12 w-12 mx-auto text-cyan-600 mb-4" />
 //               <h3 className="text-xl font-bold mb-2">100%</h3>
@@ -136,7 +150,7 @@
 //           <div className="max-w-3xl mx-auto">
 //             <div className="bg-white p-8 rounded-lg shadow-md">
 //               <h3 className="text-xl font-semibold mb-6 text-center">Choose Your Payment Method</h3>
-              
+
 //               <div className="mb-8">
 //                 <div className="flex flex-wrap gap-4 mb-4 justify-center">
 //                   <button
@@ -157,59 +171,58 @@
 //               </div>
 
 //               <div className="grid md:grid-cols-3 gap-6">
-//   {/* PayPal Option */}
-//   <div className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer flex flex-col h-full">
-//     <div className="flex-grow">
-//       <div className="flex justify-between items-start mb-4">
-//         <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" 
-//              alt="PayPal" 
-//              className="h-12" />
-//       </div>
-//       <h4 className="text-lg font-semibold mb-2">Donate with PayPal</h4>
-//       <p className="text-gray-600 mb-4">
-//         Quick and secure payment through PayPal. Accept all major credit cards.
-//       </p>
-//     </div>
-//     <Button variant="primary" onClick={handlePayPalDonation} fullWidth className="mt-auto">
-//       Donate via PayPal
-//     </Button>
-//   </div>
+//                 {/* PayPal Option */}
+//                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer flex flex-col h-full">
+//                   <div className="flex-grow">
+//                     <div className="flex justify-between items-start mb-4">
+//                       <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+//                            alt="PayPal"
+//                            className="h-12" />
+//                     </div>
+//                     <h4 className="text-lg font-semibold mb-2">Donate with PayPal</h4>
+//                     <p className="text-gray-600 mb-4">
+//                       Quick and secure payment through PayPal. Accept all major credit cards.
+//                     </p>
+//                   </div>
+//                   <Button variant="primary" onClick={handlePayPalDonation} fullWidth className="mt-auto">
+//                     Donate via PayPal
+//                   </Button>
+//                 </div>
 
-//   {/* Stripe Option */}
-//   <div className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer flex flex-col h-full">
-//     <div className="flex-grow">
-//       <div className="flex justify-between items-start mb-4">
-//         <CreditCard className="h-12 w-12 text-cyan-600" />
-//       </div>
-//       <h4 className="text-lg font-semibold mb-2">Pay with Card</h4>
-//       <p className="text-gray-600 mb-4">
-//         Secure card payment powered by Stripe. All major cards accepted.
-//       </p>
-//     </div>
-//     <Button variant="primary" onClick={handleStripeDonation} fullWidth className="mt-auto">
-//       Donate via Stripe
-//     </Button>
-//   </div>
+//                 {/* Stripe Option */}
+//                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer flex flex-col h-full">
+//                   <div className="flex-grow">
+//                     <div className="flex justify-between items-start mb-4">
+//                       <CreditCard className="h-12 w-12 text-cyan-600" />
+//                     </div>
+//                     <h4 className="text-lg font-semibold mb-2">Pay with Card</h4>
+//                     <p className="text-gray-600 mb-4">
+//                       Secure card payment powered by Stripe. All major cards accepted.
+//                     </p>
+//                   </div>
+//                   <Button variant="primary" onClick={handleStripeDonation} fullWidth className="mt-auto">
+//                     Donate via Stripe
+//                   </Button>
+//                 </div>
 
-//   {/* Nigerian Bank Transfer */}
-//   <div className="border rounded-lg p-6 hover:shadow-lg transition-all flex flex-col h-full">
-//     <div className="flex-grow">
-//       <div className="flex justify-between items-start mb-4">
-//         <Building className="h-12 w-12 text-cyan-600" />
-//       </div>
-//       <h4 className="text-lg font-semibold mb-2">Nigerian Bank Transfer</h4>
-//       <div className="text-gray-600 mb-4">
-//         <p className="mb-2">Bank: Providus Bank</p>
-//         <p className="mb-2">Account Name: Obayi For Education Foundation</p>
-//         <p className="mb-2">Account Number: 1306973690</p>
-//       </div>
-//     </div>
-//     <Button variant="primary" onClick={() => {}} fullWidth className="mt-auto">
-//       Copy Account Details
-//     </Button>
-//   </div>
-// </div>
-
+//                 {/* Nigerian Bank Transfer */}
+//                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all flex flex-col h-full">
+//                   <div className="flex-grow">
+//                     <div className="flex justify-between items-start mb-4">
+//                       <Building className="h-12 w-12 text-cyan-600" />
+//                     </div>
+//                     <h4 className="text-lg font-semibold mb-2">Nigerian Bank Transfer</h4>
+//                     <div className="text-gray-600 mb-4">
+//                       <p className="mb-2">Bank: Providus Bank</p>
+//                       <p className="mb-2">Account Name: Obayi For Education Foundation</p>
+//                       <p className="mb-2">Account Number: 1306973690</p>
+//                     </div>
+//                   </div>
+//                   <Button variant="primary" onClick={handleCopyAccountDetails} fullWidth className="mt-auto">
+//                     Copy Account Details
+//                   </Button>
+//                 </div>
+//               </div>
 
 //               <div className="mt-8 bg-gray-50 p-4 rounded-md">
 //                 <p className="text-sm text-gray-600 text-center">
@@ -228,16 +241,16 @@
 //           <div className="max-w-3xl mx-auto bg-cyan-50 p-6 rounded-lg border border-cyan-100">
 //             <h3 className="text-xl font-bold text-cyan-800 mb-4">Our Commitment to Transparency</h3>
 //             <p className="text-cyan-700 mb-4">
-//               Obayi is committed to complete financial transparency. Our public ledger 
-//               shows all donations received and how they are allocated, while protecting donor 
+//               Obayi is committed to complete financial transparency. Our public ledger
+//               shows all donations received and how they are allocated, while protecting donor
 //               privacy when requested.
 //             </p>
 //             <p className="text-cyan-700 mb-4">
-//               We are a registered and comply with all relevant 
+//               We are a registered and comply with all relevant
 //               regulations. Our financial statements are audited annually by independent auditors.
 //             </p>
 //             <p className="text-cyan-700">
-//               If you have any questions about our financial practices or would like more detailed 
+//               If you have any questions about our financial practices or would like more detailed
 //               information, please <a href="/contact" className="text-cyan-800 underline">contact us</a>.
 //             </p>
 //           </div>
@@ -251,33 +264,53 @@
 
 import React, { useState } from 'react';
 import { CreditCard, Heart, BarChart3, Clock, Building } from 'lucide-react';
-import Button from '../components/Button';
+import Button from '../components/Button'; // Assuming Button component is correctly imported
 
+// Bank details for copying to clipboard
 const bankDetails = `Bank: Providus Bank
 Account Name: Obayi For Education Foundation
 Account Number: 1306973690`;
 
+// Stripe link for one-time donations
+const oneTimeStripeLink = 'https://donate.stripe.com/bIYg0pgJn6Cf6Aw9AB';
+
+// Stripe link for monthly donations - IMPORTANT: Replace this with your actual monthly Stripe link
+const monthlyStripeLink = 'https://donate.stripe.com/4gMcN5ebA0Yt1ad2ep4F202'; 
+
 const Donate: React.FC = () => {
+  // State to manage whether the donation type is one-time or monthly
   const [donationType, setDonationType] = useState<'one-time' | 'monthly'>('one-time');
 
+  // Function to handle PayPal donations
   const handlePayPalDonation = () => {
     window.open('https://www.paypal.com/donate/?hosted_button_id=C6FJBTX4REUGG', '_blank');
   };
 
+  // Function to handle Stripe donations for one-time payments
   const handleStripeDonation = () => {
-    window.open('https://donate.stripe.com/bIYg0pgJn6Cf6Aw9AB', '_blank');
+    window.open(oneTimeStripeLink, '_blank');
   };
 
+  // Function to handle Stripe donations for monthly payments
+  const handleMonthlyStripeDonation = () => {
+    window.open(monthlyStripeLink, '_blank');
+  };
+
+  // Function to copy bank account details to the clipboard
   const handleCopyAccountDetails = async () => {
     try {
+      // Attempt to write the bankDetails string to the clipboard
       await navigator.clipboard.writeText(bankDetails);
-      alert('Account details copied to clipboard!'); // Provide user feedback
+      // Provide user feedback on successful copy
+      alert('Account details copied to clipboard!'); 
     } catch (err) {
+      // Log and alert if copying fails
       console.error('Failed to copy text: ', err);
       alert('Failed to copy text.');
     }
   };
 
+  // Array of predefined donation options
   const donationOptions = [
     {
       title: "Primary School Support",
@@ -311,7 +344,7 @@ const Donate: React.FC = () => {
     },
     {
       title: "Refurbishments",
-      amount: null,
+      amount: null, // Null indicates no specific amount, contact for details
       period: "one-time",
       description: "Support classroom renovation projects - Contact us for details"
     }
@@ -319,7 +352,7 @@ const Donate: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-20">
-      {/* Hero Section */}
+      {/* Hero Section: Displays a welcoming message and an icon */}
       <section className="relative bg-gradient-to-r from-cyan-700 to-cyan-600 text-white py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
@@ -332,7 +365,7 @@ const Donate: React.FC = () => {
         </div>
       </section>
 
-      {/* Donation Options */}
+      {/* Donation Options Section: Lists various ways to donate with descriptions and amounts */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
@@ -357,7 +390,7 @@ const Donate: React.FC = () => {
         </div>
       </section>
 
-      {/* Donation Impact Section */}
+      {/* Donation Impact Section: Highlights the impact of donations with statistics and icons */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-12">
@@ -395,13 +428,14 @@ const Donate: React.FC = () => {
         </div>
       </section>
 
-      {/* Payment Options Section */}
+      {/* Payment Options Section: Allows users to choose between one-time and monthly payments via different platforms */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="bg-white p-8 rounded-lg shadow-md">
               <h3 className="text-xl font-semibold mb-6 text-center">Choose Your Payment Method</h3>
 
+              {/* Donation Type Selector (One-time vs. Monthly) */}
               <div className="mb-8">
                 <div className="flex flex-wrap gap-4 mb-4 justify-center">
                   <button
@@ -421,8 +455,9 @@ const Donate: React.FC = () => {
                 </div>
               </div>
 
+              {/* Payment Method Cards (PayPal, Stripe, Bank Transfer) */}
               <div className="grid md:grid-cols-3 gap-6">
-                {/* PayPal Option */}
+                {/* PayPal Option Card */}
                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer flex flex-col h-full">
                   <div className="flex-grow">
                     <div className="flex justify-between items-start mb-4">
@@ -440,7 +475,7 @@ const Donate: React.FC = () => {
                   </Button>
                 </div>
 
-                {/* Stripe Option */}
+                {/* Stripe Option Card: Dynamically changes link based on donationType */}
                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer flex flex-col h-full">
                   <div className="flex-grow">
                     <div className="flex justify-between items-start mb-4">
@@ -451,12 +486,18 @@ const Donate: React.FC = () => {
                       Secure card payment powered by Stripe. All major cards accepted.
                     </p>
                   </div>
-                  <Button variant="primary" onClick={handleStripeDonation} fullWidth className="mt-auto">
+                  <Button
+                    variant="primary"
+                    // Conditional onClick: uses monthlyStripeLink if donationType is 'monthly', otherwise oneTimeStripeLink
+                    onClick={donationType === 'monthly' ? handleMonthlyStripeDonation : handleStripeDonation}
+                    fullWidth
+                    className="mt-auto"
+                  >
                     Donate via Stripe
                   </Button>
                 </div>
 
-                {/* Nigerian Bank Transfer */}
+                {/* Nigerian Bank Transfer Option Card */}
                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all flex flex-col h-full">
                   <div className="flex-grow">
                     <div className="flex justify-between items-start mb-4">
@@ -475,6 +516,7 @@ const Donate: React.FC = () => {
                 </div>
               </div>
 
+              {/* Security and Tax Information */}
               <div className="mt-8 bg-gray-50 p-4 rounded-md">
                 <p className="text-sm text-gray-600 text-center">
                   Your donation is secure and encrypted. We never store your payment information.
@@ -486,7 +528,7 @@ const Donate: React.FC = () => {
         </div>
       </section>
 
-      {/* Transparency Notice */}
+      {/* Transparency Notice Section: Details the organization's commitment to financial transparency */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto bg-cyan-50 p-6 rounded-lg border border-cyan-100">
@@ -512,4 +554,3 @@ const Donate: React.FC = () => {
 };
 
 export default Donate;
-

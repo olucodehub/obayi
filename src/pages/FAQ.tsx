@@ -23,7 +23,7 @@ const FAQ: React.FC = () => {
     },
     {
       question: "Can I sponsor an individual student?",
-      answer: "Yes, through our 'Adopt a Child' program, you can sponsor an individual student. Your monthly contribution provides them with education, school supplies, uniforms, and support. While sponsorship is anonymous to protect the child's dignity, you'll receive regular updates on their progress."
+      answer: "Yes, through our 'Adopt a star Child' program, you can sponsor an individual student. Your monthly contribution provides them with education, school supplies, uniforms, and support. While sponsorship is anonymous to protect the child's dignity, you'll receive regular updates on their progress."
     },
     {
       question: "What percentage of my donation goes directly to the students?",

@@ -31,6 +31,9 @@ const Home: React.FC = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-blue-100">
             Educate, Empower, Transform
           </h1>
+          <p className="text-lg md:text-xl text-blue-100 mb-8">
+            With as little as £9,99 a month, you can keep a child in school
+            </p>
             <p className="text-lg md:text-xl text-blue-100 mb-8">
               Join Obayi in our mission to help low-income children in Africa escape poverty through education and sustainable support programs.
             </p>
@@ -48,7 +51,7 @@ const Home: React.FC = () => {
                 to="/programs/scholarships"
                 className="border-white text-white hover:bg-white hover:bg-opacity-10"
               >
-                Adopt a Child
+                Adopt a star Child
               </Button>
             </div>
           </div>

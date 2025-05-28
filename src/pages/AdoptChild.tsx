@@ -650,7 +650,7 @@ const AdoptChild: React.FC = () => {
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-6">Adopt a Child</h1>
+            <h1 className="text-4xl font-bold mb-6">Adopt a star Child</h1>
             <p className="text-xl text-blue-100 mb-0">
               Make a lasting difference in a child's life through our anonymous sponsorship program.
             </p>
