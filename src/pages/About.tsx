@@ -209,8 +209,8 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
           
           <div className="mt-12 text-center">
             <p className="text-gray-600 mb-6">
-              Our team also includes dozens of volunteers, regional coordinators, and local partners 
-              who make our work possible across multiple countries.
+              Our team also includes volunteers, regional coordinators, and local partners 
+              who make our work possible across multiple locations.
             </p>
             <Button to="/contact" variant="outline">
               Join Our Team
@@ -357,19 +357,19 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <TestimonialCard
-              quote="Obayi's teacher training program transformed how I approach education. My students are more engaged and their test scores have improved significantly."
-              name="Grace Mwangi"
-              role="Primary School Teacher"
+              quote="I support Obayi because they believe in unlocking children's education, they believe that education is the key to unlocking many opportunities in life."
+              name="Joy"
+              role="Child Sponsor"
             />
             <TestimonialCard
-              quote="The infrastructure improvements and new classrooms have allowed us to accommodate more students and provide a better learning environment."
-              name="Daniel Okello"
+              quote="A nation that will thrive must make education it's bedrock, that is why the outstanding job Obayi is doing to assist with basic educational needs must be supported by everyone who can."
+              name="Yemi"
               role="School Principal"
             />
             <TestimonialCard
-              quote="Working with Obayi has been a true partnership. They listen to our needs and work alongside us rather than imposing external solutions."
-              name="Elizabeth Addo"
-              role="Community Leader"
+              quote="Obayi....great initiative. I love what they're doing for the children. Seeing their faces light up when presented with the gifts and the hope they're being given is priceless. God bless you all."
+              name="Jide"
+              role="Commenter"
             />
           </div>
         </div>

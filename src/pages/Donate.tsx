@@ -52,37 +52,44 @@ const Donate: React.FC = () => {
       title: "Primary School Support",
       amount: 6,
       period: "monthly",
-      description: "Covers basic education needs including books and supplies"
+      description: "Covers basic education needs including books and supplies",
+      link: "https://donate.stripe.com/eVqeVd8RgbD71ad4mx4F203"
     },
     {
       title: "Secondary School Support",
       amount: 10,
       period: "monthly",
-      description: "Provides comprehensive secondary education support"
+      description: "Provides comprehensive secondary education support",
+      link: "https://donate.stripe.com/cNidR9ebA6iN5qt3it4F204"
     },
     {
       title: "University School Support",
       amount: 37,
       period: "monthly",
-      description: "Helps with university tuition and materials"
+      description: "Helps with university tuition and materials",
+      link: "https://donate.stripe.com/00waEX3wW6iNaKN1al4F205"
     },
     {
       title: "School Bag Support",
       amount: 2,
       period: "one-time",
-      description: "Provides one school bag to a student"
+      description: "Provides one school bag to a student",
+      link: "https://donate.stripe.com/bIYg0pgJn6Cf6Aw9AB"
     },
     {
       title: "School Uniform",
       amount: 5,
       period: "one-time",
-      description: "Provides a complete school uniform"
+      description: "Provides a complete school uniform",
+      link: "https://donate.stripe.com/bIYg0pgJn6Cf6Aw9AB"
     },
     {
       title: "Refurbishments",
       amount: null, // Null indicates no specific amount, contact for details
       period: "one-time",
-      description: "Support classroom renovation projects - Contact us for details"
+      description: "Support classroom renovation projects - Contact us for details",
+      link: "/contact",
+      isInternal: true
     }
   ];
 
@@ -107,7 +114,32 @@ const Donate: React.FC = () => {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">Ways You Can Help</h2>
             <div className="grid md:grid-cols-3 gap-6">
-              {donationOptions.map((option, index) => (
+            {donationOptions.map((option, index) => (
+              <div 
+                key={index} 
+                className="bg-gray-50 rounded-lg p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+                onClick={() => {
+                  if (option.isInternal) {
+                    window.location.href = option.link;
+                  } else {
+                    window.open(option.link, '_blank');
+                  }
+                }}
+              >
+                <h3 className="text-xl font-bold mb-2">{option.title}</h3>
+                {option.amount ? (
+                  <p className="text-2xl font-bold text-cyan-600 mb-2">
+                    £{option.amount}
+                    <span className="text-sm text-gray-600">/{option.period === 'monthly' ? 'mo' : 'once'}</span>
+                  </p>
+                ) : (
+                  <p className="text-lg font-medium text-cyan-600 mb-2">Contact Us</p>
+                )}
+                <p className="text-gray-600 text-sm">{option.description}</p>
+              </div>
+            ))}
+
+              {/* {donationOptions.map((option, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-6 text-center">
                   <h3 className="text-xl font-bold mb-2">{option.title}</h3>
                   {option.amount ? (
@@ -120,7 +152,7 @@ const Donate: React.FC = () => {
                   )}
                   <p className="text-gray-600 text-sm">{option.description}</p>
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
         </div>
