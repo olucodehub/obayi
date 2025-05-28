@@ -190,7 +190,7 @@ const Home: React.FC = () => {
             />
           </div>
           <div className="text-center mt-12">
-            <Button to="/programs" variant="outline" className="inline-flex items-center">
+            <Button to="/programs/scholarships" variant="outline" className="inline-flex items-center">
               View All Programs
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -254,7 +254,7 @@ const Home: React.FC = () => {
                 to="/programs/scholarships"
                 className="border-white text-white hover:bg-white hover:text-orange-500"
               >
-                Adopt a Child
+                Adopt a star Child
               </Button>
             </div>
           </div>
