@@ -530,7 +530,7 @@ const AdoptChild: React.FC = () => {
                     required
                   />
                   <label htmlFor="agreePrivacy" className="ml-2 block text-sm text-gray-700">
-                    I agree to Obayi Charity's privacy policy and consent to receiving email updates about my sponsorship.
+                    I agree to Obayi's privacy policy and consent to receiving email updates about my sponsorship.
                   </label>
                 </div>
               </div>
@@ -754,7 +754,7 @@ const AdoptChild: React.FC = () => {
               <div className="bg-gray-50 p-6 rounded-lg">
                 <blockquote className="italic text-gray-600 mb-6">
                   "I've been sponsoring two children for the past three years, and it's been amazing to watch 
-                  their progress. The transparency of Obayi Charity gives me complete confidence that my 
+                  their progress. The transparency of Obayi gives me complete confidence that my 
                   contribution is making a real difference."
                 </blockquote>
                 <div className="flex items-center">

@@ -11,25 +11,25 @@ const About: React.FC = () => {
       name: 'Bolarinwa Iruemiobe',
       role: 'Founder & Executive Director',
       bio: 'Leads Obayi’s mission with visionary direction, guiding its mission to empower students through education.',
-      imageUrl: 'https://images.pexels.com/photos/5792641/pexels-photo-5792641.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
+      imageUrl: '/images/about/seun.jpg'   
     },
     {
       name: 'Nelson Egbunu',
       role: 'Programs Director',
       bio: 'Oversees Obayi’s programs, ensuring strategic alignment, impactful delivery, and mission-driven execution.',
-      imageUrl: 'https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
+      imageUrl: '/images/about/nelson.jpg'   
     },
     {
       name: 'Joy Aghogho',
       role: 'Project Coordinator',
       bio: 'Supports Obayi’s mission through hands-on project delivery and student-centered resource coordination.',
-      imageUrl: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
+      imageUrl: '/images/about/dummyfemale.jpg'  
     },
     {
       name: 'Queen Adebisi',
       role: 'Social Media Lead',
       bio: 'Leads Obayi’s social media, sharing stories that inspire, inform, and amplify our mission.',
-      imageUrl: 'https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750'
+      imageUrl: '/images/about/dummyfemale.jpg'  
     }
   ];
 
@@ -48,10 +48,10 @@ const About: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-blue-100">
-              About Obayi Charity
+              About Obayi
             </h1>
             {/* <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-blue-100">
-            About Obayi Charity
+            About Obayi
           </h1> */}
             <p className="text-xl text-gray-300 mb-0">
               Building brighter futures through education and community support
@@ -184,7 +184,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-gray-900">Our Team</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Meet the dedicated professionals behind Obayi Charity who work tirelessly to fulfill our mission.
+              Meet the dedicated professionals behind Obayi who work tirelessly to fulfill our mission.
             </p>
           </div>
           
@@ -225,7 +225,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-gray-900">Where We Work</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Obayi Charity currently operates programs in several countries across Africa, 
+              Obayi currently operates programs in Lagos, Nigeria, 
               with plans to expand our reach in the coming years.
             </p>
           </div>
@@ -234,53 +234,51 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
             <div className="bg-white p-6 rounded-lg shadow-md transition-all hover:shadow-lg">
               <div className="flex items-center mb-4">
                 <MapPin className={`h-6 w-6 text-[${primaryCyan}] mr-3`} />
-                <h3 className="text-xl font-bold text-gray-900">Kenya</h3>
+                <h3 className="text-xl font-bold text-gray-900">Iju station primary school 1</h3>
               </div>
               <p className="text-gray-600 mb-4">
-                Our largest presence is in Kenya, where we support 25 schools across rural and urban areas.
-                Programs include teacher training, infrastructure development, and our flagship child adoption program.
+              Complementing the efforts of the Lagos State government in the development of the education sector.
               </p>
               <p className="text-sm text-gray-500">
-                Active since 2015 • 1,200+ children supported
+              School Bags Support
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md transition-all hover:shadow-lg">
               <div className="flex items-center mb-4">
                  <MapPin className={`h-6 w-6 text-[${primaryCyan}] mr-3`} />
-                <h3 className="text-xl font-bold text-gray-900">Uganda</h3>
+                <h3 className="text-xl font-bold text-gray-900">Iju station primary school 2</h3>
               </div>
               <p className="text-gray-600 mb-4">
-                In Uganda, we focus on rural education initiatives, including school construction, 
-                clean water access for schools, and scholarship programs for secondary education.
+              Complementing the efforts of the Lagos State government in the development of the education sector.
+
               </p>
               <p className="text-sm text-gray-500">
-                Active since 2017 • 650+ children supported
+                School Bags Support
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md transition-all hover:shadow-lg">
               <div className="flex items-center mb-4">
                  <MapPin className={`h-6 w-6 text-[${primaryCyan}] mr-3`} />
-                <h3 className="text-xl font-bold text-gray-900">Ghana</h3>
+                <h3 className="text-xl font-bold text-gray-900">Coker primary school</h3>
               </div>
               <p className="text-gray-600 mb-4">
-                Our newest region of operation, where we're building partnerships with local schools 
-                and implementing teacher training programs and technology initiatives.
+              Complementing the efforts of the Lagos State government in the development of the education sector.
+
               </p>
               <p className="text-sm text-gray-500">
-                Active since 2021 • 350+ children supported
+              School Bags Support
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md transition-all hover:shadow-lg">
               <div className="flex items-center mb-4">
                  <MapPin className={`h-6 w-6 text-[${primaryCyan}] mr-3`} />
-                <h3 className="text-xl font-bold text-gray-900">Tanzania</h3>
+                <h3 className="text-xl font-bold text-gray-900">Ayanleye primary school</h3>
               </div>
               <p className="text-gray-600 mb-4">
-                We provide educational resources, teacher development programs, and school meal initiatives 
-                in partnership with local communities in northern Tanzania.
+              Complementing the efforts of the Lagos State government in the development of the education sector.
               </p>
               <p className="text-sm text-gray-500">
                 Active since 2018 • 500+ children supported
@@ -290,14 +288,13 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
             <div className="bg-white p-6 rounded-lg shadow-md transition-all hover:shadow-lg border-2 border-dashed border-[#4DD0E1]">
               <div className="flex items-center mb-4">
                  <MapPin className={`h-6 w-6 text-[${primaryCyan}] mr-3`} />
-                <h3 className="text-xl font-bold text-gray-400">Expansion Plans</h3>
+                <h3 className="text-xl font-bold text-gray-400">Khan Foundation</h3>
               </div>
               <p className="text-gray-500 mb-4">
-                We're currently developing partnerships to expand our programs to Malawi and Zambia 
-                in 2026, with a focus on girls' education and technology integration.
+                We're currently developing partnerships with Khan Foundation Junior Academy to expand our programs.
               </p>
               <p className="text-sm text-gray-400">
-                Launching 2026 • Target: 500 children in first year
+                Launched 2025 
               </p>
             </div>
             
@@ -322,7 +319,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-4">Join Our Mission</h2>
             <p className="text-lg mb-8">
-              There are many ways to support Obayi Charity's work in providing education and opportunities 
+              There are many ways to support Obayi's work in providing education and opportunities 
               to children across Africa. Whether through donations, volunteering, or spreading awareness, 
               your contribution makes a difference.
             </p>
@@ -362,17 +359,17 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
             <TestimonialCard
               quote="Obayi's teacher training program transformed how I approach education. My students are more engaged and their test scores have improved significantly."
               name="Grace Mwangi"
-              role="Primary School Teacher, Kenya"
+              role="Primary School Teacher"
             />
             <TestimonialCard
               quote="The infrastructure improvements and new classrooms have allowed us to accommodate more students and provide a better learning environment."
               name="Daniel Okello"
-              role="School Principal, Uganda"
+              role="School Principal"
             />
             <TestimonialCard
               quote="Working with Obayi has been a true partnership. They listen to our needs and work alongside us rather than imposing external solutions."
               name="Elizabeth Addo"
-              role="Community Leader, Ghana"
+              role="Community Leader"
             />
           </div>
         </div>

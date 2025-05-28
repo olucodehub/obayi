@@ -11,7 +11,7 @@ const Structure: React.FC = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-20" 
             style={{ 
-              backgroundImage: "url('https://images.pexels.com/photos/256455/pexels-photo-256455.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750')" 
+              backgroundImage: "url('/images/programs/whiteboard.jpg')" 
             }}
           />
         </div>

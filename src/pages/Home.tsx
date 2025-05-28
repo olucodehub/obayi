@@ -19,7 +19,7 @@ const Home: React.FC = () => {
             //   backgroundImage: "url('https://images.pexels.com/photos/935944/pexels-photo-935944.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750')" 
             // }}
             style={{ 
-              backgroundImage: "url('/images/home/bible.png')" 
+              backgroundImage: "url('/images/home/boyslaptop.jpg')" 
             }}
           />
         </div>
@@ -32,7 +32,7 @@ const Home: React.FC = () => {
             Educate, Empower, Transform
           </h1>
             <p className="text-lg md:text-xl text-blue-100 mb-8">
-              Join Obayi Charity in our mission to help low-income children in Africa escape poverty through education and sustainable support programs.
+              Join Obayi in our mission to help low-income children in Africa escape poverty through education and sustainable support programs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button 
@@ -65,14 +65,14 @@ const Home: React.FC = () => {
                 {/* <GraduationCap className="h-12 w-12 text-orange-500" /> */}
                 <GraduationCap className={`h-12 w-12 text-[#4DD0E1]`} />
               </div>
-              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">2,500+</p>
+              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">1000+</p>
               <p className="text-gray-600">Children Impacted</p>
             </div>
             <div className="p-4">
               <div className="flex justify-center mb-4">
                 <Book className={`h-12 w-12 text-[${iconColor}]`} />
               </div>
-              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">15</p>
+              <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">5</p>
               <p className="text-gray-600">Schools Supported</p>
             </div>
             <div className="p-4">
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
             <div>
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Our Mission</h2>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                At Obayi Charity, we believe that education is the most powerful tool 
+                At Obayi, we believe that education is the most powerful tool 
                 for breaking the cycle of poverty. We work to provide access to quality 
                 education, resources, and support systems that empower children to 
                 build a better future for themselves and their communities.
@@ -126,12 +126,23 @@ const Home: React.FC = () => {
                 alt="Children in school" 
                 className="rounded-lg shadow-xl"
               />
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
-                <div className="flex items-center">
-                  <Heart className={`h-12 w-12 text-[${iconColor}]`} />
-                  <div>
-                    <p className="text-lg font-bold text-gray-900">UK Registered</p>
-                    <p className="text-gray-600">Company No. 15872513</p>
+              <div className="absolute -bottom-6 -left-6 flex space-x-4">
+                <div className="bg-white p-4 rounded-lg shadow-lg">
+                  <div className="flex items-center">
+                    <Heart className="h-10 w-10 text-orange-500 mr-4" />
+                    <div>
+                      <p className="text-lg font-bold text-gray-900">UK Registered</p>
+                      <p className="text-gray-600">Company No. 15872513</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-lg">
+                  <div className="flex items-center">
+                    <Heart className="h-10 w-10 text-orange-500 mr-4" />
+                    <div>
+                      <p className="text-lg font-bold text-gray-900">Nigeria Registered</p>
+                      <p className="text-gray-600">CAC No. 8225658</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -156,7 +167,7 @@ const Home: React.FC = () => {
               // imageUrl="https://images.pexels.com/photos/8471744/pexels-photo-8471744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
               imageUrl="/images/home/ladykids.jpg"
               location=""
-              impact="Supplied 2,000 students with materials in 2024"
+              impact="Supplied 1,000 students with materials in 2024"
             />
             <ProgramCard
               title="Support"

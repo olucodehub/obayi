@@ -34,7 +34,7 @@ const NewsletterSignup: React.FC = () => {
         {isSubmitted ? (
           <div className="bg-green-50 p-4 rounded-md">
             <p className="text-green-800 font-medium">Thank you for subscribing to our newsletter!</p>
-            <p className="text-green-700 mt-2">You'll start receiving updates from Obayi Charity soon.</p>
+            <p className="text-green-700 mt-2">You'll start receiving updates from Obayi soon.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">

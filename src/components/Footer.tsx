@@ -15,7 +15,6 @@ const Footer: React.FC = () => {
             </div>
             <p className="text-cyan-100 mb-4">
               Empowering children in Africa through education and sustainable support. 
-              Registered UK charity committed to breaking the cycle of poverty.
             </p>
             <div className="flex space-x-4">
               <a href="https://x.com/Obayi4Education?t=Grbu7vicrEWhaj793uCWrw&s=09" className="text-cyan-200 hover:text-white transition-colors">
@@ -41,7 +40,7 @@ const Footer: React.FC = () => {
                 <Link to="/programs" className="text-cyan-200 hover:text-white transition-colors">Programs</Link>
               </li>
               <li>
-                <Link to="/adopt" className="text-cyan-200 hover:text-white transition-colors">Adopt a Child</Link>
+                <Link to="/adopt" className="text-cyan-200 hover:text-white transition-colors">Adopt a Star Child</Link>
               </li>
               <li>
                 <Link to="/ledger" className="text-cyan-200 hover:text-white transition-colors">Public Ledger</Link>

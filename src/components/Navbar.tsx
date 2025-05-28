@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
   const handleProgramsMouseLeave = () => {
     const timeout = setTimeout(() => {
       setIsProgramsOpen(false);
-    }, 300); // 300ms delay before closing
+    }, 300);
     setCloseTimeout(timeout);
   };
 
@@ -64,11 +64,13 @@ const Navbar: React.FC = () => {
         <nav className="flex items-center justify-between">
           <Link to="/" className="flex items-center" onClick={closeMenu}>
             <div className="flex items-center">
-              <span className="ml-2 text-2xl font-bold text-cyan-700"><img
-                src="/images/logotransparent.png"
-                alt="Obayi Logo"
-                className="h-16 w-auto object-contain"/>
-            </span>
+              <span className="ml-2 text-2xl font-bold text-cyan-700">
+                <img
+                  src="/images/logotransparent.png"
+                  alt="Obayi Logo"
+                  className="h-16 w-auto object-contain"
+                />
+              </span>
             </div>
           </Link>
 
@@ -76,13 +78,13 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
-              className={`font-medium transition-colors ${isActive('/') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
+              className={`font-medium text-cyan-500 transition-colors hover:bg-cyan-600 hover:text-white px-3 py-2 rounded ${isActive('/') && 'text-cyan-500'}`}
             >
               Home
             </Link>
             <Link 
               to="/about" 
-              className={`font-medium transition-colors ${isActive('/about') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
+              className={`font-medium text-cyan-500 transition-colors hover:bg-cyan-600 hover:text-white px-3 py-2 rounded ${isActive('/about') && 'text-cyan-500'}`}
             >
               About Us
             </Link>
@@ -94,8 +96,8 @@ const Navbar: React.FC = () => {
               onMouseLeave={handleProgramsMouseLeave}
             >
               <button
-                className={`font-medium transition-colors flex items-center ${
-                  isProgramsActive() ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'
+                className={`font-medium text-cyan-500 transition-colors hover:bg-cyan-600 hover:text-white px-3 py-2 rounded flex items-center ${
+                  isProgramsActive() && 'text-cyan-500'
                 }`}
               >
                 Programs
@@ -108,21 +110,21 @@ const Navbar: React.FC = () => {
                 >
                   <Link
                     to="/programs/scholarships"
-                    className="block px-4 py-2 text-cyan-700 hover:bg-cyan-50"
+                    className="block px-4 py-2 text-cyan-700 hover:bg-cyan-600 hover:text-white"
                     onClick={closeMenu}
                   >
                     Scholarships
                   </Link>
                   <Link
                     to="/programs/support"
-                    className="block px-4 py-2 text-cyan-700 hover:bg-cyan-50"
+                    className="block px-4 py-2 text-cyan-700 hover:bg-cyan-600 hover:text-white"
                     onClick={closeMenu}
                   >
                     Support Programs
                   </Link>
                   <Link
                     to="/programs/structure"
-                    className="block px-4 py-2 text-cyan-700 hover:bg-cyan-50"
+                    className="block px-4 py-2 text-cyan-700 hover:bg-cyan-600 hover:text-white"
                     onClick={closeMenu}
                   >
                     Structure
@@ -130,30 +132,16 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
-            
-            {/* <Link 
-              to="/adopt" 
-              className={`font-medium transition-colors ${isActive('/adopt') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
-            >
-              Adopt a Child
-            </Link> */}
-
-            {/* <Link 
-              to="/ledger" 
-              className={`font-medium transition-colors ${isActive('/ledger') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
-            >
-              Public Ledger
-            </Link> */}
             <Link 
-                to="/faq" 
-                className={`block px-3 py-2 rounded-md font-medium ${isActive('/faq') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
-                onClick={closeMenu}
-              >
-                FAQ
+              to="/faq" 
+              className={`font-medium text-cyan-500 transition-colors hover:bg-cyan-600 hover:text-white px-3 py-2 rounded ${isActive('/faq') && 'text-cyan-500'}`}
+              onClick={closeMenu}
+            >
+              FAQ
             </Link>
             <Link 
               to="/contact" 
-              className={`font-medium transition-colors ${isActive('/contact') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
+              className={`font-medium text-cyan-500 transition-colors hover:bg-cyan-600 hover:text-white px-3 py-2 rounded ${isActive('/contact') && 'text-cyan-500'}`}
             >
               Contact
             </Link>
@@ -180,14 +168,14 @@ const Navbar: React.FC = () => {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white rounded-md shadow-lg mt-2">
               <Link 
                 to="/" 
-                className={`block px-3 py-2 rounded-md font-medium ${isActive('/') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
+                className={`block px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white ${isActive('/') && 'text-cyan-500'}`}
                 onClick={closeMenu}
               >
                 Home
               </Link>
               <Link 
                 to="/about" 
-                className={`block px-3 py-2 rounded-md font-medium ${isActive('/about') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
+                className={`block px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white ${isActive('/about') && 'text-cyan-500'}`}
                 onClick={closeMenu}
               >
                 About Us
@@ -196,8 +184,8 @@ const Navbar: React.FC = () => {
               {/* Mobile Programs Menu */}
               <div className="px-3 py-2">
                 <button
-                  className={`flex items-center w-full text-left font-medium ${
-                    isProgramsActive() ? 'text-cyan-500' : 'text-cyan-700'
+                  className={`flex items-center w-full text-left font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white px-3 py-2 rounded ${
+                    isProgramsActive() && 'text-cyan-500'
                   }`}
                   onClick={() => setIsProgramsOpen(!isProgramsOpen)}
                 >
@@ -208,21 +196,21 @@ const Navbar: React.FC = () => {
                   <div className="pl-4 mt-2 space-y-2">
                     <Link
                       to="/programs/scholarships"
-                      className="block py-2 text-cyan-700 hover:text-cyan-500"
+                      className="block py-2 text-cyan-500 hover:bg-cyan-600 hover:text-white px-3 rounded"
                       onClick={closeMenu}
                     >
                       Scholarships
                     </Link>
                     <Link
                       to="/programs/support"
-                      className="block py-2 text-cyan-700 hover:text-cyan-500"
+                      className="block py-2 text-cyan-500 hover:bg-cyan-600 hover:text-white px-3 rounded"
                       onClick={closeMenu}
                     >
                       Support Programs
                     </Link>
                     <Link
                       to="/programs/structure"
-                      className="block py-2 text-cyan-700 hover:text-cyan-500"
+                      className="block py-2 text-cyan-500 hover:bg-cyan-600 hover:text-white px-3 rounded"
                       onClick={closeMenu}
                     >
                       Infrastructure
@@ -232,22 +220,15 @@ const Navbar: React.FC = () => {
               </div>
               
               <Link 
-                to="/adopt" 
-                className={`block px-3 py-2 rounded-md font-medium ${isActive('/adopt') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
+                to="/faq" 
+                className={`block px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white ${isActive('/faq') && 'text-cyan-500'}`}
                 onClick={closeMenu}
               >
-                Adopt a Child
-              </Link>
-              <Link 
-                to="/ledger" 
-                className={`block px-3 py-2 rounded-md font-medium ${isActive('/ledger') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
-                onClick={closeMenu}
-              >
-                Public Ledger
+                FAQ
               </Link>
               <Link 
                 to="/contact" 
-                className={`block px-3 py-2 rounded-md font-medium ${isActive('/contact') ? 'text-cyan-500' : 'text-cyan-700 hover:text-cyan-500'}`}
+                className={`block px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white ${isActive('/contact') && 'text-cyan-500'}`}
                 onClick={closeMenu}
               >
                 Contact
@@ -268,3 +249,6 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
+
+

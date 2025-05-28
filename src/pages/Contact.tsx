@@ -46,10 +46,11 @@ const Contact: React.FC = () => {
         </div>
       </section>
 
+
       {/* Contact Information */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="max-w-md mx-auto">
             <div className="bg-gray-50 rounded-lg p-6 text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-500 mb-4">
                 <Mail className="h-6 w-6" />
@@ -59,30 +60,6 @@ const Contact: React.FC = () => {
               <a href="mailto:info@obayicharity.org" className="text-blue-600 hover:underline">
                 info@obayi.co
               </a>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-6 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-500 mb-4">
-                <Phone className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Call Us</h3>
-              <p className="text-gray-600 mb-4">Monday-Friday, 9am-5pm GMT</p>
-              <a href="tel:+441234567890" className="text-blue-600 hover:underline">
-                +44 123 456 7890
-              </a>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-6 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-500 mb-4">
-                <MapPin className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Visit Us</h3>
-              <p className="text-gray-600 mb-4">Our headquarters in the</p>
-              <address className="not-italic text-gray-700">
-                {/* 123 Charity Lane<br />
-                London, W1 1AA<br /> */}
-                United Kingdom
-              </address>
             </div>
           </div>
         </div>
@@ -240,7 +217,7 @@ const Contact: React.FC = () => {
                       <MessageSquare className="h-5 w-5 text-orange-500" />
                     </div>
                     <div className="ml-3">
-                      <h3 className="text-lg font-medium text-gray-900">How can I get involved with Obayi Charity?</h3>
+                      <h3 className="text-lg font-medium text-gray-900">How can I get involved with Obayi?</h3>
                       <p className="mt-2 text-gray-600">
                         There are many ways to get involved! You can donate, sponsor a child, volunteer your time or skills,
                         become a corporate partner, or help spread awareness about our mission. Contact us with your interests

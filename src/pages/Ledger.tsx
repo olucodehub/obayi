@@ -317,7 +317,7 @@ const Ledger: React.FC = () => {
             <div>
               <h3 className="text-xl font-bold mb-4">Our Commitment to Efficiency</h3>
               <p className="text-gray-600 mb-4">
-                At Obayi Charity, we're committed to maximizing the impact of every donation. We maintain 
+                At Obayi, we're committed to maximizing the impact of every donation. We maintain 
                 low administrative costs to ensure that the majority of funds go directly to supporting 
                 children's education and well-being.
               </p>
@@ -528,7 +528,7 @@ const Ledger: React.FC = () => {
           <div className="max-w-3xl mx-auto bg-blue-50 p-6 rounded-lg border border-blue-100">
             <h3 className="text-xl font-bold text-blue-800 mb-4">Our Commitment to Transparency</h3>
             <p className="text-blue-700 mb-4">
-              Obayi Charity is committed to complete financial transparency. Our public ledger 
+              Obayi is committed to complete financial transparency. Our public ledger 
               shows all donations received and how they are allocated, while protecting donor 
               privacy when requested.
             </p>
