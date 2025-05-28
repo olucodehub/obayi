@@ -359,12 +359,12 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
             <TestimonialCard
               quote="I support Obayi because they believe in unlocking children's education, they believe that education is the key to unlocking many opportunities in life."
               name="Joy"
-              role="Child Sponsor"
+              role="Commenter"
             />
             <TestimonialCard
               quote="A nation that will thrive must make education it's bedrock, that is why the outstanding job Obayi is doing to assist with basic educational needs must be supported by everyone who can."
               name="Yemi"
-              role="School Principal"
+              role="Commenter"
             />
             <TestimonialCard
               quote="Obayi....great initiative. I love what they're doing for the children. Seeing their faces light up when presented with the gifts and the hope they're being given is priceless. God bless you all."
