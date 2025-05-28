@@ -281,7 +281,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
               Complementing the efforts of the Lagos State government in the development of the education sector.
               </p>
               <p className="text-sm text-gray-500">
-                Active since 2018 • 500+ children supported
+                50+ children supported
               </p>
             </div>
             
