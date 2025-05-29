@@ -133,6 +133,12 @@ const Navbar: React.FC = () => {
               )}
             </div>
             <Link 
+              to="/testimonials" 
+              className={`font-medium text-cyan-500 transition-colors hover:bg-cyan-600 hover:text-white px-3 py-2 rounded ${isActive('/testimonials') && 'text-cyan-500'}`}
+            >
+              Testimonials
+            </Link>
+            <Link 
               to="/faq" 
               className={`font-medium text-cyan-500 transition-colors hover:bg-cyan-600 hover:text-white px-3 py-2 rounded ${isActive('/faq') && 'text-cyan-500'}`}
               onClick={closeMenu}
@@ -219,6 +225,13 @@ const Navbar: React.FC = () => {
                 )}
               </div>
               
+              <Link 
+                to="/testimonials" 
+                className={`block px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white ${isActive('/testimonials') && 'text-cyan-500'}`}
+                onClick={closeMenu}
+              >
+                Testimonials
+              </Link>
               <Link 
                 to="/faq" 
                 className={`block px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white ${isActive('/faq') && 'text-cyan-500'}`}

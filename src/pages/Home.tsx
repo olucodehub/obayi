@@ -166,7 +166,7 @@ const Home: React.FC = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <ProgramCard
               title="Scholarships"
-              description="Removing financial barriers with scholarships that ensure ensure equitable access to education for students from economically disadvantaged backgrounds."
+              description="Removing financial barriers with scholarships that ensure equitable access to education for students from economically disadvantaged backgrounds."
               // imageUrl="https://images.pexels.com/photos/8471744/pexels-photo-8471744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750"
               imageUrl="/images/home/ladykids.jpg"
               location=""

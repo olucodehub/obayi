@@ -12,6 +12,7 @@ import Scholarships from './pages/programs/Scholarships';
 import Support from './pages/programs/Support';
 import Structure from './pages/programs/Structure';
 import FAQ from './pages/FAQ';
+import Testimonials from './pages/Testimonials';
 
 
 const router = createBrowserRouter([
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: 'faq',
         element: <FAQ />,
+      },
+      {
+        path: 'testimonials',
+        element: <Testimonials />,
       },
       {
         path: 'programs/scholarships',
