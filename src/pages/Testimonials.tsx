@@ -47,10 +47,18 @@ const Testimonials: React.FC = () => {
     {
         "title": "Sponsorship of Babatunde's Education",
         "description": "Obayi sponsored Babatunde George's education after his father's passing in 2017.",
-        "longDescription": "In 2017, the father of Babatunde passed away after health problems, forcing Babatunde to drop out of school. Obayi sponsored the education of Babatunde George from the last year of high school to graduation from Veritas University Abuja Nigeria. The video shows Babatunde expressing his gratitude [00:00:55].",
+        "longDescription": "In 2017, the father of Babatunde passed away after health problems, forcing Babatunde to drop out of school. Obayi sponsored the education of Babatunde George from the last year of high school to graduation from Veritas University Abuja Nigeria. The video shows Babatunde expressing his gratitude.",
         "impact": "Enabled Babatunde to complete his education from high school through university.",
         "videoUrl": "https://www.youtube.com/watch?v=HE_AyoQs59Y",
         "thumbnail": "/images/testimonial/gbenga.png"
+    },
+    {
+      "title": "May 2025: Childrens day Give a bag Outreach",
+      "description": "On childrens day In May 27 2025, we visited kids in Makoko Lagos Nigeria.",
+      "longDescription": "Obayi in collaboration with Khan Foundation made Children's day 2025 special for kids in Makoko on Tuesday May 27th. It was an opportunity to remind them they mattered and the potentials they have to offer.",
+      "impact": "Provided many students with durable school bags.",
+      "videoUrl": "https://www.youtube.com/watch?v=mawJp9Gt9k4",
+      "thumbnail": "/images/testimonial/kidsboat.png"
     }
   ];
 
