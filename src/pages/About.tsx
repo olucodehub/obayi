@@ -23,7 +23,7 @@ const About: React.FC = () => {
       name: 'Joy Aghogho',
       role: 'Project Coordinator',
       bio: 'Supports Obayi’s mission through hands-on project delivery and student-centered resource coordination.',
-      imageUrl: '/images/about/dummyfemale.jpg'  
+      imageUrl: '/images/about/joy.jpg'  
     },
     {
       name: 'Queen Adebisi',
