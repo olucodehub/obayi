@@ -3,6 +3,14 @@ import { Play, ArrowRight } from 'lucide-react';
 
 const Testimonials: React.FC = () => {
   const testimonials = [
+      {
+        title: "A Testament to Dedication: Children Educational Future",
+        description: "Formal Recognition: Our Commitment to Quality Education in Nigeria",
+        longDescription: `We successfully hosted the Federal Ministry of Education for our pre-registration and accreditation visit, marking a pivotal step towards official recognition and opening our doors to a new generation of learners .`,
+        impact: "In June 2025, we successfully hosted the Federal Ministry of Education for our pre-registration and accreditation visit, marking a pivotal step towards official recognition",
+        videoUrl: "https://www.youtube.com/watch?v=17qqKkQC21Y",
+        thumbnail: "/images/programs/ministry.jpg"
+    },
     {
         title: "A Ray of Hope for the Clements Family",
         description: "Victoria and Emanuel: A Future Reclaimed Through Education",
