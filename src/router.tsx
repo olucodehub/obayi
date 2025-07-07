@@ -13,7 +13,7 @@ import Support from './pages/programs/Support';
 import Structure from './pages/programs/Structure';
 import FAQ from './pages/FAQ';
 import Testimonials from './pages/Testimonials';
-
+import Press from './pages/Press';
 
 const router = createBrowserRouter([
   {
@@ -53,6 +53,10 @@ const router = createBrowserRouter([
         element: <Testimonials />,
       },
       {
+        path: 'press',
+        element: <Press />,
+      },
+      {
         path: 'programs/scholarships',
         element: <Scholarships />,
       },
@@ -67,7 +71,7 @@ const router = createBrowserRouter([
       {
         path: '*',
         element: <NotFound />,
-      }
+      },
     ],
   },
 ]);
