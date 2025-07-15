@@ -3,18 +3,26 @@ import { Play, ArrowRight } from 'lucide-react';
 
 const Testimonials: React.FC = () => {
   const testimonials = [
-      {
-        title: "A Testament to Dedication: Children Educational Future",
-        description: "Formal Recognition: Our Commitment to Quality Education in Nigeria",
-        longDescription: `We successfully hosted the Federal Ministry of Education for our pre-registration and accreditation visit, marking a pivotal step towards official recognition and opening our doors to a new generation of learners .`,
-        impact: "In June 2025, we successfully hosted the Federal Ministry of Education for our pre-registration and accreditation visit, marking a pivotal step towards official recognition",
-        videoUrl: "https://www.youtube.com/watch?v=17qqKkQC21Y",
-        thumbnail: "/images/programs/ministry.jpg"
+    {
+      title: "July 2025 Katsina State Give a Bag Outreach",
+      description: "In July 2025 we visited Nagora Primary School in Kankara Local Government Area of Katsina State to give a 100 bags.",
+      longDescription: `At Nagora Primary School , Kankara Katsina, students were given school bags .`,
+      impact: "Provided many students with durable school bags, helping them attend school with pride and readiness.",
+      videoUrl: "https://www.youtube.com/watch?v=CIycucsc8HQ",
+      thumbnail: "/images/programs/kastina.png"
     },
     {
-        title: "A Ray of Hope for the Clements Family",
-        description: "Victoria and Emanuel: A Future Reclaimed Through Education",
-        longDescription: `The Clements, a family of five who live in the city of Lagos, 
+      title: "A Testament to Dedication: Children Educational Future",
+      description: "Formal Recognition: Our Commitment to Quality Education in Nigeria",
+      longDescription: `We successfully hosted the Federal Ministry of Education for our pre-registration and accreditation visit, marking a pivotal step towards official recognition and opening our doors to a new generation of learners .`,
+      impact: "In June 2025, we successfully hosted the Federal Ministry of Education for our pre-registration and accreditation visit, marking a pivotal step towards official recognition",
+      videoUrl: "https://www.youtube.com/watch?v=17qqKkQC21Y",
+      thumbnail: "/images/programs/ministry.jpg"
+    },
+    {
+      title: "A Ray of Hope for the Clements Family",
+      description: "Victoria and Emanuel: A Future Reclaimed Through Education",
+      longDescription: `The Clements, a family of five who live in the city of Lagos, 
         Nigeria, have faced a relentless storm of hardship. Job loss, homelessness – 
         these are the cruel blows that life has dealt with them, threatening to drown 
         their dreams. Yet, amidst all these,  they still desire to provide their 
@@ -22,43 +30,43 @@ const Testimonials: React.FC = () => {
         has proven too heavy, forcing these precious children to endure the 
         soul-crushing heartbreak of repeated school dropouts.
         We cannot stand and watch while these young minds are robbed of their chance to soar.`,
-        impact: "In January 2025 Victoria and Emanuel were awarded a scholarship to keep them in school until they graduate.",
-        videoUrl: "https://www.youtube.com/watch?v=IqBwgL0ZBnc",
-        thumbnail: "/images/programs/winners.png"
+      impact: "In January 2025 Victoria and Emanuel were awarded a scholarship to keep them in school until they graduate.",
+      videoUrl: "https://www.youtube.com/watch?v=IqBwgL0ZBnc",
+      thumbnail: "/images/programs/winners.png"
     },
     {
-        title: "Empowering the Onyejesi Girls Through Education",
-        description: "Through the compassion of our donor community, a resilient single mother in Lagos is now able to send her daughters back to school.",
-        longDescription: `A brave mother left an abusive past behind to protect her daughters. Now, with Obayi’s support, Zoë and Ada are building a brighter future through education.`,
-        impact: "Providing stability and opportunity by fully funding Zoë and Ada’s education through community support.",
-        videoUrl: "https://youtu.be/bm9YWePIzjg",
-        thumbnail: "/images/programs/onyejesi.png"
+      title: "Empowering the Onyejesi Girls Through Education",
+      description: "Through the compassion of our donor community, a resilient single mother in Lagos is now able to send her daughters back to school.",
+      longDescription: `A brave mother left an abusive past behind to protect her daughters. Now, with Obayi’s support, Zoë and Ada are building a brighter future through education.`,
+      impact: "Providing stability and opportunity by fully funding Zoë and Ada’s education through community support.",
+      videoUrl: "https://youtu.be/bm9YWePIzjg",
+      thumbnail: "/images/programs/onyejesi.png"
     },
     {
-        title: "March 2025: Bags of Dignity for Coker Students",
-        description: "Local teachers share how the scholarship program has transformed their students' lives and their community.",
-        longDescription: `At Coker Primary School in Ogba, Lagos, some students came to class with tattered bags—or none at all. 
+      title: "March 2025: Bags of Dignity for Coker Students",
+      description: "Local teachers share how the scholarship program has transformed their students' lives and their community.",
+      longDescription: `At Coker Primary School in Ogba, Lagos, some students came to class with tattered bags—or none at all. 
         In March 2025, Obayi donated 100 school bags to ensure these children could carry their books with pride and focus on learning.`,
-        impact: "Provided 100 students with durable school bags, helping them attend school with pride and readiness.",
-        videoUrl: "https://www.youtube.com/watch?v=IWrXDrgEIfA&t=48s",
-        thumbnail: "/images/about/bags.jpg"
+      impact: "Provided 100 students with durable school bags, helping them attend school with pride and readiness.",
+      videoUrl: "https://www.youtube.com/watch?v=IWrXDrgEIfA&t=48s",
+      thumbnail: "/images/about/bags.jpg"
     },
     {
-        title: "January 2025: Give a bag Outreach",
-        description: "In January 2025, we visited Iju Station Primary School, Iju Lagos Nigeria.",
-        longDescription: `At Iju Station Primary School, Iju Lagos, several students were without or bad school bags. 
+      title: "January 2025: Give a bag Outreach",
+      description: "In January 2025, we visited Iju Station Primary School, Iju Lagos Nigeria.",
+      longDescription: `At Iju Station Primary School, Iju Lagos, several students were without or bad school bags. 
         In January 2025, Obayi donated hundreds of school bags to ensure these children could carry their books with pride and focus on learning.`,
-        impact: "Provided many students with durable school bags, helping them attend school with pride and readiness.",
-        videoUrl: "https://www.youtube.com/watch?v=1qMZd8y_qM8",
-        thumbnail: "/images/testimonial/kidsbag.jpg"
+      impact: "Provided many students with durable school bags, helping them attend school with pride and readiness.",
+      videoUrl: "https://www.youtube.com/watch?v=1qMZd8y_qM8",
+      thumbnail: "/images/testimonial/kidsbag.jpg"
     },
     {
-        "title": "Sponsorship of Babatunde's Education",
-        "description": "Obayi sponsored Babatunde George's education after his father's passing in 2017.",
-        "longDescription": "In 2017, the father of Babatunde passed away after health problems, forcing Babatunde to drop out of school. Obayi sponsored the education of Babatunde George from the last year of high school to graduation from Veritas University Abuja Nigeria. The video shows Babatunde expressing his gratitude.",
-        "impact": "Enabled Babatunde to complete his education from high school through university.",
-        "videoUrl": "https://www.youtube.com/watch?v=HE_AyoQs59Y",
-        "thumbnail": "/images/testimonial/gbenga.png"
+      "title": "Sponsorship of Babatunde's Education",
+      "description": "Obayi sponsored Babatunde George's education after his father's passing in 2017.",
+      "longDescription": "In 2017, the father of Babatunde passed away after health problems, forcing Babatunde to drop out of school. Obayi sponsored the education of Babatunde George from the last year of high school to graduation from Veritas University Abuja Nigeria. The video shows Babatunde expressing his gratitude.",
+      "impact": "Enabled Babatunde to complete his education from high school through university.",
+      "videoUrl": "https://www.youtube.com/watch?v=HE_AyoQs59Y",
+      "thumbnail": "/images/testimonial/gbenga.png"
     },
     {
       "title": "May 2025: Childrens day Give a bag Outreach",
@@ -75,10 +83,10 @@ const Testimonials: React.FC = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-cyan-700 to-cyan-600 text-white py-16">
         <div className="absolute inset-0 overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center opacity-20" 
-            style={{ 
-              backgroundImage: "url('/images/testimonial/kidswork.jpg')"  
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-20"
+            style={{
+              backgroundImage: "url('/images/testimonial/kidswork.jpg')"
             }}
           />
         </div>
@@ -99,12 +107,12 @@ const Testimonials: React.FC = () => {
             {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-48">
-                  <img 
-                    src={testimonial.thumbnail} 
+                  <img
+                    src={testimonial.thumbnail}
                     alt={testimonial.title}
                     className="w-full h-full object-cover"
                   />
-                  <a 
+                  <a
                     href={testimonial.videoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -118,12 +126,12 @@ const Testimonials: React.FC = () => {
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2 text-gray-900">{testimonial.title}</h3>
                   <p className="text-gray-600 mb-4 line-clamp-2">{testimonial.description}</p>
-                  
+
                   <div className="bg-cyan-50 p-3 rounded-lg mb-4">
                     <p className="text-sm text-cyan-700">{testimonial.impact}</p>
                   </div>
-                  
-                  <a 
+
+                  <a
                     href={testimonial.videoUrl}
                     target="_blank"
                     rel="noopener noreferrer"

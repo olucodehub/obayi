@@ -237,7 +237,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
                 <h3 className="text-xl font-bold text-gray-900">Iju station primary school 1</h3>
               </div>
               <p className="text-gray-600 mb-4">
-              Complementing the efforts of the Lagos State government in the development of the education sector.
+              Complimenting the efforts of the Lagos State government in the development of the education sector.
               </p>
               <p className="text-sm text-gray-500">
               School Bags Support
@@ -250,7 +250,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
                 <h3 className="text-xl font-bold text-gray-900">Iju station primary school 2</h3>
               </div>
               <p className="text-gray-600 mb-4">
-              Complementing the efforts of the Lagos State government in the development of the education sector.
+              Complimenting the efforts of the Lagos State government in the development of the education sector.
 
               </p>
               <p className="text-sm text-gray-500">
@@ -264,7 +264,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
                 <h3 className="text-xl font-bold text-gray-900">Coker primary school</h3>
               </div>
               <p className="text-gray-600 mb-4">
-              Complementing the efforts of the Lagos State government in the development of the education sector.
+              Complimenting  the efforts of the Lagos State government in the development of the education sector.
 
               </p>
               <p className="text-sm text-gray-500">
@@ -278,7 +278,7 @@ Our flagship initiative, “Adopt a Star Child,” directly sponsors out-of-scho
                 <h3 className="text-xl font-bold text-gray-900">Ayanleye primary school</h3>
               </div>
               <p className="text-gray-600 mb-4">
-              Complementing the efforts of the Lagos State government in the development of the education sector.
+              Complimenting  the efforts of the Lagos State government in the development of the education sector.
               </p>
               <p className="text-sm text-gray-500">
                 50+ children supported
