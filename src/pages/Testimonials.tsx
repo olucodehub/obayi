@@ -4,6 +4,14 @@ import { Play, ArrowRight } from 'lucide-react';
 const Testimonials: React.FC = () => {
   const testimonials = [
     {
+      title: "July 15 2025, Abeokuta Give A Bag Outreach",
+      description: "We closed the 2024/2025 academic session with a visit to Strong Foundation Nursery and Primary School in Abeokuta to give 100 bags to the students. These children are orphans who are taught for free buy the foundation that runs the school.",
+      longDescription: `At Strong Foundation Nursery and Primary School, Abeokuta, students were given school bags .`,
+      impact: "Provided many students with durable school bags, helping them attend school with pride and readiness.",
+      videoUrl: "https://www.youtube.com/watch?si=gMPyowJTjA3W50sD&v=BQ2WcHpyvk4&feature=youtu.be",
+      thumbnail: "/images/programs/abeokuta.png"
+    },
+    {
       title: "July 2025 Katsina State Give a Bag Outreach",
       description: "In July 2025 we visited Nagora Primary School in Kankara Local Government Area of Katsina State to give a 100 bags.",
       longDescription: `At Nagora Primary School , Kankara Katsina, students were given school bags .`,
