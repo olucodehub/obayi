@@ -1,0 +1,98 @@
+name: Deploy Backend to Azure App Service
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'backend/**'
+      - '.github/workflows/azure-backend-deploy.yml'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - master
+    paths:
+      - 'backend/**'
+      - '.github/workflows/azure-backend-deploy.yml'
+
+env:
+  AZURE_WEBAPP_NAME: 'your-app-service-name'    # Replace with your App Service name
+  AZURE_WEBAPP_PACKAGE_PATH: './backend'        # Backend directory
+  NODE_VERSION: '18.x'                          # Node.js version
+
+jobs:
+  # Check if backend changes exist
+  check-backend-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend-changed: ${{ steps.changes.outputs.backend }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for backend changes
+        id: changes
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -E '^backend/|^\.github/workflows/azure-backend-deploy\.yml$'; then
+            echo "backend=true" >> $GITHUB_OUTPUT
+            echo "Backend changes detected"
+          else
+            echo "backend=false" >> $GITHUB_OUTPUT
+            echo "No backend changes detected"
+          fi
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    needs: check-backend-changes
+    if: needs.check-backend-changes.outputs.backend-changed == 'true' && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed'))
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci --only=production
+
+      - name: Create production build
+        run: |
+          cd backend
+          # Create necessary directories
+          mkdir -p dist
+          
+          # Copy all necessary files
+          cp -r *.js dist/
+          cp package*.json dist/
+          cp -r config dist/
+          cp -r routes dist/
+          cp -r middleware dist/
+          cp schema.sql dist/
+          cp .env.example dist/
+          
+          # Copy node_modules for production
+          cp -r node_modules dist/
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: backend/dist
+
+  # Clean up pull request deployments
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    steps:
+      - name: Log cleanup
+        run: echo "Pull request closed - cleanup completed"

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(rm \"C:\\Dev\\obayi\\public\\_redirects\" \"C:\\Dev\\obayi\\public\\404.html\")",
+      "Bash(mkdir:*)",
+      "Bash(npm install)",
+      "Bash(npm run init-db)",
+      "Bash(npm run lint)",
+      "Bash(npm run dev)",
+      "Bash(npm run dev:backend:*)",
+      "Bash(taskkill:*)",
+      "Bash(wmic process where:*)",
+      "Bash(npm start)",
+      "Bash(npm install:*)",
+      "Bash(del \"C:\\Dev\\obayi\\backend\\config\\database-temp.js\")",
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "Bash(dir:*)",
+      "Bash(grep:*)"
+    ],
+    "deny": []
+  }
+}

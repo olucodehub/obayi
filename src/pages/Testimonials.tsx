@@ -4,6 +4,14 @@ import { Play, ArrowRight } from 'lucide-react';
 const Testimonials: React.FC = () => {
   const testimonials = [
     {
+      title: "From Near Dropout to Academic Excellence: Michael's Inspiring Journey",
+      description: "Michael's dreams of higher education nearly came to an abrupt end. Despite his academic potential and determination, overwhelming financial constraints threatened to force him out of school permanently. Like many bright students across Nigeria, Michael faced the heartbreaking reality that talent alone wasn't enough to secure his future.",
+      longDescription: `Through the Adopt a Star Child program, Michael's life took a dramatic turn. Our supporters recognized his potential and invested in his future, providing the financial support he desperately needed to continue his education. This wasn't just a donation – it was an investment in human potential.`,
+      impact: "Today, Michael is thriving as a Computer Science student at Ajayi Crowther University, having successfully completed his 100 level (first year). His academic performance speaks volumes about his dedication and the impact of your support. Current CGPA: 4.5 (Second Class Upper). Academic Standing: Top tier performance. Trajectory: First Class Honors within reach.",
+      videoUrl: "https://www.youtube.com/watch?v=Ujcdu-KxnLc",
+      thumbnail: "/images/programs/rrr.png"
+    },
+    {
       title: "July 15 2025, Abeokuta Give A Bag Outreach",
       description: "We closed the 2024/2025 academic session with a visit to Strong Foundation Nursery and Primary School in Abeokuta to give 100 bags to the students. These children are orphans who are taught for free buy the foundation that runs the school.",
       longDescription: `At Strong Foundation Nursery and Primary School, Abeokuta, students were given school bags .`,

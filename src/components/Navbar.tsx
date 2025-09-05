@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, User, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProgramsOpen, setIsProgramsOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false);
   const [closeTimeout, setCloseTimeout] = useState<NodeJS.Timeout | null>(null);
   const location = useLocation();
+  const { user, logout, isAuthenticated, isLoggingOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,8 +22,21 @@ const Navbar: React.FC = () => {
       }
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.auth-menu') && !target.closest('.user-menu')) {
+        setIsAuthMenuOpen(false);
+        setIsUserMenuOpen(false);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener('click', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, []);
 
   const toggleMenu = () => {
@@ -29,6 +46,8 @@ const Navbar: React.FC = () => {
   const closeMenu = () => {
     setIsOpen(false);
     setIsProgramsOpen(false);
+    setIsUserMenuOpen(false);
+    setIsAuthMenuOpen(false);
   };
 
   const isActive = (path: string) => {
@@ -52,6 +71,11 @@ const Navbar: React.FC = () => {
       setIsProgramsOpen(false);
     }, 300);
     setCloseTimeout(timeout);
+  };
+
+  const handleLogout = async () => {
+    closeMenu();
+    await logout();
   };
 
   return (
@@ -173,6 +197,79 @@ const Navbar: React.FC = () => {
             >
               Donate
             </Link>
+
+            {/* Authentication Links */}
+            {isAuthenticated ? (
+              <div className="relative user-menu">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center px-3 py-2 rounded-md text-cyan-600 hover:bg-cyan-50 transition-colors"
+                >
+                  <User className="w-5 h-5 mr-2" />
+                  {user?.firstName}
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </button>
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 border">
+                    <Link
+                      to="/dashboard"
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-600"
+                      onClick={closeMenu}
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      disabled={isLoggingOut}
+                      className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoggingOut ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-gray-300 border-t-cyan-600 rounded-full animate-spin mr-2"></div>
+                          Logging out...
+                        </>
+                      ) : (
+                        <>
+                          <LogOut className="w-4 h-4 mr-2" />
+                          Logout
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="relative auth-menu">
+                <button
+                  onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
+                  className="flex items-center px-4 py-2 rounded-md bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-colors"
+                >
+                  Get Started
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </button>
+                {isAuthMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 border">
+                    <Link
+                      to="/login"
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-600"
+                      onClick={closeMenu}
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-600"
+                      onClick={closeMenu}
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Join Us
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -292,6 +389,73 @@ const Navbar: React.FC = () => {
               >
                 Donate
               </Link>
+
+              {/* Mobile Authentication Links */}
+              {isAuthenticated ? (
+                <>
+                  <div className="border-t border-gray-200 pt-3 mt-3">
+                    <div className="flex items-center px-3 py-2 text-cyan-600">
+                      <User className="w-5 h-5 mr-2" />
+                      <span className="font-medium">{user?.firstName} {user?.lastName}</span>
+                    </div>
+                    <Link
+                      to="/dashboard"
+                      className="block px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white"
+                      onClick={closeMenu}
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      disabled={isLoggingOut}
+                      className="flex items-center w-full text-left px-3 py-2 rounded-md font-medium text-red-500 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoggingOut ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-red-300 border-t-red-600 rounded-full animate-spin mr-2"></div>
+                          Logging out...
+                        </>
+                      ) : (
+                        'Logout'
+                      )}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="border-t border-gray-200 pt-3 mt-3">
+                  <div className="px-3 py-2 auth-menu">
+                    <button
+                      className="flex items-center w-full px-3 py-2 rounded-md text-white bg-cyan-500 font-medium hover:bg-cyan-600 justify-center"
+                      onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
+                    >
+                      Get Started
+                      <ChevronDown className={`w-4 h-4 ml-1 transform transition-transform ${
+                        isAuthMenuOpen ? 'rotate-180' : ''
+                      }`} />
+                    </button>
+                    {isAuthMenuOpen && (
+                      <div className="mt-2 space-y-2 pl-2">
+                        <Link
+                          to="/login"
+                          className="flex items-center px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white"
+                          onClick={closeMenu}
+                        >
+                          <User className="w-4 h-4 mr-2" />
+                          Sign In
+                        </Link>
+                        <Link
+                          to="/register"
+                          className="flex items-center px-3 py-2 rounded-md font-medium text-cyan-500 hover:bg-cyan-600 hover:text-white"
+                          onClick={closeMenu}
+                        >
+                          <User className="w-4 h-4 mr-2" />
+                          Join Us
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

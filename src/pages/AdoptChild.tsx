@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Heart, School, Calendar, ChevronRight, Check, Mail } from 'lucide-react';
+import { Users, Heart, School, Calendar, Check, Mail } from 'lucide-react';
 import Button from '../components/Button';
 
 const AdoptChild: React.FC = () => {

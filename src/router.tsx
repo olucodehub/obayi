@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import About from './pages/About';
 import Donate from './pages/Donate';
@@ -14,6 +15,9 @@ import Structure from './pages/programs/Structure';
 import FAQ from './pages/FAQ';
 import Testimonials from './pages/Testimonials';
 import Press from './pages/Press';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import Dashboard from './pages/Dashboard';
 
 const router = createBrowserRouter([
   {
@@ -69,10 +73,26 @@ const router = createBrowserRouter([
         element: <Structure />,
       },
       {
+        path: 'dashboard',
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: '*',
         element: <NotFound />,
       },
     ],
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
 ]);
 
