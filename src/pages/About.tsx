@@ -2,8 +2,10 @@ import React from 'react';
 import { Calendar, CheckCircle, Heart, MapPin, Target, Users } from 'lucide-react';
 import Button from '../components/Button';
 import TestimonialCard from '../components/TestimonialCard';
+import usePageTitle from '../hooks/usePageTitle';
 
 const About: React.FC = () => {
+  usePageTitle('About Us');
 
   const primaryCyan = '#4DD0E1';
   const teamMembers = [

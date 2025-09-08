@@ -10,17 +10,9 @@ const NewsletterSignup: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSubmitted(true);
-      // Reset form
-      setEmail('');
-      setName('');
-    }, 1500);
+    // Redirect to newsletter signup link
+    window.open('https://tinyurl.com/jrhc7wk4', '_blank');
   };
 
   return (

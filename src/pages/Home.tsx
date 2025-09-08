@@ -4,8 +4,10 @@ import Button from '../components/Button';
 import NewsletterSignup from '../components/NewsletterSignup';
 import TestimonialCard from '../components/TestimonialCard';
 import ProgramCard from '../components/ProgramCard';
+import usePageTitle from '../hooks/usePageTitle';
 
 const Home: React.FC = () => {
+  usePageTitle(''); // Empty string for home page keeps base title only
 
   const iconColor = '#4DD0E1';
   return (

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Users, Heart, School, Calendar, Check, Mail } from 'lucide-react';
 import Button from '../components/Button';
+import usePageTitle from '../hooks/usePageTitle';
 
 const AdoptChild: React.FC = () => {
+  usePageTitle('Adopt a Star Child');
+  
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     sponsorshipType: 'regular',

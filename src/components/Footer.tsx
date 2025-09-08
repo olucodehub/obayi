@@ -112,20 +112,12 @@ const Footer: React.FC = () => {
               Subscribe to our newsletter to receive updates on our work and how
               you can help.
             </p>
-            <form className='space-y-2'>
-              <input
-                type='email'
-                placeholder='Your email address'
-                className='w-full px-4 py-2 rounded-md bg-cyan-600 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent'
-                required
-              />
-              <button
-                type='submit'
-                className='w-full px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-400 transition-colors'
-              >
-                Subscribe
-              </button>
-            </form>
+            <button
+              onClick={() => window.open('https://tinyurl.com/jrhc7wk4', '_blank')}
+              className='w-full px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-400 transition-colors'
+            >
+              Subscribe
+            </button>
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, ExternalLink, FileText } from 'lucide-react';
 import Button from '../components/Button';
+import usePageTitle from '../hooks/usePageTitle';
 
 interface PressItem {
   id: number;
@@ -13,6 +14,8 @@ interface PressItem {
 }
 
 const Press: React.FC = () => {
+  usePageTitle('Press & News');
+  
   const pressItems: PressItem[] = [
     {
       id: 1,
@@ -288,7 +291,10 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
               Subscribe to our newsletter to receive the latest news and updates
               from Obayi For Education Foundation.
             </p>
-            <Button variant='primary' to='/newsletter'>
+            <Button 
+              variant='primary' 
+              onClick={() => window.open('https://tinyurl.com/jrhc7wk4', '_blank')}
+            >
               Subscribe to Newsletter
             </Button>
           </div>

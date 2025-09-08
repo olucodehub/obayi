@@ -1,8 +1,11 @@
 import React from 'react';
 import { Mail, MessageSquare, Clock } from 'lucide-react';
 import Button from '../components/Button';
+import usePageTitle from '../hooks/usePageTitle';
 
 const Contact: React.FC = () => {
+  usePageTitle('Contact Us');
+  
   return (
     <div className="min-h-screen pt-20">
       {/* Header Section */}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CreditCard, Heart, BarChart3, Clock, Building } from 'lucide-react';
 import Button from '../components/Button'; // Assuming Button component is correctly imported
+import usePageTitle from '../hooks/usePageTitle';
 
 // Bank details for copying to clipboard
 const bankDetails = `Bank: Providus Bank
@@ -14,6 +15,8 @@ const oneTimeStripeLink = 'https://donate.stripe.com/bIYg0pgJn6Cf6Aw9AB';
 const monthlyStripeLink = 'https://donate.stripe.com/4gMcN5ebA0Yt1ad2ep4F202'; 
 
 const Donate: React.FC = () => {
+  usePageTitle('Donate');
+  
   // State to manage whether the donation type is one-time or monthly
   const [donationType, setDonationType] = useState<'one-time' | 'monthly'>('one-time');
 
