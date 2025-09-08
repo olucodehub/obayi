@@ -24,6 +24,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Initialize default admin user if needed
+        const { AuthService: LocalAuthService } = await import('../utils/auth');
+        LocalAuthService.initializeDefaultUsers();
+        
         // Check if user is already logged in
         const currentUser = AuthService.getCurrentUser();
         if (currentUser) {

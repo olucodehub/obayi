@@ -1,7 +1,9 @@
 import React from 'react';
 import { Plus, Minus } from 'lucide-react';
+import usePageTitle from '../hooks/usePageTitle';
 
 const FAQ: React.FC = () => {
+  usePageTitle('FAQ');
   const [openItem, setOpenItem] = React.useState<number | null>(null);
 
   const faqs = [
