@@ -16,9 +16,9 @@ on:
       - '.github/workflows/azure-backend-deploy.yml'
 
 env:
-  AZURE_WEBAPP_NAME: 'your-app-service-name'    # Replace with your App Service name
-  AZURE_WEBAPP_PACKAGE_PATH: './backend'        # Backend directory
-  NODE_VERSION: '18.x'                          # Node.js version
+  AZURE_WEBAPP_NAME: 'obayibackend' # Replace with your App Service name
+  AZURE_WEBAPP_PACKAGE_PATH: './backend' # Backend directory
+  NODE_VERSION: '18.x' # Node.js version
 
 jobs:
   # Check if backend changes exist
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-backend-changes
     if: needs.check-backend-changes.outputs.backend-changed == 'true' && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed'))
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -69,7 +69,7 @@ jobs:
           cd backend
           # Create necessary directories
           mkdir -p dist
-          
+
           # Copy all necessary files
           cp -r *.js dist/
           cp package*.json dist/
@@ -78,7 +78,7 @@ jobs:
           cp -r middleware dist/
           cp schema.sql dist/
           cp .env.example dist/
-          
+
           # Copy node_modules for production
           cp -r node_modules dist/
 
