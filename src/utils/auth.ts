@@ -122,7 +122,7 @@ export class AuthService {
     if (!adminExists) {
       const defaultAdmin: User = {
         id: 'admin-1',
-        email: 'admin@obayi.org',
+        email: 'admin@obayi.co',
         password: 'admin123',
         userType: 'admin',
         firstName: 'Admin',
