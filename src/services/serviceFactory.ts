@@ -26,7 +26,28 @@ export class ServiceFactory {
     } else {
       // Extend LocalAuthService with additional methods
       return {
-        ...LocalAuthService,
+        register: (userData: any) => {
+          try {
+            const user = LocalAuthService.register(userData);
+            LocalAuthService.setCurrentUser(user);
+            return Promise.resolve(user);
+          } catch (error) {
+            return Promise.reject(error);
+          }
+        },
+        login: (email: string, password: string) => {
+          try {
+            const user = LocalAuthService.login(email, password);
+            return Promise.resolve(user);
+          } catch (error) {
+            return Promise.reject(error);
+          }
+        },
+        logout: () => {
+          LocalAuthService.logout();
+          return Promise.resolve();
+        },
+        getCurrentUser: () => LocalAuthService.getCurrentUser(),
         updateProfile: (profileData: any) => {
           const user = LocalAuthService.getCurrentUser();
           if (!user) throw new Error('User not authenticated');
