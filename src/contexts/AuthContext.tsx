@@ -27,6 +27,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Initialize default admin user if needed
         const { AuthService: LocalAuthService } = await import('../utils/auth');
         LocalAuthService.initializeDefaultUsers();
+        // Ensure admin user exists
+        LocalAuthService.forceCreateAdminUser();
         
         // Check if user is already logged in
         const currentUser = AuthService.getCurrentUser();
