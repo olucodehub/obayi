@@ -133,7 +133,7 @@ const DonorDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-cyan-100 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-cyan-100 pt-24 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">

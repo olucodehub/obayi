@@ -17,7 +17,10 @@
       "Bash(curl:*)",
       "Bash(node:*)",
       "Bash(dir:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

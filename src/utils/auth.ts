@@ -117,8 +117,8 @@ export class AuthService {
   // Initialize with only default admin user
   static initializeDefaultUsers(): void {
     const users = this.getUsers();
-    // Only create admin if no users exist at all
-    const adminExists = users.some(u => u.userType === 'admin');
+    // Check if admin user exists by email
+    const adminExists = users.some(u => u.email === 'admin@obayi.co');
     if (!adminExists) {
       const defaultAdmin: User = {
         id: 'admin-1',
@@ -129,10 +129,29 @@ export class AuthService {
         lastName: 'User',
         createdAt: new Date().toISOString(),
       };
-      
+
       const existingUsers = this.getUsers();
       this.saveUsers([...existingUsers, defaultAdmin]);
     }
+  }
+
+  // Force create admin user (for debugging)
+  static forceCreateAdminUser(): void {
+    const users = this.getUsers();
+    // Remove any existing admin users
+    const filteredUsers = users.filter(u => u.email !== 'admin@obayi.co');
+
+    const defaultAdmin: User = {
+      id: 'admin-1',
+      email: 'admin@obayi.co',
+      password: 'admin123',
+      userType: 'admin',
+      firstName: 'Admin',
+      lastName: 'User',
+      createdAt: new Date().toISOString(),
+    };
+
+    this.saveUsers([...filteredUsers, defaultAdmin]);
   }
 }
 

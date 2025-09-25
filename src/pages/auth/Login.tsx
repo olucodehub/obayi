@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import usePageTitle from '../../hooks/usePageTitle';
+import { AuthService as LocalAuthService } from '../../utils/auth';
 
 const Login: React.FC = () => {
   usePageTitle('Login');
@@ -28,6 +29,15 @@ const Login: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCreateAdmin = () => {
+    try {
+      LocalAuthService.forceCreateAdminUser();
+      alert('Admin user created! Try logging in with admin@obayi.co / admin123');
+    } catch (error) {
+      alert('Error creating admin user: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   };
 
@@ -99,6 +109,15 @@ const Login: React.FC = () => {
             className="w-full bg-cyan-600 text-white py-3 px-4 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {isLoading ? 'Signing in...' : 'Sign in'}
+          </button>
+
+          {/* Admin Helper Button - only in development */}
+          <button
+            type="button"
+            onClick={handleCreateAdmin}
+            className="w-full bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors font-medium text-sm"
+          >
+            Create Admin User (Dev Helper)
           </button>
 
         </form>
