@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import usePageTitle from '../../hooks/usePageTitle';
-import { AuthService as LocalAuthService } from '../../utils/auth';
 
 const Login: React.FC = () => {
   usePageTitle('Login');
@@ -22,56 +21,13 @@ const Login: React.FC = () => {
     setError('');
     setIsLoading(true);
 
-    console.log('Login attempt:', { email, password });
-    const users = LocalAuthService.getUsers();
-    console.log('Available users:', users);
-    console.log('Looking for user with email:', email);
-    const targetUser = users.find(u => u.email === email);
-    console.log('Target user found:', targetUser);
-    if (targetUser) {
-      console.log('Password match?', targetUser.password === password);
-    }
-
     try {
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
-      console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleCreateAdmin = () => {
-    try {
-      console.log('Before creating admin - Current users:', LocalAuthService.getUsers());
-      LocalAuthService.forceCreateAdminUser();
-      console.log('After creating admin - Current users:', LocalAuthService.getUsers());
-
-      const users = LocalAuthService.getUsers();
-      const adminUser = users.find(u => u.email === 'admin@obayi.co');
-      console.log('Admin user found:', adminUser);
-
-      alert(`Admin user created! Found ${users.length} total users. Admin user: ${adminUser ? 'EXISTS' : 'NOT FOUND'}`);
-    } catch (error) {
-      console.error('Error creating admin user:', error);
-      alert('Error creating admin user: ' + (error instanceof Error ? error.message : 'Unknown error'));
-    }
-  };
-
-  const handleShowUsers = () => {
-    const users = LocalAuthService.getUsers();
-    console.log('All users in localStorage:', users);
-    console.log('localStorage keys:', Object.keys(localStorage));
-    console.log('Raw obayi_users data:', localStorage.getItem('obayi_users'));
-    alert(`Found ${users.length} users in localStorage. Check console for details.`);
-  };
-
-  const handleClearStorage = () => {
-    if (confirm('This will clear all localStorage data. Are you sure?')) {
-      LocalAuthService.clearAllData();
-      alert('localStorage cleared! Now try creating admin user.');
     }
   };
 
@@ -144,31 +100,6 @@ const Login: React.FC = () => {
           >
             {isLoading ? 'Signing in...' : 'Sign in'}
           </button>
-
-          {/* Debug Helper Buttons - only in development */}
-          <div className="space-y-2">
-            <button
-              type="button"
-              onClick={handleCreateAdmin}
-              className="w-full bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors font-medium text-sm"
-            >
-              Create Admin User (Dev Helper)
-            </button>
-            <button
-              type="button"
-              onClick={handleShowUsers}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors font-medium text-sm"
-            >
-              Show All Users (Debug)
-            </button>
-            <button
-              type="button"
-              onClick={handleClearStorage}
-              className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-colors font-medium text-sm"
-            >
-              Clear LocalStorage (Reset)
-            </button>
-          </div>
 
         </form>
       </div>

@@ -135,24 +135,6 @@ export class AuthService {
     }
   }
 
-  // Force create admin user (for debugging)
-  static forceCreateAdminUser(): void {
-    const users = this.getUsers();
-    // Remove any existing admin users
-    const filteredUsers = users.filter(u => u.email !== 'admin@obayi.co');
-
-    const defaultAdmin: User = {
-      id: 'admin-1',
-      email: 'admin@obayi.co',
-      password: 'admin123',
-      userType: 'admin',
-      firstName: 'Admin',
-      lastName: 'User',
-      createdAt: new Date().toISOString(),
-    };
-
-    this.saveUsers([...filteredUsers, defaultAdmin]);
-  }
 }
 
 // Matching system
