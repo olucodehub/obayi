@@ -57,7 +57,20 @@ export class ServiceFactory {
           return Promise.resolve();
         },
         changePassword: (currentPassword: string, newPassword: string) => {
-          // For localStorage mode, simulate password change
+          const user = LocalAuthService.getCurrentUser();
+          if (!user) {
+            return Promise.reject(new Error('User not authenticated'));
+          }
+
+          // Verify current password
+          if (user.password !== currentPassword) {
+            return Promise.reject(new Error('Current password is incorrect'));
+          }
+
+          // Update password
+          const updatedUser = { ...user, password: newPassword };
+          LocalAuthService.updateUser(user.id, updatedUser);
+
           return Promise.resolve();
         }
       };
