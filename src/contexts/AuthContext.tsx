@@ -29,6 +29,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         LocalAuthService.initializeDefaultUsers();
         // Ensure admin user exists
         LocalAuthService.forceCreateAdminUser();
+
+        // Debug: Check if admin user was created
+        const users = LocalAuthService.getUsers();
+        console.log('Admin initialization complete. Total users:', users.length);
+        console.log('Admin user exists:', users.some(u => u.email === 'admin@obayi.co'));
         
         // Check if user is already logged in
         const currentUser = AuthService.getCurrentUser();

@@ -21,10 +21,13 @@ const Login: React.FC = () => {
     setError('');
     setIsLoading(true);
 
+    console.log('Login attempt for:', email);
+
     try {
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
+      console.log('Login failed:', err);
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setIsLoading(false);
