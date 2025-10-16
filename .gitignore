@@ -23,3 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 .env
+# But allow .env.production to be committed (it has no secrets)
+!.env.production
