@@ -9,6 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "dev:backend": "cd backend && npm run dev",
     "dev:full": "concurrently \"npm run dev:backend\" \"npm run dev\"",
     "init-db": "cd backend && npm run init-db"
