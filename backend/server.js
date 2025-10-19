@@ -34,7 +34,7 @@ app.use('/api/donors', donorRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Health check endpoint
+// Health check endpoint - verifies backend is running
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Obayi Backend API is running' });
 });

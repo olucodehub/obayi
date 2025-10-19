@@ -42,13 +42,13 @@ export class ProductionAuthService {
     try {
       const response = await api.post('/auth/login', { email, password });
       const { user, token } = response.data;
-      
+
       localStorage.setItem('auth_token', token);
-      
+
       // Fetch complete profile after login
       const profileResponse = await api.get('/auth/profile');
       const { profile } = profileResponse.data;
-      
+
       const completeUser: User = {
         id: profile.id.toString(),
         email: profile.email,
@@ -74,12 +74,17 @@ export class ProductionAuthService {
         bio: profile.bio,
         createdAt: profile.created_at
       };
-      
+
       localStorage.setItem('current_user', JSON.stringify(completeUser));
-      
+
       return completeUser;
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Login failed');
+      // Handle network errors (API unreachable)
+      if (error.code === 'ERR_NETWORK' || error.code === 'ERR_NAME_NOT_RESOLVED' || !error.response) {
+        throw new Error('Unable to connect to the server. Please check your internet connection or try again later.');
+      }
+      // Handle API errors
+      throw new Error(error.response?.data?.error || 'Login failed. Please check your credentials.');
     }
   }
 
@@ -87,13 +92,18 @@ export class ProductionAuthService {
     try {
       const response = await api.post('/auth/register', userData);
       const { user, token } = response.data;
-      
+
       localStorage.setItem('auth_token', token);
       localStorage.setItem('current_user', JSON.stringify(user));
-      
+
       return user;
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Registration failed');
+      // Handle network errors (API unreachable)
+      if (error.code === 'ERR_NETWORK' || error.code === 'ERR_NAME_NOT_RESOLVED' || !error.response) {
+        throw new Error('Unable to connect to the server. Please check your internet connection or try again later.');
+      }
+      // Handle API errors
+      throw new Error(error.response?.data?.error || 'Registration failed. Please try again.');
     }
   }
 
