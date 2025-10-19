@@ -28,6 +28,16 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Root endpoint - test if Node.js is running
+app.get('/', (req, res) => {
+    res.json({
+        status: 'OK',
+        message: 'Obayi Backend API is running',
+        version: '1.0.0',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/donors', donorRoutes);
