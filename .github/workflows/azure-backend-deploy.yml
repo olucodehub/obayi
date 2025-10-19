@@ -64,34 +64,13 @@ jobs:
           cd backend
           npm ci --only=production
 
-      - name: Create production build
-        run: |
-          cd backend
-          # Create necessary directories
-          mkdir -p dist
-
-          # Copy all necessary files
-          cp -r *.js dist/ 2>/dev/null || true
-          cp package*.json dist/
-          cp -r config dist/ 2>/dev/null || true
-          cp -r routes dist/ 2>/dev/null || true
-          cp -r middleware dist/ 2>/dev/null || true
-          cp -r services dist/ 2>/dev/null || true
-          cp -r scripts dist/ 2>/dev/null || true
-          cp schema.sql dist/ 2>/dev/null || true
-          cp .env.example dist/ 2>/dev/null || true
-          cp web.config dist/ 2>/dev/null || true
-          cp .deployment dist/ 2>/dev/null || true
-
-          # Copy node_modules for production
-          cp -r node_modules dist/
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: backend/dist
+          package: backend
+          startup-command: 'node server.js'
 
   # Clean up pull request deployments
   cleanup:
