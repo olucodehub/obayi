@@ -69,13 +69,14 @@ async function startServer() {
     try {
         // Connect to database
         await database.connect();
-        
+        console.log('Database connected successfully');
+
         // Initialize database schema
         const schemaPath = path.join(__dirname, 'schema.sql');
         if (fs.existsSync(schemaPath)) {
             const schema = fs.readFileSync(schemaPath, 'utf8');
             const statements = schema.split(';').filter(stmt => stmt.trim());
-            
+
             for (const statement of statements) {
                 if (statement.trim()) {
                     await database.run(statement);
@@ -83,15 +84,18 @@ async function startServer() {
             }
             console.log('Database schema initialized');
         }
-        
-        app.listen(PORT, () => {
-            console.log(`Obayi Backend API server running on port ${PORT}`);
-            console.log(`Health check: http://localhost:${PORT}/api/health`);
-        });
     } catch (error) {
-        console.error('Failed to start server:', error);
-        process.exit(1);
+        console.error('Database initialization failed:', error);
+        console.log('Server will start anyway, but database operations may fail');
     }
+
+    // Start server regardless of database status
+    app.listen(PORT, () => {
+        console.log(`Obayi Backend API server running on port ${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`Health check: http://localhost:${PORT}/api/health`);
+        console.log(`Frontend URL: ${process.env.FRONTEND_URL || 'not set'}`);
+    });
 }
 
 startServer();
