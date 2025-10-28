@@ -16,7 +16,7 @@ on:
       - '.github/workflows/azure-backend-deploy.yml'
 
 env:
-  AZURE_WEBAPP_NAME: 'obayibackend-b2e8hjfkd8gpbeg6' # Your actual App Service name
+  AZURE_WEBAPP_NAME: 'obayibackend-b2e8bjfkd8gpbeg6' # Your actual App Service name
   AZURE_WEBAPP_PACKAGE_PATH: './backend' # Backend directory
   NODE_VERSION: '18.x' # Node.js version
 
