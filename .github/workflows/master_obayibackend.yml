@@ -61,4 +61,5 @@ jobs:
           app-name: 'obayibackend-b2e8bjfkd8gpbeg6'
           slot-name: 'Production'
           package: .
+          startup-command: 'node server.js'
           
