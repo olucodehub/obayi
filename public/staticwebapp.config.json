@@ -1,13 +1,21 @@
 {
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif,ico}", "/favicon.ico"]
+    "exclude": ["/images/*.{png,jpg,gif,ico}", "/favicon.ico", "*.{css,js,jpg,png,gif,svg,ico,woff,woff2,ttf,eot}"]
+  },
+  "platform": {
+    "apiRuntime": "node:18"
   },
   "routes": [
     {
-      "route": "/*",
-      "serve": "/index.html",
+      "route": "/api/*",
+      "allowedRoles": ["anonymous"]
+    }
+  ],
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html",
       "statusCode": 200
     }
-  ]
+  }
 }
