@@ -5,6 +5,7 @@ import { User } from '../../types/auth';
 import { Heart, GraduationCap, Settings, Link as LinkIcon, Eye, FileText, AlertCircle, Users, Calendar, Lock } from 'lucide-react';
 import StudentDetailModal from '../../components/StudentDetailModal';
 import PasswordChangeModal from '../../components/PasswordChangeModal';
+import adminService from '../../services/adminService';
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -17,15 +18,60 @@ const AdminDashboard: React.FC = () => {
   const [selectedStudentForDetail, setSelectedStudentForDetail] = useState<User | null>(null);
   const [isStudentDetailOpen, setIsStudentDetailOpen] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const loadData = () => {
-    setDonors(AuthService.getUsersByRole('donor'));
-    setStudents(AuthService.getUsersByRole('student'));
-    setMatches(MatchingService.getMatches());
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      const [donorsRes, studentsRes, assignmentsRes] = await Promise.all([
+        adminService.getDonors(),
+        adminService.getStudents(),
+        adminService.getAssignments()
+      ]);
+
+      // Map API data to match the User interface expected by the component
+      const mappedDonors = donorsRes.donors.map(d => ({
+        id: String(d.id),
+        email: d.email,
+        firstName: d.first_name,
+        lastName: d.last_name,
+        phone: d.phone,
+        createdAt: d.created_at,
+        userType: 'donor' as const,
+        occupation: d.organization || ''
+      }));
+
+      const mappedStudents = studentsRes.students.map(s => ({
+        id: String(s.id),
+        email: s.email,
+        firstName: s.first_name,
+        lastName: s.last_name,
+        phone: s.phone,
+        createdAt: s.created_at,
+        userType: 'student' as const,
+        school: s.school_name,
+        gradeLevel: s.grade_level
+      }));
+
+      const mappedMatches = assignmentsRes.assignments.map(a => ({
+        id: String(a.id),
+        donorId: String(a.donor_id),
+        studentId: String(a.student_id),
+        createdAt: a.assigned_at
+      }));
+
+      setDonors(mappedDonors);
+      setStudents(mappedStudents);
+      setMatches(mappedMatches);
+    } catch (error) {
+      console.error('Failed to load admin data:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCreateMatch = () => {
@@ -531,6 +577,17 @@ const AdminDashboard: React.FC = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
           <p className="text-gray-600">Admin access required.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-cyan-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading admin dashboard...</p>
         </div>
       </div>
     );
