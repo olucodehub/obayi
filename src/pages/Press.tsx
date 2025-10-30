@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, ExternalLink, FileText } from 'lucide-react';
+import { Calendar, ExternalLink, FileText, Video } from 'lucide-react';
 import Button from '../components/Button';
 import usePageTitle from '../hooks/usePageTitle';
 
@@ -10,13 +10,50 @@ interface PressItem {
   type: 'press-release' | 'news' | 'announcement';
   excerpt: string;
   content: string;
-  featured?: boolean;
+  youtubeUrl?: string;
 }
 
 const Press: React.FC = () => {
   usePageTitle('Press & News');
-  
+
+  // Helper function to extract YouTube video ID from URL
+  const getYouTubeVideoId = (url: string): string | null => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : null;
+  };
+
   const pressItems: PressItem[] = [
+    {
+      id: 3,
+      title: "World Teachers' Day Celebration",
+      date: '2025-10-05',
+      type: 'news',
+      excerpt:
+        'On this World Teachers\' Day, Obayi for Education, in association with the Alumni of Solid Foundation International School, proudly honors and celebrates Dr. Dideoolu Adekogbe for her outstanding dedication, mentorship, and lifelong commitment to education.',
+      content: `On this World Teachers' Day, Obayi for Education, in association with the Alumni of Solid Foundation International School, proudly honors and celebrates Dr. Dideoolu Adekogbe for her outstanding dedication, mentorship, and lifelong commitment to education.
+
+Dr. Adekogbe has been a beacon of inspiration for countless students, shaping minds and transforming lives through her unwavering passion for teaching. Her contributions to education extend far beyond the classroom, embodying the true spirit of mentorship and educational excellence.
+
+We are grateful for her years of service and dedication to nurturing the next generation of leaders, thinkers, and changemakers.`,
+      youtubeUrl: 'https://www.youtube.com/watch?v=KJFeA3GcKBQ&feature=youtu.be',
+    },
+    {
+      id: 2,
+      title: 'Obayi for Education Foundation at the Lagos Maiden Build a Dream Student Conference',
+      date: '2025-09-24',
+      type: 'news',
+      excerpt:
+        'We were delighted to participate in the first-ever Build a Dream Student Conference in Lagos, held in collaboration with the Women in Science and Engineering Foundation and the Build a Dream Foundation.',
+      content: `We were delighted to participate in the first-ever Build a Dream Student Conference in Lagos, held in collaboration with the Women in Science and Engineering Foundation and the Build a Dream Foundation.
+
+At Obayi for Education Foundation, we believe in creating opportunities for students to thrive, and this event was a powerful step in inspiring young female students to pursue careers in STEM.
+
+The conference brought together students, educators, and industry professionals to discuss the importance of STEM education and the opportunities it creates. Through workshops, panel discussions, and interactive sessions, young women were encouraged to explore their potential in science, technology, engineering, and mathematics.
+
+We are proud to be part of this journey of empowering the next generation of innovators, leaders, and problem-solvers. Together, we are building dreams and creating pathways for success in STEM fields.`,
+      youtubeUrl: 'https://www.youtube.com/watch?v=Gc4hju5nhSE',
+    },
     {
       id: 1,
       title:
@@ -97,87 +134,16 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
         </div>
       </section>
 
-      {/* Featured Article */}
-      {pressItems.filter((item) => item.featured).length > 0 && (
-        <section className='py-12 bg-white'>
-          <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
-            <div className='max-w-4xl mx-auto'>
-              <h2 className='text-2xl font-bold mb-8 text-gray-900'>
-                Featured
-              </h2>
-              {pressItems
-                .filter((item) => item.featured)
-                .map((item) => (
-                  <div
-                    key={item.id}
-                    className='bg-gray-50 rounded-lg p-8 shadow-md'
-                  >
-                    <div className='flex items-center mb-4'>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getTypeColor(
-                          item.type
-                        )}`}
-                      >
-                        {getTypeLabel(item.type)}
-                      </span>
-                      <div className='flex items-center ml-4 text-gray-500'>
-                        <Calendar className='h-4 w-4 mr-2' />
-                        <span className='text-sm'>{formatDate(item.date)}</span>
-                      </div>
-                    </div>
-
-                    <h3 className='text-2xl font-bold mb-4 text-gray-900'>
-                      {item.title}
-                    </h3>
-                    <p className='text-gray-600 mb-6 leading-relaxed'>
-                      {item.excerpt}
-                    </p>
-
-                    <Button
-                      variant='primary'
-                      onClick={() => toggleExpanded(item.id)}
-                    >
-                      {expandedItem === item.id
-                        ? 'Read Less'
-                        : 'Read Full Article'}
-                    </Button>
-
-                    {expandedItem === item.id && (
-                      <div className='mt-8 pt-8 border-t border-gray-200'>
-                        <div className='prose prose-lg max-w-none'>
-                          {item.content
-                            .split('\n\n')
-                            .map((paragraph, index) => (
-                              <p
-                                key={index}
-                                className='text-gray-700 mb-4 leading-relaxed'
-                              >
-                                {paragraph}
-                              </p>
-                            ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* All Press Items */}
-      <section className='py-12 bg-gray-50'>
+      <section className='py-12 bg-white'>
         <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='max-w-4xl mx-auto'>
-            <h2 className='text-2xl font-bold mb-8 text-gray-900'>
-              All Press & News
-            </h2>
 
             <div className='space-y-6'>
               {pressItems.map((item) => (
                 <div
                   key={item.id}
-                  className='bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow'
+                  className='bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow'
                 >
                   <div className='p-6'>
                     <div className='flex items-center mb-4'>
@@ -192,11 +158,6 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
                         <Calendar className='h-4 w-4 mr-2' />
                         <span className='text-sm'>{formatDate(item.date)}</span>
                       </div>
-                      {item.featured && (
-                        <span className='ml-4 px-2 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded'>
-                          Featured
-                        </span>
-                      )}
                     </div>
 
                     <h3 className='text-xl font-bold mb-3 text-gray-900'>
@@ -235,6 +196,25 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
                               </p>
                             ))}
                         </div>
+
+                        {/* YouTube Video Embed */}
+                        {item.youtubeUrl && (
+                          <div className='mt-6'>
+                            <div className='flex items-center mb-4'>
+                              <Video className='h-5 w-5 mr-2 text-cyan-600' />
+                              <h4 className='text-lg font-semibold text-gray-900'>Watch Video</h4>
+                            </div>
+                            <div className='relative w-full' style={{ paddingBottom: '56.25%' }}>
+                              <iframe
+                                className='absolute top-0 left-0 w-full h-full rounded-lg shadow-lg'
+                                src={`https://www.youtube.com/embed/${getYouTubeVideoId(item.youtubeUrl)}`}
+                                title={item.title}
+                                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                                allowFullScreen
+                              ></iframe>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -291,9 +271,11 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
               Subscribe to our newsletter to receive the latest news and updates
               from Obayi For Education Foundation.
             </p>
-            <Button 
-              variant='primary' 
-              onClick={() => window.open('https://tinyurl.com/jrhc7wk4', '_blank')}
+            <Button
+              variant='primary'
+              onClick={() =>
+                window.open('https://tinyurl.com/jrhc7wk4', '_blank')
+              }
             >
               Subscribe to Newsletter
             </Button>
