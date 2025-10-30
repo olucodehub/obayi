@@ -207,10 +207,11 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
                             <div className='relative w-full' style={{ paddingBottom: '56.25%' }}>
                               <iframe
                                 className='absolute top-0 left-0 w-full h-full rounded-lg shadow-lg'
-                                src={`https://www.youtube.com/embed/${getYouTubeVideoId(item.youtubeUrl)}`}
+                                src={`https://www.youtube-nocookie.com/embed/${getYouTubeVideoId(item.youtubeUrl)}?rel=0&modestbranding=1`}
                                 title={item.title}
-                                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                                 allowFullScreen
+                                loading='lazy'
                               ></iframe>
                             </div>
                           </div>
