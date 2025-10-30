@@ -18,9 +18,26 @@ const Press: React.FC = () => {
 
   // Helper function to extract YouTube video ID from URL
   const getYouTubeVideoId = (url: string): string | null => {
-    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[7].length === 11) ? match[7] : null;
+    try {
+      const urlObj = new URL(url);
+
+      // Check if it's a youtu.be short link
+      if (urlObj.hostname === 'youtu.be') {
+        return urlObj.pathname.slice(1);
+      }
+
+      // Check if it's a standard youtube.com link
+      if (urlObj.hostname.includes('youtube.com')) {
+        return urlObj.searchParams.get('v');
+      }
+
+      return null;
+    } catch (e) {
+      // Fallback to regex if URL parsing fails
+      const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[7].length === 11) ? match[7] : null;
+    }
   };
 
   const pressItems: PressItem[] = [
@@ -207,11 +224,11 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
                             <div className='relative w-full' style={{ paddingBottom: '56.25%' }}>
                               <iframe
                                 className='absolute top-0 left-0 w-full h-full rounded-lg shadow-lg'
-                                src={`https://www.youtube-nocookie.com/embed/${getYouTubeVideoId(item.youtubeUrl)}?rel=0&modestbranding=1`}
+                                src={`https://www.youtube.com/embed/${getYouTubeVideoId(item.youtubeUrl)}?feature=oembed`}
                                 title={item.title}
                                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                                referrerPolicy='strict-origin-when-cross-origin'
                                 allowFullScreen
-                                loading='lazy'
                               ></iframe>
                             </div>
                           </div>
