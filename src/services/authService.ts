@@ -31,21 +31,21 @@ export interface AuthResponse {
 class AuthService {
   async login(data: LoginData): Promise<AuthResponse> {
     const response = await api.post('/auth/login', data);
-    
+
     // Store token and user info
-    localStorage.setItem('authToken', response.data.token);
-    localStorage.setItem('user', JSON.stringify(response.data.user));
-    
+    localStorage.setItem('auth_token', response.data.token);
+    localStorage.setItem('current_user', JSON.stringify(response.data.user));
+
     return response.data;
   }
 
   async register(data: RegisterData): Promise<AuthResponse> {
     const response = await api.post('/auth/register', data);
-    
+
     // Store token and user info
-    localStorage.setItem('authToken', response.data.token);
-    localStorage.setItem('user', JSON.stringify(response.data.user));
-    
+    localStorage.setItem('auth_token', response.data.token);
+    localStorage.setItem('current_user', JSON.stringify(response.data.user));
+
     return response.data;
   }
 
@@ -65,18 +65,18 @@ class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('current_user');
     window.location.href = '/login';
   }
 
   getCurrentUser(): User | null {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem('current_user');
     return userStr ? JSON.parse(userStr) : null;
   }
 
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('auth_token');
   }
 
   isAuthenticated(): boolean {
