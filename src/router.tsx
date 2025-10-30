@@ -19,85 +19,93 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Dashboard from './pages/Dashboard';
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: 'about',
+          element: <About />,
+        },
+        {
+          path: 'donate',
+          element: <Donate />,
+        },
+        {
+          path: 'adopt',
+          element: <AdoptChild />,
+        },
+        {
+          path: 'ledger',
+          element: <Ledger />,
+        },
+        {
+          path: 'contact',
+          element: <Contact />,
+        },
+        {
+          path: 'faq',
+          element: <FAQ />,
+        },
+        {
+          path: 'testimonials',
+          element: <Testimonials />,
+        },
+        {
+          path: 'press',
+          element: <Press />,
+        },
+        {
+          path: 'programs/scholarships',
+          element: <Scholarships />,
+        },
+        {
+          path: 'programs/support',
+          element: <Support />,
+        },
+        {
+          path: 'programs/structure',
+          element: <Structure />,
+        },
+        {
+          path: 'dashboard',
+          element: (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: '*',
+          element: <NotFound />,
+        },
+      ],
+    },
+    {
+      path: '/login',
+      element: <Login />,
+    },
+    {
+      path: '/register',
+      element: <Register />,
+    },
+  ],
   {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: 'about',
-        element: <About />,
-      },
-      {
-        path: 'donate',
-        element: <Donate />,
-      },
-      {
-        path: 'adopt',
-        element: <AdoptChild />,
-      },
-      {
-        path: 'ledger',
-        element: <Ledger />,
-      },
-      {
-        path: 'contact',
-        element: <Contact />,
-      },
-      {
-        path: 'faq',
-        element: <FAQ />,
-      },
-      {
-        path: 'testimonials',
-        element: <Testimonials />,
-      },
-      {
-        path: 'press',
-        element: <Press />,
-      },
-      {
-        path: 'programs/scholarships',
-        element: <Scholarships />,
-      },
-      {
-        path: 'programs/support',
-        element: <Support />,
-      },
-      {
-        path: 'programs/structure',
-        element: <Structure />,
-      },
-      {
-        path: 'dashboard',
-        element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '*',
-        element: <NotFound />,
-      },
-    ],
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/register',
-    element: <Register />,
-  },
-]);
+    future: {
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+    },
+  }
+);
 
 const Router: React.FC = () => {
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} future={{ v7_startTransition: true }} />;
 };
 
 export default Router;
