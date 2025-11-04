@@ -35,7 +35,7 @@ const AdminDashboard: React.FC = () => {
 
       // Map API data to match the User interface expected by the component
       const mappedDonors = donorsRes.donors.map(d => ({
-        id: String(d.id),
+        id: String(d.donor_id),
         email: d.email,
         firstName: d.first_name,
         lastName: d.last_name,
@@ -46,7 +46,7 @@ const AdminDashboard: React.FC = () => {
       }));
 
       const mappedStudents = studentsRes.students.map(s => ({
-        id: String(s.id),
+        id: String(s.student_id),
         email: s.email,
         firstName: s.first_name,
         lastName: s.last_name,
