@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { AuthService, MatchingService, CertificateService, ReceiptService, AchievementService } from '../../utils/auth';
+import { AuthService, CertificateService, ReceiptService, AchievementService } from '../../utils/auth';
 import { User } from '../../types/auth';
 import { Heart, GraduationCap, Settings, Link as LinkIcon, Eye, FileText, AlertCircle, Users, Calendar, Lock } from 'lucide-react';
 import StudentDetailModal from '../../components/StudentDetailModal';
@@ -74,18 +74,28 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleCreateMatch = () => {
+  const handleCreateMatch = async () => {
     if (selectedDonor && selectedStudent) {
-      MatchingService.createMatch(selectedDonor, selectedStudent);
-      loadData();
-      setSelectedDonor('');
-      setSelectedStudent('');
+      try {
+        await adminService.assignStudent(Number(selectedDonor), Number(selectedStudent));
+        await loadData();
+        setSelectedDonor('');
+        setSelectedStudent('');
+      } catch (error) {
+        console.error('Failed to create match:', error);
+        alert('Failed to create match. Please try again.');
+      }
     }
   };
 
-  const handleRemoveMatch = (donorId: string, studentId: string) => {
-    MatchingService.removeMatch(donorId, studentId);
-    loadData();
+  const handleRemoveMatch = async (donorId: string, studentId: string) => {
+    try {
+      await adminService.unassignStudent(Number(donorId), Number(studentId));
+      await loadData();
+    } catch (error) {
+      console.error('Failed to remove match:', error);
+      alert('Failed to remove match. Please try again.');
+    }
   };
 
   const handleDeleteUser = (userId: string) => {
