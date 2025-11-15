@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const database = require('../config/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const emailService = require('../utils/emailService');
 
 const router = express.Router();
 
@@ -191,7 +192,44 @@ router.post('/assign', [
             [donorId, studentId, adminId, notes || null]
         );
 
-        res.json({ 
+        // Get donor and student details for email notification
+        const donorDetails = await database.get(`
+            SELECT u.email, u.first_name, u.last_name, d.organization
+            FROM users u
+            JOIN donors d ON u.id = d.user_id
+            WHERE d.id = ?
+        `, [donorId]);
+
+        const studentDetails = await database.get(`
+            SELECT u.email, u.first_name, u.last_name, s.school_name, s.grade_level
+            FROM users u
+            JOIN students s ON u.id = s.user_id
+            WHERE s.id = ?
+        `, [studentId]);
+
+        // Send assignment notification emails asynchronously
+        if (donorDetails && studentDetails) {
+            emailService.sendDonorAssignmentEmail({
+                donorEmail: donorDetails.email,
+                donorFirstName: donorDetails.first_name,
+                donorLastName: donorDetails.last_name,
+                studentFirstName: studentDetails.first_name,
+                studentLastName: studentDetails.last_name,
+                studentSchool: studentDetails.school_name,
+                studentGradeLevel: studentDetails.grade_level
+            }).catch(err => console.error('Email service error:', err));
+
+            emailService.sendStudentAssignmentEmail({
+                studentEmail: studentDetails.email,
+                studentFirstName: studentDetails.first_name,
+                studentLastName: studentDetails.last_name,
+                donorFirstName: donorDetails.first_name,
+                donorLastName: donorDetails.last_name,
+                donorOrganization: donorDetails.organization
+            }).catch(err => console.error('Email service error:', err));
+        }
+
+        res.json({
             message: 'Student assigned to donor successfully',
             assignmentId: result.id
         });
