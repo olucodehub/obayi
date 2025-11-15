@@ -23,7 +23,8 @@
     "express-validator": "^7.0.1",
     "@azure/storage-blob": "^12.17.0",
     "uuid": "^9.0.1",
-    "sharp": "^0.33.0"
+    "sharp": "^0.33.0",
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
