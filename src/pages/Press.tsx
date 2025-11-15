@@ -42,9 +42,25 @@ const Press: React.FC = () => {
 
   const pressItems: PressItem[] = [
     {
+      id: 4,
+      title: "Obayi for Education Outreach — The Quantanamu IDP Camp, Girei, Adamawa State",
+      date: '2024-11-04',
+      type: 'news',
+      excerpt:
+        'On Tuesday, November 4, Obayi for Education visited the Quantanamu IDP Camp in Girei, Adamawa State, to donate books and shoes to the students in the camp.',
+      content: `On Tuesday, November 4, Obayi for Education visited the Quantanamu IDP Camp in Girei, Adamawa State, to donate books and shoes to the students in the camp. The camp is run by the inspiring Tent to School Initiative, and we are proud to be associated with the incredible work they are doing to ensure that displaced children have access to education.
+
+The Tent to School Initiative has been instrumental in providing educational opportunities to children who have been displaced due to conflict and insecurity. Through their dedication and commitment, they have created a safe and nurturing environment where these children can learn and grow.
+
+During our visit, we distributed books and shoes to the students, recognizing that access to educational materials and basic necessities are fundamental to their learning experience. We were deeply moved by the resilience and enthusiasm of these young learners, who continue to pursue their education despite the challenges they face.
+
+Obayi for Education remains committed to supporting initiatives that provide educational opportunities to marginalized and displaced children. We believe that every child deserves access to quality education, regardless of their circumstances, and we are honored to work alongside organizations like the Tent to School Initiative in making this vision a reality.`,
+      youtubeUrl: 'https://www.youtube.com/watch?v=3Ki-CKzFRIM',
+    },
+    {
       id: 3,
       title: "World Teachers' Day Celebration",
-      date: '2025-10-05',
+      date: '2024-10-05',
       type: 'news',
       excerpt:
         'On this World Teachers\' Day, Obayi for Education, in association with the Alumni of Solid Foundation International School, proudly honors and celebrates Dr. Dideoolu Adekogbe for her outstanding dedication, mentorship, and lifelong commitment to education.',
@@ -58,7 +74,7 @@ We are grateful for her years of service and dedication to nurturing the next ge
     {
       id: 2,
       title: 'Obayi for Education Foundation at the Lagos Maiden Build a Dream Student Conference',
-      date: '2025-09-24',
+      date: '2024-09-24',
       type: 'news',
       excerpt:
         'We were delighted to participate in the first-ever Build a Dream Student Conference in Lagos, held in collaboration with the Women in Science and Engineering Foundation and the Build a Dream Foundation.',
@@ -75,7 +91,7 @@ We are proud to be part of this journey of empowering the next generation of inn
       id: 1,
       title:
         "Obayi For Education Foundation Commends FCT Minister's Intervention in Teachers' Strike, Urges Proactive Measures to Safeguard Children's Education",
-      date: '2025-07-04',
+      date: '2024-07-04',
       type: 'press-release',
       excerpt:
         "The Foundation acknowledges Minister Nyesom Wike's intervention in the four-month teachers' strike while expressing concern over the prolonged disruption to children's education.",
