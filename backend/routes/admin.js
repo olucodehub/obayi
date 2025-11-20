@@ -2,7 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const database = require('../config/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
-const emailService = require('../utils/emailService');
+// const emailService = require('../utils/emailService');
 
 const router = express.Router();
 
@@ -207,27 +207,28 @@ router.post('/assign', [
             WHERE s.id = ?
         `, [studentId]);
 
+        // TODO: Email service temporarily disabled - enable after Logic App configuration
         // Send assignment notification emails asynchronously
-        if (donorDetails && studentDetails) {
-            emailService.sendDonorAssignmentEmail({
-                donorEmail: donorDetails.email,
-                donorFirstName: donorDetails.first_name,
-                donorLastName: donorDetails.last_name,
-                studentFirstName: studentDetails.first_name,
-                studentLastName: studentDetails.last_name,
-                studentSchool: studentDetails.school_name,
-                studentGradeLevel: studentDetails.grade_level
-            }).catch(err => console.error('Email service error:', err));
+        // if (donorDetails && studentDetails) {
+        //     emailService.sendDonorAssignmentEmail({
+        //         donorEmail: donorDetails.email,
+        //         donorFirstName: donorDetails.first_name,
+        //         donorLastName: donorDetails.last_name,
+        //         studentFirstName: studentDetails.first_name,
+        //         studentLastName: studentDetails.last_name,
+        //         studentSchool: studentDetails.school_name,
+        //         studentGradeLevel: studentDetails.grade_level
+        //     }).catch(err => console.error('Email service error:', err));
 
-            emailService.sendStudentAssignmentEmail({
-                studentEmail: studentDetails.email,
-                studentFirstName: studentDetails.first_name,
-                studentLastName: studentDetails.last_name,
-                donorFirstName: donorDetails.first_name,
-                donorLastName: donorDetails.last_name,
-                donorOrganization: donorDetails.organization
-            }).catch(err => console.error('Email service error:', err));
-        }
+        //     emailService.sendStudentAssignmentEmail({
+        //         studentEmail: studentDetails.email,
+        //         studentFirstName: studentDetails.first_name,
+        //         studentLastName: studentDetails.last_name,
+        //         donorFirstName: donorDetails.first_name,
+        //         donorLastName: donorDetails.last_name,
+        //         donorOrganization: donorDetails.organization
+        //     }).catch(err => console.error('Email service error:', err));
+        // }
 
         res.json({
             message: 'Student assigned to donor successfully',
