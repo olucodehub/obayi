@@ -112,7 +112,7 @@ router.get('/assignments', authenticateToken, requireAdmin, async (req, res) => 
             JOIN users su ON s.user_id = su.id
             JOIN users au ON dsa.assigned_by_admin_id = au.id
             LEFT JOIN donors donor_info ON d.id = donor_info.id
-            WHERE du.is_active = TRUE AND su.is_active = TRUE
+            WHERE dsa.is_active = TRUE AND du.is_active = TRUE AND su.is_active = TRUE
             ORDER BY dsa.assigned_at DESC
         `);
 
