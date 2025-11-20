@@ -90,11 +90,13 @@ const AdminDashboard: React.FC = () => {
 
   const handleRemoveMatch = async (donorId: string, studentId: string) => {
     try {
+      console.log('Attempting to remove match - donorId:', donorId, 'studentId:', studentId);
       await adminService.unassignStudent(Number(donorId), Number(studentId));
       await loadData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to remove match:', error);
-      alert('Failed to remove match. Please try again.');
+      console.error('Error details:', error.response?.data);
+      alert(`Failed to remove match: ${error.response?.data?.error || error.message}`);
     }
   };
 
