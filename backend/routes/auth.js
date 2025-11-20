@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
 const database = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
-// const emailService = require('../utils/emailService');
+const emailService = require('../utils/emailService');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -94,24 +94,23 @@ router.post('/register', [
 
         const token = generateToken(userId, userType);
 
-        // TODO: Email service temporarily disabled - enable after Logic App configuration
         // Send welcome email asynchronously (don't wait for it)
-        // if (userType === 'donor') {
-        //     emailService.sendDonorWelcomeEmail({
-        //         email,
-        //         firstName,
-        //         lastName
-        //     }).catch(err => console.error('Email service error:', err));
-        // } else if (userType === 'student') {
-        //     const studentId = `STU${Date.now()}`;
-        //     emailService.sendStudentWelcomeEmail({
-        //         email,
-        //         firstName,
-        //         lastName,
-        //         studentId,
-        //         school
-        //     }).catch(err => console.error('Email service error:', err));
-        // }
+        if (userType === 'donor') {
+            emailService.sendDonorWelcomeEmail({
+                email,
+                firstName,
+                lastName
+            }).catch(err => console.error('Email service error:', err));
+        } else if (userType === 'student') {
+            const studentId = `STU${Date.now()}`;
+            emailService.sendStudentWelcomeEmail({
+                email,
+                firstName,
+                lastName,
+                studentId,
+                school
+            }).catch(err => console.error('Email service error:', err));
+        }
 
         res.status(201).json({
             message: 'User registered successfully',
