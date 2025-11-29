@@ -42,6 +42,36 @@ const Press: React.FC = () => {
 
   const pressItems: PressItem[] = [
     {
+      id: 5,
+      title: "Obayi4Education Supports 50 Pupils in Lokoja with School Materials",
+      date: '2025-11-26',
+      type: 'news',
+      excerpt:
+        'A Non-Governmental Organization, Obayi4Education, has extended support to pupils in two public primary schools in Lokoja by providing 50 students with uniforms, school bags writing materials and other incentives.',
+      content: `A Non-Governmental Organization, Obayi4Education, has extended support to pupils in two public primary schools in Lokoja by providing 50 students with uniforms, school bags writing materials and other incentives.
+
+Speaking on behalf of the organisation, Mr. Simeon Enejo, Field Officer at Obayi4Education, explained that the initiative was informed by a research carried out a few months ago to identify key challenges facing pupils in underserved communities.
+
+According to him, the findings highlighted the inability of many families to afford basic school needs, prompting the organisation to intervene through the provision of learning materials and other incentives.
+
+"Our focus is to encourage education in underserved areas, by providing uniforms, bags, and writing materials, we hope to keep more children in school and support them to learn in dignity."
+
+He added that Obayi4Education will continue to partner with communities and schools to bridge educational gaps and ensure that every child has the opportunity to learn.
+
+Beneficiaries were drawn from LEA Model Nursery and Primary School, Cantonment, and Lokogoma Nursery and Primary School both in the Kogi state capital.
+
+Speaking during the presentation, Head Teacher of LEA Model Nursery and Primary School, Cantonment, Mrs Ali Rakiyat Ladidi, applauded the organisation for its commitment to improving access to quality education.
+
+She described the gesture as timely and impactful, noting that many families are struggling to meet basic school-related expenses.
+
+Also speaking, Head Teacher of Lokogoma Nursery and Primary School, Momoh Saadatu, said the intervention would boost pupils' morale and ease the burden on parents.
+
+One of the parents, Moses Enejo, expressed gratitude to the organisation for easing financial pressure on parents and for supporting children to stay focused on their education.
+
+Several students who received the items expressed excitement, saying the support would motivate them to attend school more regularly and improve their confidence.`,
+      imageUrl: '/images/kogi.jpg',
+    },
+    {
       id: 4,
       title: "Obayi for Education Outreach — The Quantanamu IDP Camp, Girei, Adamawa State",
       date: '2024-11-04',
