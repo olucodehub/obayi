@@ -260,6 +260,17 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
                             ))}
                         </div>
 
+                        {/* Image Display */}
+                        {item.imageUrl && (
+                          <div className='mt-6'>
+                            <img
+                              src={item.imageUrl}
+                              alt={item.title}
+                              className='w-full h-auto rounded-lg shadow-lg'
+                            />
+                          </div>
+                        )}
+
                         {/* YouTube Video Embed */}
                         {item.youtubeUrl && (
                           <div className='mt-6'>
