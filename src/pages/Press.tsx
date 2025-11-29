@@ -34,16 +34,18 @@ const Press: React.FC = () => {
       return null;
     } catch (e) {
       // Fallback to regex if URL parsing fails
-      const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+      const regExp =
+        /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
       const match = url.match(regExp);
-      return (match && match[7].length === 11) ? match[7] : null;
+      return match && match[7].length === 11 ? match[7] : null;
     }
   };
 
   const pressItems: PressItem[] = [
     {
       id: 5,
-      title: "Obayi4Education Supports 50 Pupils in Lokoja with School Materials",
+      title:
+        'Obayi4Education Supports 50 Pupils in Lokoja with School Materials',
       date: '2025-11-26',
       type: 'news',
       excerpt:
@@ -73,8 +75,9 @@ Several students who received the items expressed excitement, saying the support
     },
     {
       id: 4,
-      title: "Obayi for Education Outreach — The Quantanamu IDP Camp, Girei, Adamawa State",
-      date: '2024-11-04',
+      title:
+        'Obayi for Education Outreach — The Quantanamu IDP Camp, Girei, Adamawa State',
+      date: '2025-11-04',
       type: 'news',
       excerpt:
         'On Tuesday, November 4, Obayi for Education visited the Quantanamu IDP Camp in Girei, Adamawa State, to donate books and shoes to the students in the camp.',
@@ -90,21 +93,23 @@ Obayi for Education remains committed to supporting initiatives that provide edu
     {
       id: 3,
       title: "World Teachers' Day Celebration",
-      date: '2024-10-05',
+      date: '2025-10-05',
       type: 'news',
       excerpt:
-        'On this World Teachers\' Day, Obayi for Education, in association with the Alumni of Solid Foundation International School, proudly honors and celebrates Dr. Dideoolu Adekogbe for her outstanding dedication, mentorship, and lifelong commitment to education.',
+        "On this World Teachers' Day, Obayi for Education, in association with the Alumni of Solid Foundation International School, proudly honors and celebrates Dr. Dideoolu Adekogbe for her outstanding dedication, mentorship, and lifelong commitment to education.",
       content: `On this World Teachers' Day, Obayi for Education, in association with the Alumni of Solid Foundation International School, proudly honors and celebrates Dr. Dideoolu Adekogbe for her outstanding dedication, mentorship, and lifelong commitment to education.
 
 Dr. Adekogbe has been a beacon of inspiration for countless students, shaping minds and transforming lives through her unwavering passion for teaching. Her contributions to education extend far beyond the classroom, embodying the true spirit of mentorship and educational excellence.
 
 We are grateful for her years of service and dedication to nurturing the next generation of leaders, thinkers, and changemakers.`,
-      youtubeUrl: 'https://www.youtube.com/watch?v=KJFeA3GcKBQ&feature=youtu.be',
+      youtubeUrl:
+        'https://www.youtube.com/watch?v=KJFeA3GcKBQ&feature=youtu.be',
     },
     {
       id: 2,
-      title: 'Obayi for Education Foundation at the Lagos Maiden Build a Dream Student Conference',
-      date: '2024-09-24',
+      title:
+        'Obayi for Education Foundation at the Lagos Maiden Build a Dream Student Conference',
+      date: '2025-09-24',
       type: 'news',
       excerpt:
         'We were delighted to participate in the first-ever Build a Dream Student Conference in Lagos, held in collaboration with the Women in Science and Engineering Foundation and the Build a Dream Foundation.',
@@ -121,7 +126,7 @@ We are proud to be part of this journey of empowering the next generation of inn
       id: 1,
       title:
         "Obayi For Education Foundation Commends FCT Minister's Intervention in Teachers' Strike, Urges Proactive Measures to Safeguard Children's Education",
-      date: '2024-07-04',
+      date: '2025-07-04',
       type: 'press-release',
       excerpt:
         "The Foundation acknowledges Minister Nyesom Wike's intervention in the four-month teachers' strike while expressing concern over the prolonged disruption to children's education.",
@@ -201,7 +206,6 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
       <section className='py-12 bg-white'>
         <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='max-w-4xl mx-auto'>
-
             <div className='space-y-6'>
               {pressItems.map((item) => (
                 <div
@@ -276,12 +280,19 @@ The future of the FCT, and indeed Nigeria, rests on the foundation of a well-edu
                           <div className='mt-6'>
                             <div className='flex items-center mb-4'>
                               <Video className='h-5 w-5 mr-2 text-cyan-600' />
-                              <h4 className='text-lg font-semibold text-gray-900'>Watch Video</h4>
+                              <h4 className='text-lg font-semibold text-gray-900'>
+                                Watch Video
+                              </h4>
                             </div>
-                            <div className='relative w-full' style={{ paddingBottom: '56.25%' }}>
+                            <div
+                              className='relative w-full'
+                              style={{ paddingBottom: '56.25%' }}
+                            >
                               <iframe
                                 className='absolute top-0 left-0 w-full h-full rounded-lg shadow-lg'
-                                src={`https://www.youtube.com/embed/${getYouTubeVideoId(item.youtubeUrl)}?feature=oembed`}
+                                src={`https://www.youtube.com/embed/${getYouTubeVideoId(
+                                  item.youtubeUrl
+                                )}?feature=oembed`}
                                 title={item.title}
                                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                                 referrerPolicy='strict-origin-when-cross-origin'
