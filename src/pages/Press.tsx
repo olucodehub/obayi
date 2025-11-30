@@ -43,6 +43,20 @@ const Press: React.FC = () => {
 
   const pressItems: PressItem[] = [
     {
+      id: 6,
+      title: 'Obayi Outreach and Intervention in Lokoja, Kogi State',
+      date: '2025-11-26',
+      type: 'news',
+      excerpt:
+        'On Wednesday, November 28, our team visited communities in Lokoja where we identified 50 children who had dropped out of school due to unpaid levies.',
+      content: `On Wednesday, November 28, our team visited communities in Lokoja where we identified 50 children who had dropped out of school due to unpaid levies. Thanks to the generosity of our donors, we were able to pay their school fees and provide new uniforms, books, and bags — giving them a fresh start and a renewed chance at education.
+
+We are deeply grateful to everyone who continues to support this mission.
+
+Join the Movement. Change a Child's Story.`,
+      youtubeUrl: 'https://www.youtube.com/watch?v=5WcrMsZ8sdk',
+    },
+    {
       id: 5,
       title:
         'Obayi4Education Supports 50 Pupils in Lokoja with School Materials',
