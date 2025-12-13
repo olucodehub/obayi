@@ -43,6 +43,42 @@ const Press: React.FC = () => {
 
   const pressItems: PressItem[] = [
     {
+      id: 8,
+      title:
+        'Obayi For Education Foundation Participates in Nigeria Education Forum (NEF) 2025',
+      date: '2025-12-11',
+      type: 'news',
+      excerpt:
+        'Obayi For Education Foundation was invited to the 2025 Nigeria Education Forum (NEF) which held at the Abuja Continental Hotel, serving as a strategic platform for national dialogue on the future of education financing, policy, and reform in Nigeria.',
+      content: `Obayi For Education Foundation was invited to the 2025 Nigeria Education Forum (NEF) which held at the Abuja Continental Hotel over a two-day period, from Tuesday 9th to Wednesday 10th December 2025. The event served as a strategic platform for national dialogue on the future of education financing, policy, and reform in Nigeria.
+
+The Forum was jointly organized by the Nigeria Governors' Forum (NGF), the Federal Ministry of Education, the Committee of States' Commissioners of Education, and various partner organizations committed to strengthening Nigeria's educational landscape.
+
+The theme of the forum was "Pathways to Sustainable Education Financing: Developing a Synergy Between the Town and Gown in Nigeria."
+
+The forum attracted distinguished national leaders and stakeholders including Vice President Kashim Shettima, Senate President Godswill Akpabio, Minister for Education Dr. Morufu Olatunji Alausa, and commissioners of education from all 36 states.
+
+The forum emphasised education as a powerful catalyst for long-term socio-economic transformation, stressing the need for continuous engagement and capacity-building among stakeholders to strengthen education delivery in Nigeria.
+
+Read more about our participation: https://independent.ng/obayi-for-education-foundation-participates-in-nef-2025/`,
+      youtubeUrl: 'https://www.youtube.com/watch?v=KJ6OTMCb1yU',
+    },
+    {
+      id: 7,
+      title:
+        'Obayi For Education Foundation Celebrates with Special Needs Students at Olaskoko Foundation Christmas Party',
+      date: '2025-12-11',
+      type: 'news',
+      excerpt:
+        'The Obayi for Education Foundation was honored to be invited to the Olaskoko Foundation year-end Christmas party for special needs students of Sango Junior and Senior Secondary School.',
+      content: `On December 11, 2025, the Olaskoko Foundation hosted a year-end Christmas party for special needs students of Sango Junior and Senior Secondary School. The Obayi for Education Foundation was honored to be invited to celebrate with the students and support the event by providing educational materials.
+
+During the celebration, we reassured the students that they are deeply loved, valued, and deserving of equal access to quality education and opportunities to thrive.
+
+This partnership reflects our commitment to inclusive education and ensuring that every child, regardless of their abilities, has the support they need to succeed.`,
+      youtubeUrl: 'https://www.youtube.com/shorts/JK37J5fMnq0',
+    },
+    {
       id: 6,
       title: 'Obayi Outreach and Intervention in Lokoja, Kogi State',
       date: '2025-11-26',
