@@ -12,7 +12,15 @@ Account Number: 1306973690`;
 const oneTimeStripeLink = 'https://donate.stripe.com/bIYg0pgJn6Cf6Aw9AB';
 
 // Stripe link for monthly donations - IMPORTANT: Replace this with your actual monthly Stripe link
-const monthlyStripeLink = 'https://donate.stripe.com/4gMcN5ebA0Yt1ad2ep4F202'; 
+const monthlyStripeLink = 'https://donate.stripe.com/4gMcN5ebA0Yt1ad2ep4F202';
+
+// Paystack links for Nigerian donors
+const paystackLinks = {
+  monthly6k: 'https://paystack.shop/pay/57wqegobjm',    // ₦6,000/month
+  monthly12k: 'https://paystack.shop/pay/rj0uq6bgzm',   // ₦12,000/month
+  monthly20k: 'https://paystack.shop/pay/bgo4yumq5o',   // ₦20,000/month
+  oneTime: 'https://paystack.shop/pay/pucozemaen'       // One-time, any amount
+}; 
 
 const Donate: React.FC = () => {
   usePageTitle('Donate');
@@ -41,12 +49,17 @@ const Donate: React.FC = () => {
       // Attempt to write the bankDetails string to the clipboard
       await navigator.clipboard.writeText(bankDetails);
       // Provide user feedback on successful copy
-      alert('Account details copied to clipboard!'); 
+      alert('Account details copied to clipboard!');
     } catch (err) {
       // Log and alert if copying fails
       console.error('Failed to copy text: ', err);
       alert('Failed to copy text.');
     }
+  };
+
+  // Function to handle Paystack donations based on selected amount
+  const handlePaystackDonation = (amount: 'monthly6k' | 'monthly12k' | 'monthly20k' | 'oneTime') => {
+    window.open(paystackLinks[amount], '_blank');
   };
 
   // Array of predefined donation options
@@ -226,8 +239,8 @@ const Donate: React.FC = () => {
                 </div>
               </div>
 
-              {/* Payment Method Cards (PayPal, Stripe, Bank Transfer) */}
-              <div className="grid md:grid-cols-3 gap-6">
+              {/* Payment Method Cards (PayPal, Stripe, Paystack, Bank Transfer) */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* PayPal Option Card */}
                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer flex flex-col h-full">
                   <div className="flex-grow">
@@ -284,6 +297,61 @@ const Donate: React.FC = () => {
                   <Button variant="primary" onClick={handleCopyAccountDetails} fullWidth className="mt-auto">
                     Copy Account Details
                   </Button>
+                </div>
+
+                {/* Paystack Option Card - For Nigerian Donors */}
+                <div className="border rounded-lg p-6 hover:shadow-lg transition-all flex flex-col h-full">
+                  <div className="flex-grow">
+                    <div className="flex justify-between items-start mb-4">
+                      <CreditCard className="h-12 w-12 text-green-600" />
+                    </div>
+                    <h4 className="text-lg font-semibold mb-2">Paystack (Nigerian Donors)</h4>
+                    <p className="text-gray-600 mb-4">
+                      Pay with Naira using cards, bank transfer, or USSD.
+                    </p>
+
+                    {/* Paystack amount selection buttons */}
+                    {donationType === 'monthly' ? (
+                      <div className="space-y-2 mb-4">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePaystackDonation('monthly6k');
+                          }}
+                          className="w-full text-sm py-2 px-3 bg-green-50 hover:bg-green-100 text-green-800 rounded border border-green-200 transition-colors"
+                        >
+                          ₦6,000/month
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePaystackDonation('monthly12k');
+                          }}
+                          className="w-full text-sm py-2 px-3 bg-green-50 hover:bg-green-100 text-green-800 rounded border border-green-200 transition-colors"
+                        >
+                          ₦12,000/month
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePaystackDonation('monthly20k');
+                          }}
+                          className="w-full text-sm py-2 px-3 bg-green-50 hover:bg-green-100 text-green-800 rounded border border-green-200 transition-colors"
+                        >
+                          ₦20,000/month
+                        </button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="primary"
+                        onClick={() => handlePaystackDonation('oneTime')}
+                        fullWidth
+                        className="mt-auto bg-green-600 hover:bg-green-700"
+                      >
+                        Donate via Paystack
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
 
