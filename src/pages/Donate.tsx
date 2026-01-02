@@ -303,7 +303,7 @@ const Donate: React.FC = () => {
                 <div className="border rounded-lg p-6 hover:shadow-lg transition-all flex flex-col h-full">
                   <div className="flex-grow">
                     <div className="flex justify-between items-start mb-4">
-                      <CreditCard className="h-12 w-12 text-green-600" />
+                      <CreditCard className="h-12 w-12 text-cyan-600" />
                     </div>
                     <h4 className="text-lg font-semibold mb-2">Paystack (Nigerian Donors)</h4>
                     <p className="text-gray-600 mb-4">
@@ -318,40 +318,39 @@ const Donate: React.FC = () => {
                             e.stopPropagation();
                             handlePaystackDonation('monthly6k');
                           }}
-                          className="w-full text-sm py-2 px-3 bg-green-50 hover:bg-green-100 text-green-800 rounded border border-green-200 transition-colors"
+                          className="w-full text-sm py-3 px-4 bg-cyan-50 hover:bg-cyan-100 text-cyan-800 rounded border border-cyan-200 transition-colors font-medium"
                         >
-                          ₦6,000/month
+                          ₦6,000
                         </button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handlePaystackDonation('monthly12k');
                           }}
-                          className="w-full text-sm py-2 px-3 bg-green-50 hover:bg-green-100 text-green-800 rounded border border-green-200 transition-colors"
+                          className="w-full text-sm py-3 px-4 bg-cyan-50 hover:bg-cyan-100 text-cyan-800 rounded border border-cyan-200 transition-colors font-medium"
                         >
-                          ₦12,000/month
+                          ₦12,000
                         </button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handlePaystackDonation('monthly20k');
                           }}
-                          className="w-full text-sm py-2 px-3 bg-green-50 hover:bg-green-100 text-green-800 rounded border border-green-200 transition-colors"
+                          className="w-full text-sm py-3 px-4 bg-cyan-50 hover:bg-cyan-100 text-cyan-800 rounded border border-cyan-200 transition-colors font-medium"
                         >
-                          ₦20,000/month
+                          ₦20,000
                         </button>
                       </div>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        onClick={() => handlePaystackDonation('oneTime')}
-                        fullWidth
-                        className="mt-auto bg-green-600 hover:bg-green-700"
-                      >
-                        Donate via Paystack
-                      </Button>
-                    )}
+                    ) : null}
                   </div>
+                  <Button
+                    variant="primary"
+                    onClick={() => handlePaystackDonation(donationType === 'monthly' ? 'monthly6k' : 'oneTime')}
+                    fullWidth
+                    className="mt-auto"
+                  >
+                    Donate via Paystack
+                  </Button>
                 </div>
               </div>
 
