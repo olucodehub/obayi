@@ -71,21 +71,13 @@ async function startServer() {
         await database.connect();
         console.log('Database connected successfully');
 
-        // Initialize database schema
-        const schemaPath = path.join(__dirname, 'schema.sql');
-        if (fs.existsSync(schemaPath)) {
-            const schema = fs.readFileSync(schemaPath, 'utf8');
-            const statements = schema.split(';').filter(stmt => stmt.trim());
+        // NOTE: Schema initialization removed - PostgreSQL schema is deployed separately
+        // See backend/schema-postgres.sql for the database schema
+        // Schema should be deployed manually or via migration scripts
 
-            for (const statement of statements) {
-                if (statement.trim()) {
-                    await database.run(statement);
-                }
-            }
-            console.log('Database schema initialized');
-        }
+        console.log('Database ready - schema managed separately');
     } catch (error) {
-        console.error('Database initialization failed:', error);
+        console.error('Database connection failed:', error);
         console.log('Server will start anyway, but database operations may fail');
     }
 

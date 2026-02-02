@@ -1,92 +1,108 @@
-// Use sqlite3 for production compatibility (no native compilation required)
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+/**
+ * PostgreSQL Database Configuration
+ * Azure PostgreSQL Flexible Server connection
+ */
 
-const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', 'database.sqlite');
+const { Pool } = require('pg');
 
+// Get connection details from environment variables
+const connectionString = process.env.DATABASE_URL ||
+  `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME}`;
+
+const pool = new Pool({
+  connectionString,
+  ssl: {
+    rejectUnauthorized: false // Required for Azure
+  },
+  max: 20, // Maximum pool size
+  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+  connectionTimeoutMillis: 10000, // Return error after 10 seconds if unable to connect
+  query_timeout: 30000, // Query timeout: 30 seconds
+  statement_timeout: 30000 // Statement timeout: 30 seconds
+});
+
+// PostgreSQL DatabaseWrapper class to match SQLite interface
 class DatabaseWrapper {
     constructor() {
-        this.db = null;
+        this.pool = pool;
     }
 
     async connect() {
-        return new Promise((resolve, reject) => {
-            try {
-                this.db = new sqlite3.Database(dbPath, (err) => {
-                    if (err) {
-                        console.error('Error connecting to database:', err.message);
-                        reject(err);
-                    } else {
-                        console.log('Connected to SQLite database');
-                        
-                        // Enable foreign keys and optimize settings
-                        this.db.run('PRAGMA foreign_keys = ON');
-                        this.db.run('PRAGMA journal_mode = WAL');
-                        this.db.run('PRAGMA synchronous = NORMAL');
-                        this.db.run('PRAGMA cache_size = 1000');
-                        this.db.run('PRAGMA temp_store = MEMORY');
-                        
-                        resolve(this.db);
-                    }
-                });
-            } catch (error) {
-                console.error('Error connecting to database:', error.message);
-                reject(error);
-            }
-        });
-    }
-
-    getDb() {
-        return this.db;
-    }
-
-    close() {
-        if (this.db) {
-            this.db.close();
+        try {
+            // Test connection
+            const client = await this.pool.connect();
+            console.log('✅ Connected to PostgreSQL database');
+            client.release();
+            return this.pool;
+        } catch (error) {
+            console.error('❌ Error connecting to PostgreSQL:', error.message);
+            throw error;
         }
     }
 
-    // sqlite3 methods are async
-    run(sql, params = []) {
-        return new Promise((resolve, reject) => {
-            this.db.run(sql, params, function(err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve({ 
-                        id: this.lastID, 
-                        changes: this.changes 
-                    });
-                }
-            });
-        });
+    getDb() {
+        return this.pool;
     }
 
-    get(sql, params = []) {
-        return new Promise((resolve, reject) => {
-            this.db.get(sql, params, (err, row) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(row);
-                }
-            });
-        });
+    async close() {
+        await this.pool.end();
+        console.log('PostgreSQL connection pool closed');
     }
 
-    all(sql, params = []) {
-        return new Promise((resolve, reject) => {
-            this.db.all(sql, params, (err, rows) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(rows);
-                }
-            });
-        });
+    // PostgreSQL query methods matching SQLite interface
+    async run(sql, params = []) {
+        try {
+            const result = await this.pool.query(sql, params);
+            return {
+                id: result.rows[0]?.id || null,
+                changes: result.rowCount
+            };
+        } catch (error) {
+            console.error('SQL Error:', error.message);
+            throw error;
+        }
+    }
+
+    async get(sql, params = []) {
+        try {
+            const result = await this.pool.query(sql, params);
+            return result.rows[0] || null;
+        } catch (error) {
+            console.error('SQL Error:', error.message);
+            throw error;
+        }
+    }
+
+    async all(sql, params = []) {
+        try {
+            const result = await this.pool.query(sql, params);
+            return result.rows;
+        } catch (error) {
+            console.error('SQL Error:', error.message);
+            throw error;
+        }
     }
 }
 
 const database = new DatabaseWrapper();
+
+// Handle pool errors
+pool.on('error', (err) => {
+    console.error('Unexpected error on idle PostgreSQL client', err);
+    process.exit(-1);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+    console.log('Closing PostgreSQL connection pool...');
+    await database.close();
+    process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+    console.log('Closing PostgreSQL connection pool...');
+    await database.close();
+    process.exit(0);
+});
 
 module.exports = database;
