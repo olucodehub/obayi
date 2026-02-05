@@ -189,6 +189,7 @@ router.post('/documents', [
             INSERT INTO student_documents
             (student_id, document_type, document_title, file_data, file_name, file_size, mime_type, description)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING id
         `, [
             student.id,
             documentType,

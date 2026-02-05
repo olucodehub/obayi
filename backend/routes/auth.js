@@ -71,7 +71,7 @@ router.post('/register', [
 
         // Create user
         const result = await database.run(
-            'INSERT INTO users (email, password_hash, user_type, first_name, last_name, phone) VALUES ($1, $2, $3, $4, $5, $6)',
+            'INSERT INTO users (email, password_hash, user_type, first_name, last_name, phone) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
             [email, passwordHash, userType, firstName, lastName, phone]
         );
 
@@ -80,14 +80,14 @@ router.post('/register', [
         // Create specific profile based on user type
         if (userType === 'donor') {
             await database.run(
-                'INSERT INTO donors (user_id, organization, bio) VALUES ($1, $2, $3)',
+                'INSERT INTO donors (user_id, organization, bio) VALUES ($1, $2, $3) RETURNING id',
                 [userId, company, bio]
             );
         } else if (userType === 'student') {
             // Generate student ID
             const studentId = `STU${Date.now()}`;
             await database.run(
-                'INSERT INTO students (user_id, student_id, school_name, grade_level, date_of_birth, guardian_name, guardian_phone, address, bio) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+                'INSERT INTO students (user_id, student_id, school_name, grade_level, date_of_birth, guardian_name, guardian_phone, address, bio) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
                 [userId, studentId, school, gradeLevel, dateOfBirth, guardianName, guardianPhone, address, bio]
             );
         }

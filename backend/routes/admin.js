@@ -188,7 +188,7 @@ router.post('/assign', [
 
         // Create new assignment
         const result = await database.run(
-            'INSERT INTO donor_student_assignments (donor_id, student_id, assigned_by_admin_id, notes) VALUES ($1, $2, $3, $4)',
+            'INSERT INTO donor_student_assignments (donor_id, student_id, assigned_by_admin_id, notes) VALUES ($1, $2, $3, $4) RETURNING id',
             [donorId, studentId, adminId, notes || null]
         );
 

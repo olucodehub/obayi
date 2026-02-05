@@ -288,7 +288,8 @@ router.post('/documents', [
         const result = database.run(
             `INSERT INTO student_documents
              (student_id, document_type, document_title, file_name, file_size, mime_type, file_url, blob_name, description, amount)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+             RETURNING id`,
             [
                 student.id,
                 documentType,
