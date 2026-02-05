@@ -87,7 +87,26 @@ router.get('/students', authenticateToken, requireDonor, async (req, res) => {
         // Get assigned students
         const students = await database.all(`
             SELECT
-                s.*,
+                s.id,
+                s.user_id,
+                s.student_id,
+                s.date_of_birth,
+                s.gender,
+                s.address,
+                s.city,
+                s.country,
+                s.school_name,
+                s.grade_level,
+                s.field_of_study,
+                s.profile_picture_url,
+                s.emergency_contact_name,
+                s.emergency_contact_phone,
+                s.guardian_name,
+                s.guardian_phone,
+                s.guardian_email,
+                s.bio,
+                s.created_at,
+                s.updated_at,
                 u.first_name,
                 u.last_name,
                 u.email,
@@ -102,7 +121,11 @@ router.get('/students', authenticateToken, requireDonor, async (req, res) => {
             LEFT JOIN student_documents sd ON s.id = sd.student_id
             LEFT JOIN donor_student_assignments dsa2 ON s.id = dsa2.student_id AND dsa2.is_active = TRUE
             WHERE dsa.donor_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
-            GROUP BY s.id, u.first_name, u.last_name, u.email, u.phone, dsa.assigned_at, dsa.notes
+            GROUP BY s.id, s.user_id, s.student_id, s.date_of_birth, s.gender, s.address, s.city, s.country,
+                     s.school_name, s.grade_level, s.field_of_study, s.profile_picture_url,
+                     s.emergency_contact_name, s.emergency_contact_phone, s.guardian_name, s.guardian_phone,
+                     s.guardian_email, s.bio, s.created_at, s.updated_at,
+                     u.first_name, u.last_name, u.email, u.phone, dsa.assigned_at, dsa.notes
             ORDER BY dsa.assigned_at DESC
         `, [donor.id]);
 
