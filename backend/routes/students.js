@@ -284,6 +284,54 @@ router.delete('/documents/:documentId', authenticateToken, requireStudent, async
     }
 });
 
+// Get assigned donors for the logged-in student
+router.get('/donors', authenticateToken, requireStudent, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Get student ID
+        const student = await database.get(
+            'SELECT id FROM students WHERE user_id = $1',
+            [userId]
+        );
+
+        if (!student) {
+            return res.status(404).json({ error: 'Student profile not found' });
+        }
+
+        // Get assigned donors
+        const donors = await database.all(`
+            SELECT
+                d.id,
+                d.organization,
+                d.address,
+                d.city,
+                d.country,
+                d.donation_amount,
+                d.donation_frequency,
+                d.preferred_contact,
+                d.bio,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.phone,
+                dsa.assigned_at,
+                dsa.notes as assignment_notes
+            FROM donor_student_assignments dsa
+            JOIN donors d ON dsa.donor_id = d.id
+            JOIN users u ON d.user_id = u.id
+            WHERE dsa.student_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
+            ORDER BY dsa.assigned_at DESC
+        `, [student.id]);
+
+        res.json({ donors });
+
+    } catch (error) {
+        console.error('Get assigned donors error:', error);
+        res.status(500).json({ error: 'Failed to get assigned donors' });
+    }
+});
+
 // Get donor count (how many donors are supporting this student)
 router.get('/donor-count', authenticateToken, requireStudent, async (req, res) => {
     try {
