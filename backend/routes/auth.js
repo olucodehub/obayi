@@ -57,7 +57,7 @@ router.post('/register', [
 
         // Check if user already exists
         const existingUser = await database.get(
-            'SELECT id FROM users WHERE email = ?',
+            'SELECT id FROM users WHERE email = $1',
             [email]
         );
 
@@ -71,7 +71,7 @@ router.post('/register', [
 
         // Create user
         const result = await database.run(
-            'INSERT INTO users (email, password_hash, user_type, first_name, last_name, phone) VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT INTO users (email, password_hash, user_type, first_name, last_name, phone) VALUES ($1, $2, $3, $4, $5, $6)',
             [email, passwordHash, userType, firstName, lastName, phone]
         );
 
@@ -80,14 +80,14 @@ router.post('/register', [
         // Create specific profile based on user type
         if (userType === 'donor') {
             await database.run(
-                'INSERT INTO donors (user_id, organization, bio) VALUES (?, ?, ?)',
+                'INSERT INTO donors (user_id, organization, bio) VALUES ($1, $2, $3)',
                 [userId, company, bio]
             );
         } else if (userType === 'student') {
             // Generate student ID
             const studentId = `STU${Date.now()}`;
             await database.run(
-                'INSERT INTO students (user_id, student_id, school_name, grade_level, date_of_birth, guardian_name, guardian_phone, address, bio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO students (user_id, student_id, school_name, grade_level, date_of_birth, guardian_name, guardian_phone, address, bio) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
                 [userId, studentId, school, gradeLevel, dateOfBirth, guardianName, guardianPhone, address, bio]
             );
         }
@@ -145,7 +145,7 @@ router.post('/login', [
 
         // Get user
         const user = await database.get(
-            'SELECT * FROM users WHERE email = ? AND is_active = TRUE',
+            'SELECT * FROM users WHERE email = $1 AND is_active = TRUE',
             [email]
         );
 
@@ -193,7 +193,7 @@ router.post('/forgot-password', [
 
         // Check if user exists
         const user = await database.get(
-            'SELECT id FROM users WHERE email = ? AND is_active = TRUE',
+            'SELECT id FROM users WHERE email = $1 AND is_active = TRUE',
             [email]
         );
 
@@ -208,7 +208,7 @@ router.post('/forgot-password', [
 
         // Store reset token
         await database.run(
-            'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)',
+            'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
             [user.id, resetToken, expiresAt.toISOString()]
         );
 
@@ -242,10 +242,10 @@ router.post('/reset-password', [
 
         // Find valid reset token
         const resetRecord = await database.get(
-            `SELECT rt.*, u.id as user_id 
-             FROM password_reset_tokens rt 
-             JOIN users u ON rt.user_id = u.id 
-             WHERE rt.token = ? AND rt.used = FALSE AND rt.expires_at > datetime('now') 
+            `SELECT rt.*, u.id as user_id
+             FROM password_reset_tokens rt
+             JOIN users u ON rt.user_id = u.id
+             WHERE rt.token = $1 AND rt.used = FALSE AND rt.expires_at > CURRENT_TIMESTAMP
              AND u.is_active = TRUE`,
             [token]
         );
@@ -259,13 +259,13 @@ router.post('/reset-password', [
 
         // Update password
         await database.run(
-            'UPDATE users SET password_hash = ?, updated_at = datetime(\'now\') WHERE id = ?',
+            'UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
             [passwordHash, resetRecord.user_id]
         );
 
         // Mark token as used
         await database.run(
-            'UPDATE password_reset_tokens SET used = TRUE WHERE id = ?',
+            'UPDATE password_reset_tokens SET used = TRUE WHERE id = $1',
             [resetRecord.id]
         );
 
@@ -288,26 +288,26 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
         if (userType === 'donor') {
             profileQuery = `
-                SELECT u.*, d.organization, d.address, d.city, d.country, 
+                SELECT u.*, d.organization, d.address, d.city, d.country,
                        d.donation_amount, d.donation_frequency, d.preferred_contact, d.bio
-                FROM users u 
-                LEFT JOIN donors d ON u.id = d.user_id 
-                WHERE u.id = ?
+                FROM users u
+                LEFT JOIN donors d ON u.id = d.user_id
+                WHERE u.id = $1
             `;
             profileParams = [userId];
         } else if (userType === 'student') {
             profileQuery = `
-                SELECT u.*, s.student_id, s.date_of_birth, s.gender, s.address, 
+                SELECT u.*, s.student_id, s.date_of_birth, s.gender, s.address,
                        s.city, s.country, s.school_name, s.grade_level, s.field_of_study,
                        s.profile_picture, s.emergency_contact_name, s.emergency_contact_phone,
                        s.guardian_name, s.guardian_phone, s.guardian_email, s.bio
-                FROM users u 
-                LEFT JOIN students s ON u.id = s.user_id 
-                WHERE u.id = ?
+                FROM users u
+                LEFT JOIN students s ON u.id = s.user_id
+                WHERE u.id = $1
             `;
             profileParams = [userId];
         } else {
-            profileQuery = 'SELECT * FROM users WHERE id = ?';
+            profileQuery = 'SELECT * FROM users WHERE id = $1';
             profileParams = [userId];
         }
 
@@ -372,16 +372,17 @@ router.put('/profile', [
         // Update users table
         const userFields = [];
         const userValues = [];
-        
-        if (firstName !== undefined) { userFields.push('first_name = ?'); userValues.push(firstName); }
-        if (lastName !== undefined) { userFields.push('last_name = ?'); userValues.push(lastName); }
-        if (phone !== undefined) { userFields.push('phone = ?'); userValues.push(phone); }
-        
+        let userParamCounter = 1;
+
+        if (firstName !== undefined) { userFields.push(`first_name = $${userParamCounter++}`); userValues.push(firstName); }
+        if (lastName !== undefined) { userFields.push(`last_name = $${userParamCounter++}`); userValues.push(lastName); }
+        if (phone !== undefined) { userFields.push(`phone = $${userParamCounter++}`); userValues.push(phone); }
+
         if (userFields.length > 0) {
-            userFields.push('updated_at = datetime(\'now\')');
+            userFields.push(`updated_at = CURRENT_TIMESTAMP`);
             userValues.push(userId);
             await database.run(
-                `UPDATE users SET ${userFields.join(', ')} WHERE id = ?`,
+                `UPDATE users SET ${userFields.join(', ')} WHERE id = $${userParamCounter}`,
                 userValues
             );
         }
@@ -390,44 +391,46 @@ router.put('/profile', [
         if (userType === 'student') {
             const studentFields = [];
             const studentValues = [];
-            
-            if (school !== undefined) { studentFields.push('school_name = ?'); studentValues.push(school); }
-            if (gradeLevel !== undefined) { studentFields.push('grade_level = ?'); studentValues.push(gradeLevel); }
-            if (dateOfBirth !== undefined) { studentFields.push('date_of_birth = ?'); studentValues.push(dateOfBirth); }
-            if (guardianName !== undefined) { studentFields.push('guardian_name = ?'); studentValues.push(guardianName); }
-            if (guardianPhone !== undefined) { studentFields.push('guardian_phone = ?'); studentValues.push(guardianPhone); }
-            if (address !== undefined) { studentFields.push('address = ?'); studentValues.push(address); }
-            if (city !== undefined) { studentFields.push('city = ?'); studentValues.push(city); }
-            if (country !== undefined) { studentFields.push('country = ?'); studentValues.push(country); }
-            if (fieldOfStudy !== undefined) { studentFields.push('field_of_study = ?'); studentValues.push(fieldOfStudy); }
-            if (bio !== undefined) { studentFields.push('bio = ?'); studentValues.push(bio); }
-            
+            let studentParamCounter = 1;
+
+            if (school !== undefined) { studentFields.push(`school_name = $${studentParamCounter++}`); studentValues.push(school); }
+            if (gradeLevel !== undefined) { studentFields.push(`grade_level = $${studentParamCounter++}`); studentValues.push(gradeLevel); }
+            if (dateOfBirth !== undefined) { studentFields.push(`date_of_birth = $${studentParamCounter++}`); studentValues.push(dateOfBirth); }
+            if (guardianName !== undefined) { studentFields.push(`guardian_name = $${studentParamCounter++}`); studentValues.push(guardianName); }
+            if (guardianPhone !== undefined) { studentFields.push(`guardian_phone = $${studentParamCounter++}`); studentValues.push(guardianPhone); }
+            if (address !== undefined) { studentFields.push(`address = $${studentParamCounter++}`); studentValues.push(address); }
+            if (city !== undefined) { studentFields.push(`city = $${studentParamCounter++}`); studentValues.push(city); }
+            if (country !== undefined) { studentFields.push(`country = $${studentParamCounter++}`); studentValues.push(country); }
+            if (fieldOfStudy !== undefined) { studentFields.push(`field_of_study = $${studentParamCounter++}`); studentValues.push(fieldOfStudy); }
+            if (bio !== undefined) { studentFields.push(`bio = $${studentParamCounter++}`); studentValues.push(bio); }
+
             if (studentFields.length > 0) {
-                studentFields.push('updated_at = datetime(\'now\')');
+                studentFields.push(`updated_at = CURRENT_TIMESTAMP`);
                 studentValues.push(userId);
                 await database.run(
-                    `UPDATE students SET ${studentFields.join(', ')} WHERE user_id = ?`,
+                    `UPDATE students SET ${studentFields.join(', ')} WHERE user_id = $${studentParamCounter}`,
                     studentValues
                 );
             }
         } else if (userType === 'donor') {
             const donorFields = [];
             const donorValues = [];
-            
-            if (organization !== undefined) { donorFields.push('organization = ?'); donorValues.push(organization); }
-            if (address !== undefined) { donorFields.push('address = ?'); donorValues.push(address); }
-            if (city !== undefined) { donorFields.push('city = ?'); donorValues.push(city); }
-            if (country !== undefined) { donorFields.push('country = ?'); donorValues.push(country); }
-            if (donationAmount !== undefined) { donorFields.push('donation_amount = ?'); donorValues.push(donationAmount); }
-            if (donationFrequency !== undefined) { donorFields.push('donation_frequency = ?'); donorValues.push(donationFrequency); }
-            if (preferredContact !== undefined) { donorFields.push('preferred_contact = ?'); donorValues.push(preferredContact); }
-            if (bio !== undefined) { donorFields.push('bio = ?'); donorValues.push(bio); }
-            
+            let donorParamCounter = 1;
+
+            if (organization !== undefined) { donorFields.push(`organization = $${donorParamCounter++}`); donorValues.push(organization); }
+            if (address !== undefined) { donorFields.push(`address = $${donorParamCounter++}`); donorValues.push(address); }
+            if (city !== undefined) { donorFields.push(`city = $${donorParamCounter++}`); donorValues.push(city); }
+            if (country !== undefined) { donorFields.push(`country = $${donorParamCounter++}`); donorValues.push(country); }
+            if (donationAmount !== undefined) { donorFields.push(`donation_amount = $${donorParamCounter++}`); donorValues.push(donationAmount); }
+            if (donationFrequency !== undefined) { donorFields.push(`donation_frequency = $${donorParamCounter++}`); donorValues.push(donationFrequency); }
+            if (preferredContact !== undefined) { donorFields.push(`preferred_contact = $${donorParamCounter++}`); donorValues.push(preferredContact); }
+            if (bio !== undefined) { donorFields.push(`bio = $${donorParamCounter++}`); donorValues.push(bio); }
+
             if (donorFields.length > 0) {
-                donorFields.push('updated_at = datetime(\'now\')');
+                donorFields.push(`updated_at = CURRENT_TIMESTAMP`);
                 donorValues.push(userId);
                 await database.run(
-                    `UPDATE donors SET ${donorFields.join(', ')} WHERE user_id = ?`,
+                    `UPDATE donors SET ${donorFields.join(', ')} WHERE user_id = $${donorParamCounter}`,
                     donorValues
                 );
             }
@@ -458,7 +461,7 @@ router.put('/change-password', [
 
         // Get current user
         const user = await database.get(
-            'SELECT password_hash FROM users WHERE id = ?',
+            'SELECT password_hash FROM users WHERE id = $1',
             [userId]
         );
 
@@ -477,7 +480,7 @@ router.put('/change-password', [
 
         // Update password
         await database.run(
-            'UPDATE users SET password_hash = ?, updated_at = datetime(\'now\') WHERE id = ?',
+            'UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
             [newPasswordHash, userId]
         );
 

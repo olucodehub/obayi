@@ -89,14 +89,18 @@ router.put('/profile', [
 
         // Update user table
         if (Object.keys(userFields).length > 0) {
-            const userUpdateQuery = `UPDATE users SET ${Object.keys(userFields).map(key => `${key} = ?`).join(', ')}, updated_at = datetime('now') WHERE id = ?`;
+            const keys = Object.keys(userFields);
+            const placeholders = keys.map((_, index) => `${keys[index]} = $${index + 1}`).join(', ');
+            const userUpdateQuery = `UPDATE users SET ${placeholders}, updated_at = CURRENT_TIMESTAMP WHERE id = $${keys.length + 1}`;
             const userUpdateParams = [...Object.values(userFields), userId];
             await database.run(userUpdateQuery, userUpdateParams);
         }
 
         // Update student table
         if (Object.keys(studentFields).length > 0) {
-            const studentUpdateQuery = `UPDATE students SET ${Object.keys(studentFields).map(key => `${key} = ?`).join(', ')}, updated_at = datetime('now') WHERE user_id = ?`;
+            const keys = Object.keys(studentFields);
+            const placeholders = keys.map((_, index) => `${keys[index]} = $${index + 1}`).join(', ');
+            const studentUpdateQuery = `UPDATE students SET ${placeholders}, updated_at = CURRENT_TIMESTAMP WHERE user_id = $${keys.length + 1}`;
             const studentUpdateParams = [...Object.values(studentFields), userId];
             await database.run(studentUpdateQuery, studentUpdateParams);
         }
@@ -128,7 +132,7 @@ router.post('/profile-picture',
 
             // Update profile picture in database
             await database.run(
-                'UPDATE students SET profile_picture = ?, updated_at = datetime(\'now\') WHERE user_id = ?',
+                'UPDATE students SET profile_picture = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2',
                 [dataUrl, userId]
             );
 
@@ -168,7 +172,7 @@ router.post('/documents', [
 
         // Get student ID
         const student = await database.get(
-            'SELECT id FROM students WHERE user_id = ?',
+            'SELECT id FROM students WHERE user_id = $1',
             [userId]
         );
 
@@ -182,9 +186,9 @@ router.post('/documents', [
 
         // Save document information
         const result = await database.run(`
-            INSERT INTO student_documents 
-            (student_id, document_type, document_title, file_data, file_name, file_size, mime_type, description) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO student_documents
+            (student_id, document_type, document_title, file_data, file_name, file_size, mime_type, description)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         `, [
             student.id,
             documentType,
@@ -214,7 +218,7 @@ router.get('/documents', authenticateToken, requireStudent, async (req, res) => 
 
         // Get student ID
         const student = await database.get(
-            'SELECT id FROM students WHERE user_id = ?',
+            'SELECT id FROM students WHERE user_id = $1',
             [userId]
         );
 
@@ -224,10 +228,10 @@ router.get('/documents', authenticateToken, requireStudent, async (req, res) => 
 
         // Get documents
         const documents = await database.all(`
-            SELECT id, document_type, document_title, file_name, file_size, 
+            SELECT id, document_type, document_title, file_name, file_size,
                    uploaded_at, description, mime_type
-            FROM student_documents 
-            WHERE student_id = ? 
+            FROM student_documents
+            WHERE student_id = $1
             ORDER BY uploaded_at DESC
         `, [student.id]);
 
@@ -247,7 +251,7 @@ router.delete('/documents/:documentId', authenticateToken, requireStudent, async
 
         // Get student ID and document
         const student = await database.get(
-            'SELECT id FROM students WHERE user_id = ?',
+            'SELECT id FROM students WHERE user_id = $1',
             [userId]
         );
 
@@ -256,7 +260,7 @@ router.delete('/documents/:documentId', authenticateToken, requireStudent, async
         }
 
         const document = await database.get(
-            'SELECT * FROM student_documents WHERE id = ? AND student_id = ?',
+            'SELECT * FROM student_documents WHERE id = $1 AND student_id = $2',
             [documentId, student.id]
         );
 
@@ -268,7 +272,7 @@ router.delete('/documents/:documentId', authenticateToken, requireStudent, async
 
         // Delete from database
         await database.run(
-            'DELETE FROM student_documents WHERE id = ?',
+            'DELETE FROM student_documents WHERE id = $1',
             [documentId]
         );
 
@@ -287,7 +291,7 @@ router.get('/donor-count', authenticateToken, requireStudent, async (req, res) =
 
         // Get student ID
         const student = await database.get(
-            'SELECT id FROM students WHERE user_id = ?',
+            'SELECT id FROM students WHERE user_id = $1',
             [userId]
         );
 
@@ -301,7 +305,7 @@ router.get('/donor-count', authenticateToken, requireStudent, async (req, res) =
             FROM donor_student_assignments dsa
             JOIN donors d ON dsa.donor_id = d.id
             JOIN users u ON d.user_id = u.id
-            WHERE dsa.student_id = ? AND dsa.is_active = TRUE AND u.is_active = TRUE
+            WHERE dsa.student_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
         `, [student.id]);
 
         res.json({ donorCount: result.count });
@@ -320,7 +324,7 @@ router.get('/documents/:documentId/data', authenticateToken, requireStudent, asy
 
         // Get student ID
         const student = await database.get(
-            'SELECT id FROM students WHERE user_id = ?',
+            'SELECT id FROM students WHERE user_id = $1',
             [userId]
         );
 
@@ -330,7 +334,7 @@ router.get('/documents/:documentId/data', authenticateToken, requireStudent, asy
 
         // Get document
         const document = await database.get(
-            'SELECT file_data, file_name, mime_type FROM student_documents WHERE id = ? AND student_id = ?',
+            'SELECT file_data, file_name, mime_type FROM student_documents WHERE id = $1 AND student_id = $2',
             [documentId, student.id]
         );
 

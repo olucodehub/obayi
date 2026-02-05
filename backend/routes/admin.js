@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/donors', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const donors = await database.all(`
-            SELECT 
+            SELECT
                 u.id,
                 u.email,
                 u.first_name,
@@ -29,7 +29,7 @@ router.get('/donors', authenticateToken, requireAdmin, async (req, res) => {
             JOIN donors d ON u.id = d.user_id
             LEFT JOIN donor_student_assignments dsa ON d.id = dsa.donor_id AND dsa.is_active = TRUE
             WHERE u.user_type = 'donor'
-            GROUP BY u.id
+            GROUP BY u.id, u.email, u.first_name, u.last_name, u.phone, u.created_at, u.is_active, d.id, d.organization, d.city, d.country, d.donation_amount, d.donation_frequency
             ORDER BY u.created_at DESC
         `);
 
@@ -45,7 +45,7 @@ router.get('/donors', authenticateToken, requireAdmin, async (req, res) => {
 router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const students = await database.all(`
-            SELECT 
+            SELECT
                 u.id,
                 u.email,
                 u.first_name,
@@ -67,7 +67,7 @@ router.get('/students', authenticateToken, requireAdmin, async (req, res) => {
             LEFT JOIN donor_student_assignments dsa ON s.id = dsa.student_id AND dsa.is_active = TRUE
             LEFT JOIN student_documents sd ON s.id = sd.student_id
             WHERE u.user_type = 'student'
-            GROUP BY u.id
+            GROUP BY u.id, u.email, u.first_name, u.last_name, u.phone, u.created_at, u.is_active, s.id, s.student_id, s.school_name, s.grade_level, s.field_of_study, s.city, s.country
             ORDER BY u.created_at DESC
         `);
 
@@ -143,10 +143,10 @@ router.post('/assign', [
 
         // Check if donor exists and is active
         const donor = await database.get(`
-            SELECT d.id, u.is_active 
-            FROM donors d 
-            JOIN users u ON d.user_id = u.id 
-            WHERE d.id = ?
+            SELECT d.id, u.is_active
+            FROM donors d
+            JOIN users u ON d.user_id = u.id
+            WHERE d.id = $1
         `, [donorId]);
 
         if (!donor || !donor.is_active) {
@@ -155,10 +155,10 @@ router.post('/assign', [
 
         // Check if student exists and is active
         const student = await database.get(`
-            SELECT s.id, u.is_active 
-            FROM students s 
-            JOIN users u ON s.user_id = u.id 
-            WHERE s.id = ?
+            SELECT s.id, u.is_active
+            FROM students s
+            JOIN users u ON s.user_id = u.id
+            WHERE s.id = $1
         `, [studentId]);
 
         if (!student || !student.is_active) {
@@ -167,7 +167,7 @@ router.post('/assign', [
 
         // Check if assignment already exists
         const existingAssignment = await database.get(
-            'SELECT id, is_active FROM donor_student_assignments WHERE donor_id = ? AND student_id = ?',
+            'SELECT id, is_active FROM donor_student_assignments WHERE donor_id = $1 AND student_id = $2',
             [donorId, studentId]
         );
 
@@ -177,7 +177,7 @@ router.post('/assign', [
             } else {
                 // Reactivate existing assignment
                 await database.run(
-                    'UPDATE donor_student_assignments SET is_active = TRUE, assigned_at = datetime(\'now\'), assigned_by_admin_id = ?, notes = ? WHERE id = ?',
+                    'UPDATE donor_student_assignments SET is_active = TRUE, assigned_at = CURRENT_TIMESTAMP, assigned_by_admin_id = $1, notes = $2 WHERE id = $3',
                     [adminId, notes || null, existingAssignment.id]
                 );
                 
@@ -188,7 +188,7 @@ router.post('/assign', [
 
         // Create new assignment
         const result = await database.run(
-            'INSERT INTO donor_student_assignments (donor_id, student_id, assigned_by_admin_id, notes) VALUES (?, ?, ?, ?)',
+            'INSERT INTO donor_student_assignments (donor_id, student_id, assigned_by_admin_id, notes) VALUES ($1, $2, $3, $4)',
             [donorId, studentId, adminId, notes || null]
         );
 
@@ -197,14 +197,14 @@ router.post('/assign', [
             SELECT u.email, u.first_name, u.last_name, d.organization
             FROM users u
             JOIN donors d ON u.id = d.user_id
-            WHERE d.id = ?
+            WHERE d.id = $1
         `, [donorId]);
 
         const studentDetails = await database.get(`
             SELECT u.email, u.first_name, u.last_name, s.school_name, s.grade_level
             FROM users u
             JOIN students s ON u.id = s.user_id
-            WHERE s.id = ?
+            WHERE s.id = $1
         `, [studentId]);
 
         // Send assignment notification emails asynchronously
@@ -257,7 +257,7 @@ router.post('/unassign', [
 
         // Check if assignment exists
         const assignment = await database.get(
-            'SELECT id FROM donor_student_assignments WHERE donor_id = ? AND student_id = ? AND is_active = TRUE',
+            'SELECT id FROM donor_student_assignments WHERE donor_id = $1 AND student_id = $2 AND is_active = TRUE',
             [donorId, studentId]
         );
 
@@ -267,7 +267,7 @@ router.post('/unassign', [
 
         // Deactivate assignment
         await database.run(
-            'UPDATE donor_student_assignments SET is_active = FALSE WHERE id = ?',
+            'UPDATE donor_student_assignments SET is_active = FALSE WHERE id = $1',
             [assignment.id]
         );
 
@@ -285,7 +285,7 @@ router.get('/donors/:donorId', authenticateToken, requireAdmin, async (req, res)
         const donorId = req.params.donorId;
 
         const donor = await database.get(`
-            SELECT 
+            SELECT
                 u.*,
                 d.organization,
                 d.address,
@@ -297,7 +297,7 @@ router.get('/donors/:donorId', authenticateToken, requireAdmin, async (req, res)
                 d.bio
             FROM users u
             JOIN donors d ON u.id = d.user_id
-            WHERE d.id = ?
+            WHERE d.id = $1
         `, [donorId]);
 
         if (!donor) {
@@ -306,7 +306,7 @@ router.get('/donors/:donorId', authenticateToken, requireAdmin, async (req, res)
 
         // Get assigned students
         const students = await database.all(`
-            SELECT 
+            SELECT
                 s.id,
                 s.student_id as custom_student_id,
                 u.first_name,
@@ -318,7 +318,7 @@ router.get('/donors/:donorId', authenticateToken, requireAdmin, async (req, res)
             FROM donor_student_assignments dsa
             JOIN students s ON dsa.student_id = s.id
             JOIN users u ON s.user_id = u.id
-            WHERE dsa.donor_id = ? AND dsa.is_active = TRUE AND u.is_active = TRUE
+            WHERE dsa.donor_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
             ORDER BY dsa.assigned_at DESC
         `, [donorId]);
 
@@ -344,12 +344,12 @@ router.get('/students/:studentId', authenticateToken, requireAdmin, async (req, 
         const studentId = req.params.studentId;
 
         const student = await database.get(`
-            SELECT 
+            SELECT
                 u.*,
                 s.*
             FROM users u
             JOIN students s ON u.id = s.user_id
-            WHERE s.id = ?
+            WHERE s.id = $1
         `, [studentId]);
 
         if (!student) {
@@ -358,7 +358,7 @@ router.get('/students/:studentId', authenticateToken, requireAdmin, async (req, 
 
         // Get assigned donors
         const donors = await database.all(`
-            SELECT 
+            SELECT
                 d.id,
                 u.first_name,
                 u.last_name,
@@ -370,16 +370,16 @@ router.get('/students/:studentId', authenticateToken, requireAdmin, async (req, 
             JOIN donors d ON dsa.donor_id = d.id
             JOIN users u ON d.user_id = u.id
             LEFT JOIN donors donor_info ON d.id = donor_info.id
-            WHERE dsa.student_id = ? AND dsa.is_active = TRUE AND u.is_active = TRUE
+            WHERE dsa.student_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
             ORDER BY dsa.assigned_at DESC
         `, [studentId]);
 
         // Get documents
         const documents = await database.all(`
-            SELECT id, document_type, document_title, file_name, file_size, 
+            SELECT id, document_type, document_title, file_name, file_size,
                    uploaded_at, description
-            FROM student_documents 
-            WHERE student_id = ? 
+            FROM student_documents
+            WHERE student_id = $1
             ORDER BY uploaded_at DESC
         `, [studentId]);
 
@@ -407,7 +407,7 @@ router.delete('/donors/:donorId', authenticateToken, requireAdmin, async (req, r
 
         // Get donor's user ID
         const donor = await database.get(
-            'SELECT user_id FROM donors WHERE id = ?',
+            'SELECT user_id FROM donors WHERE id = $1',
             [donorId]
         );
 
@@ -417,13 +417,13 @@ router.delete('/donors/:donorId', authenticateToken, requireAdmin, async (req, r
 
         // Deactivate user account
         await database.run(
-            'UPDATE users SET is_active = FALSE, updated_at = datetime(\'now\') WHERE id = ?',
+            'UPDATE users SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
             [donor.user_id]
         );
 
         // Deactivate all assignments
         await database.run(
-            'UPDATE donor_student_assignments SET is_active = FALSE WHERE donor_id = ?',
+            'UPDATE donor_student_assignments SET is_active = FALSE WHERE donor_id = $1',
             [donorId]
         );
 
@@ -442,7 +442,7 @@ router.delete('/students/:studentId', authenticateToken, requireAdmin, async (re
 
         // Get student's user ID
         const student = await database.get(
-            'SELECT user_id FROM students WHERE id = ?',
+            'SELECT user_id FROM students WHERE id = $1',
             [studentId]
         );
 
@@ -452,13 +452,13 @@ router.delete('/students/:studentId', authenticateToken, requireAdmin, async (re
 
         // Deactivate user account
         await database.run(
-            'UPDATE users SET is_active = FALSE, updated_at = datetime(\'now\') WHERE id = ?',
+            'UPDATE users SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
             [student.user_id]
         );
 
         // Deactivate all assignments
         await database.run(
-            'UPDATE donor_student_assignments SET is_active = FALSE WHERE student_id = ?',
+            'UPDATE donor_student_assignments SET is_active = FALSE WHERE student_id = $1',
             [studentId]
         );
 
@@ -475,8 +475,8 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res) => {
     try {
         // Get counts
         const [donorCount, studentCount, assignmentCount, documentCount] = await Promise.all([
-            database.get('SELECT COUNT(*) as count FROM users WHERE user_type = "donor" AND is_active = TRUE'),
-            database.get('SELECT COUNT(*) as count FROM users WHERE user_type = "student" AND is_active = TRUE'),
+            database.get('SELECT COUNT(*) as count FROM users WHERE user_type = \'donor\' AND is_active = TRUE'),
+            database.get('SELECT COUNT(*) as count FROM users WHERE user_type = \'student\' AND is_active = TRUE'),
             database.get('SELECT COUNT(*) as count FROM donor_student_assignments WHERE is_active = TRUE'),
             database.get('SELECT COUNT(*) as count FROM student_documents')
         ]);

@@ -49,14 +49,14 @@ router.put('/profile', [
 
         // Update user table
         if (Object.keys(userFields).length > 0) {
-            const userUpdateQuery = `UPDATE users SET ${Object.keys(userFields).map(key => `${key} = ?`).join(', ')}, updated_at = datetime('now') WHERE id = ?`;
+            const userUpdateQuery = `UPDATE users SET ${Object.keys(userFields).map((key, i) => `${key} = $${i + 1}`).join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = $${Object.keys(userFields).length + 1}`;
             const userUpdateParams = [...Object.values(userFields), userId];
             await database.run(userUpdateQuery, userUpdateParams);
         }
 
         // Update donor table
         if (Object.keys(donorFields).length > 0) {
-            const donorUpdateQuery = `UPDATE donors SET ${Object.keys(donorFields).map(key => `${key} = ?`).join(', ')}, updated_at = datetime('now') WHERE user_id = ?`;
+            const donorUpdateQuery = `UPDATE donors SET ${Object.keys(donorFields).map((key, i) => `${key} = $${i + 1}`).join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE user_id = $${Object.keys(donorFields).length + 1}`;
             const donorUpdateParams = [...Object.values(donorFields), userId];
             await database.run(donorUpdateQuery, donorUpdateParams);
         }
@@ -76,7 +76,7 @@ router.get('/students', authenticateToken, requireDonor, async (req, res) => {
 
         // Get donor ID
         const donor = await database.get(
-            'SELECT id FROM donors WHERE user_id = ?',
+            'SELECT id FROM donors WHERE user_id = $1',
             [userId]
         );
 
@@ -86,7 +86,7 @@ router.get('/students', authenticateToken, requireDonor, async (req, res) => {
 
         // Get assigned students
         const students = await database.all(`
-            SELECT 
+            SELECT
                 s.*,
                 u.first_name,
                 u.last_name,
@@ -101,8 +101,8 @@ router.get('/students', authenticateToken, requireDonor, async (req, res) => {
             JOIN users u ON s.user_id = u.id
             LEFT JOIN student_documents sd ON s.id = sd.student_id
             LEFT JOIN donor_student_assignments dsa2 ON s.id = dsa2.student_id AND dsa2.is_active = TRUE
-            WHERE dsa.donor_id = ? AND dsa.is_active = TRUE AND u.is_active = TRUE
-            GROUP BY s.id
+            WHERE dsa.donor_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
+            GROUP BY s.id, u.first_name, u.last_name, u.email, u.phone, dsa.assigned_at, dsa.notes
             ORDER BY dsa.assigned_at DESC
         `, [donor.id]);
 
@@ -122,7 +122,7 @@ router.get('/students/:studentId', authenticateToken, requireDonor, async (req, 
 
         // Get donor ID
         const donor = await database.get(
-            'SELECT id FROM donors WHERE user_id = ?',
+            'SELECT id FROM donors WHERE user_id = $1',
             [userId]
         );
 
@@ -136,7 +136,7 @@ router.get('/students/:studentId', authenticateToken, requireDonor, async (req, 
             FROM donor_student_assignments dsa
             JOIN students s ON dsa.student_id = s.id
             JOIN users u ON s.user_id = u.id
-            WHERE dsa.donor_id = ? AND s.id = ? AND dsa.is_active = TRUE AND u.is_active = TRUE
+            WHERE dsa.donor_id = $1 AND s.id = $2 AND dsa.is_active = TRUE AND u.is_active = TRUE
         `, [donor.id, studentId]);
 
         if (!assignment) {
@@ -145,16 +145,16 @@ router.get('/students/:studentId', authenticateToken, requireDonor, async (req, 
 
         // Get student documents
         const documents = await database.all(`
-            SELECT id, document_type, document_title, file_name, file_size, 
+            SELECT id, document_type, document_title, file_name, file_size,
                    uploaded_at, description, mime_type
-            FROM student_documents 
-            WHERE student_id = ? 
+            FROM student_documents
+            WHERE student_id = $1
             ORDER BY uploaded_at DESC
         `, [studentId]);
 
         // Get total number of donors supporting this student
         const donorCount = await database.get(
-            'SELECT COUNT(*) as count FROM donor_student_assignments WHERE student_id = ? AND is_active = TRUE',
+            'SELECT COUNT(*) as count FROM donor_student_assignments WHERE student_id = $1 AND is_active = TRUE',
             [studentId]
         );
 
@@ -198,9 +198,9 @@ router.get('/students/:studentId', authenticateToken, requireDonor, async (req, 
 });
 
 // Download student document (for assigned students only)
-router.get('/students/:studentId/documents/:documentId/download', 
-    authenticateToken, 
-    requireDonor, 
+router.get('/students/:studentId/documents/:documentId/download',
+    authenticateToken,
+    requireDonor,
     async (req, res) => {
         try {
             const userId = req.user.id;
@@ -209,7 +209,7 @@ router.get('/students/:studentId/documents/:documentId/download',
 
             // Get donor ID
             const donor = await database.get(
-                'SELECT id FROM donors WHERE user_id = ?',
+                'SELECT id FROM donors WHERE user_id = $1',
                 [userId]
             );
 
@@ -219,7 +219,7 @@ router.get('/students/:studentId/documents/:documentId/download',
 
             // Check if student is assigned to this donor
             const assignment = await database.get(
-                'SELECT id FROM donor_student_assignments WHERE donor_id = ? AND student_id = ? AND is_active = TRUE',
+                'SELECT id FROM donor_student_assignments WHERE donor_id = $1 AND student_id = $2 AND is_active = TRUE',
                 [donor.id, studentId]
             );
 
@@ -229,7 +229,7 @@ router.get('/students/:studentId/documents/:documentId/download',
 
             // Get document
             const document = await database.get(
-                'SELECT file_url, file_name, mime_type FROM student_documents WHERE id = ? AND student_id = ?',
+                'SELECT file_url, file_name, mime_type FROM student_documents WHERE id = $1 AND student_id = $2',
                 [documentId, studentId]
             );
 

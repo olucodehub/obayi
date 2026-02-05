@@ -14,7 +14,7 @@ router.get('/profile', [authenticateToken, requireStudent], async (req, res) => 
         
         // Get user info
         const user = database.get(
-            'SELECT id, email, first_name, last_name, phone, created_at FROM users WHERE id = ?',
+            'SELECT id, email, first_name, last_name, phone, created_at FROM users WHERE id = $1',
             [userId]
         );
         
@@ -24,24 +24,24 @@ router.get('/profile', [authenticateToken, requireStudent], async (req, res) => 
         
         // Get student info
         const student = database.get(
-            `SELECT s.*, COUNT(dsa.donor_id) as total_donors 
+            `SELECT s.*, COUNT(dsa.donor_id) as total_donors
              FROM students s
              LEFT JOIN donor_student_assignments dsa ON s.id = dsa.student_id AND dsa.is_active = 1
-             WHERE s.user_id = ?
-             GROUP BY s.id`,
+             WHERE s.user_id = $1
+             GROUP BY s.id, s.user_id, s.date_of_birth, s.gender, s.address, s.city, s.country, s.school_name, s.grade_level, s.field_of_study, s.emergency_contact_name, s.emergency_contact_phone, s.guardian_name, s.guardian_phone, s.guardian_email, s.bio, s.profile_picture_url, s.created_at, s.updated_at`,
             [userId]
         );
         
         if (!student) {
             return res.status(404).json({ error: 'Student profile not found' });
         }
-        
+
         // Get documents
         const documents = database.all(
-            'SELECT * FROM student_documents WHERE student_id = ? ORDER BY uploaded_at DESC',
+            'SELECT * FROM student_documents WHERE student_id = $1 ORDER BY uploaded_at DESC',
             [student.id]
         );
-        
+
         const profile = {
             ...user,
             ...student,
@@ -122,23 +122,27 @@ router.put('/profile', [
             if (firstName || lastName || phone) {
                 const userUpdates = [];
                 const userParams = [];
-                
+                let placeholderIndex = 1;
+
                 if (firstName) {
-                    userUpdates.push('first_name = ?');
+                    userUpdates.push(`first_name = $${placeholderIndex}`);
                     userParams.push(firstName);
+                    placeholderIndex++;
                 }
                 if (lastName) {
-                    userUpdates.push('last_name = ?');
+                    userUpdates.push(`last_name = $${placeholderIndex}`);
                     userParams.push(lastName);
+                    placeholderIndex++;
                 }
                 if (phone) {
-                    userUpdates.push('phone = ?');
+                    userUpdates.push(`phone = $${placeholderIndex}`);
                     userParams.push(phone);
+                    placeholderIndex++;
                 }
-                
+
                 userParams.push(userId);
                 database.run(
-                    `UPDATE users SET ${userUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+                    `UPDATE users SET ${userUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = $${placeholderIndex}`,
                     userParams
                 );
             }
@@ -146,7 +150,8 @@ router.put('/profile', [
             // Update students table
             const studentUpdates = [];
             const studentParams = [];
-            
+            let placeholderIndex = 1;
+
             const studentFields = {
                 date_of_birth: dateOfBirth,
                 gender,
@@ -163,18 +168,19 @@ router.put('/profile', [
                 guardian_email: guardianEmail,
                 bio
             };
-            
+
             Object.entries(studentFields).forEach(([key, value]) => {
                 if (value !== undefined) {
-                    studentUpdates.push(`${key} = ?`);
+                    studentUpdates.push(`${key} = $${placeholderIndex}`);
                     studentParams.push(value);
+                    placeholderIndex++;
                 }
             });
-            
+
             if (studentUpdates.length > 0) {
                 studentParams.push(userId);
                 database.run(
-                    `UPDATE students SET ${studentUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+                    `UPDATE students SET ${studentUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE user_id = $${placeholderIndex}`,
                     studentParams
                 );
             }
@@ -201,20 +207,20 @@ router.post('/profile-picture', [
         }
         
         const userId = req.user.id;
-        
+
         // Get student info
-        const student = database.get('SELECT * FROM students WHERE user_id = ?', [userId]);
+        const student = database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
         }
-        
+
         // Upload to Azure Blob Storage
         const uploadResult = await azureBlobService.uploadProfilePicture(
             req.file.buffer,
             req.file.originalname,
             userId
         );
-        
+
         // Clean up old profile picture if exists
         if (student.profile_picture_url) {
             const oldBlobName = student.profile_picture_url.split('/').pop();
@@ -222,10 +228,10 @@ router.post('/profile-picture', [
                 await azureBlobService.cleanupOldProfilePicture(userId, uploadResult.blobName);
             }
         }
-        
+
         // Update database
         database.run(
-            'UPDATE students SET profile_picture_url = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?',
+            'UPDATE students SET profile_picture_url = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2',
             [uploadResult.url, userId]
         );
         
@@ -262,13 +268,13 @@ router.post('/documents', [
         
         const userId = req.user.id;
         const { documentType, documentTitle, description, amount } = req.body;
-        
+
         // Get student info
-        const student = database.get('SELECT * FROM students WHERE user_id = ?', [userId]);
+        const student = database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
         }
-        
+
         // Upload to Azure Blob Storage
         const uploadResult = await azureBlobService.uploadDocument(
             req.file.buffer,
@@ -277,12 +283,12 @@ router.post('/documents', [
             userId,
             student.id
         );
-        
+
         // Save to database
         const result = database.run(
-            `INSERT INTO student_documents 
+            `INSERT INTO student_documents
              (student_id, document_type, document_title, file_name, file_size, mime_type, file_url, blob_name, description, amount)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
             [
                 student.id,
                 documentType,
@@ -314,28 +320,28 @@ router.delete('/documents/:documentId', [authenticateToken, requireStudent], asy
     try {
         const userId = req.user.id;
         const documentId = req.params.documentId;
-        
+
         // Get student info
-        const student = database.get('SELECT * FROM students WHERE user_id = ?', [userId]);
+        const student = database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
         }
-        
+
         // Get document info
         const document = database.get(
-            'SELECT * FROM student_documents WHERE id = ? AND student_id = ?',
+            'SELECT * FROM student_documents WHERE id = $1 AND student_id = $2',
             [documentId, student.id]
         );
-        
+
         if (!document) {
             return res.status(404).json({ error: 'Document not found' });
         }
-        
+
         // Delete from Azure Blob Storage
         await azureBlobService.deleteFile(document.blob_name);
-        
+
         // Delete from database
-        database.run('DELETE FROM student_documents WHERE id = ?', [documentId]);
+        database.run('DELETE FROM student_documents WHERE id = $1', [documentId]);
         
         res.json({ message: 'Document deleted successfully' });
         
@@ -349,19 +355,19 @@ router.delete('/documents/:documentId', [authenticateToken, requireStudent], asy
 router.get('/documents', [authenticateToken, requireStudent], async (req, res) => {
     try {
         const userId = req.user.id;
-        
+
         // Get student info
-        const student = database.get('SELECT * FROM students WHERE user_id = ?', [userId]);
+        const student = database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
         }
-        
+
         // Get documents
         const documents = database.all(
-            'SELECT * FROM student_documents WHERE student_id = ? ORDER BY uploaded_at DESC',
+            'SELECT * FROM student_documents WHERE student_id = $1 ORDER BY uploaded_at DESC',
             [student.id]
         );
-        
+
         res.json(documents);
         
     } catch (error) {
