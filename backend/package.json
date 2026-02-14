@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "init-db": "node scripts/initDb.js"
+    "test-db": "node test-postgres.js"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
