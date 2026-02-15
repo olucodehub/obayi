@@ -43,12 +43,30 @@ router.get('/profile', [authenticateToken, requireStudent], async (req, res) => 
         );
 
         const profile = {
-            ...user,
-            ...student,
+            id: user.id,
+            email: user.email,
             firstName: user.first_name,
             lastName: user.last_name,
+            phone: user.phone,
             userType: 'student',
+            // Student-specific fields (camelCase for frontend)
+            school: student.school_name,
+            gradeLevel: student.grade_level,
+            dateOfBirth: student.date_of_birth,
+            gender: student.gender,
+            address: student.address,
+            city: student.city,
+            country: student.country,
+            fieldOfStudy: student.field_of_study,
+            guardianName: student.guardian_name,
+            guardianPhone: student.guardian_phone,
+            guardianEmail: student.guardian_email,
+            emergencyContactName: student.emergency_contact_name,
+            emergencyContactPhone: student.emergency_contact_phone,
+            bio: student.bio,
             profilePicture: student.profile_picture_url,
+            totalDonors: student.total_donors,
+            createdAt: user.created_at,
             documents: documents.map(doc => ({
                 id: doc.id,
                 documentTitle: doc.document_title,
@@ -60,7 +78,7 @@ router.get('/profile', [authenticateToken, requireStudent], async (req, res) => 
                 amount: doc.amount
             }))
         };
-        
+
         res.json(profile);
     } catch (error) {
         console.error('Error fetching student profile:', error);

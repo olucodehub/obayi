@@ -1,5 +1,17 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,21 +19,67 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Environment variables
+.env
+.env.local
+.env.*.local
 *.local
+# But allow .env.production to be committed (it has no secrets)
+!.env.production
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+database.sqlite
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+!.vscode/settings.json
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.env
-# But allow .env.production to be committed (it has no secrets)
-!.env.production
+*~
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE specific
+.bolt/
+.cursor/
+.claude/settings.local.json
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+nul
+*.cache
+
+# Deployment files
+backend-deploy.zip
+frontend-deploy.zip
+*.zip
+!assets/*.zip
+
+# Azure
+.azure/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Misc
+*.bak
+*.backup
+*.orig

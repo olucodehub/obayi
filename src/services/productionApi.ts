@@ -178,7 +178,35 @@ export class ProductionStudentService {
   static async getProfile(): Promise<User> {
     try {
       const response = await api.get('/students/profile');
-      return response.data;
+      const profile = response.data;
+
+      // Backend now returns camelCase, just ensure proper typing
+      const user: User = {
+        id: profile.id?.toString() || profile.id,
+        email: profile.email,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        userType: profile.userType,
+        phone: profile.phone,
+        school: profile.school,
+        gradeLevel: profile.gradeLevel,
+        dateOfBirth: profile.dateOfBirth,
+        gender: profile.gender,
+        guardianName: profile.guardianName,
+        guardianPhone: profile.guardianPhone,
+        guardianEmail: profile.guardianEmail,
+        emergencyContactName: profile.emergencyContactName,
+        emergencyContactPhone: profile.emergencyContactPhone,
+        address: profile.address,
+        city: profile.city,
+        country: profile.country,
+        fieldOfStudy: profile.fieldOfStudy,
+        bio: profile.bio,
+        profilePicture: profile.profilePicture,
+        createdAt: profile.createdAt
+      };
+
+      return user;
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Failed to fetch profile');
     }
@@ -186,32 +214,58 @@ export class ProductionStudentService {
 
   static async updateProfile(profileData: Partial<User>): Promise<void> {
     try {
-      await api.put('/auth/profile', profileData);
-      
-      // Update local storage with new user data
-      const response = await api.get('/auth/profile');
-      const { profile } = response.data;
-      
+      // Map camelCase to snake_case for backend
+      const backendData: any = {};
+      if (profileData.firstName) backendData.firstName = profileData.firstName;
+      if (profileData.lastName) backendData.lastName = profileData.lastName;
+      if (profileData.phone) backendData.phone = profileData.phone;
+      if (profileData.school) backendData.schoolName = profileData.school;
+      if (profileData.gradeLevel) backendData.gradeLevel = profileData.gradeLevel;
+      if (profileData.dateOfBirth) backendData.dateOfBirth = profileData.dateOfBirth;
+      if (profileData.gender) backendData.gender = profileData.gender;
+      if (profileData.address) backendData.address = profileData.address;
+      if (profileData.city) backendData.city = profileData.city;
+      if (profileData.country) backendData.country = profileData.country;
+      if (profileData.fieldOfStudy) backendData.fieldOfStudy = profileData.fieldOfStudy;
+      if (profileData.guardianName) backendData.guardianName = profileData.guardianName;
+      if (profileData.guardianPhone) backendData.guardianPhone = profileData.guardianPhone;
+      if (profileData.guardianEmail) backendData.guardianEmail = profileData.guardianEmail;
+      if (profileData.emergencyContactName) backendData.emergencyContactName = profileData.emergencyContactName;
+      if (profileData.emergencyContactPhone) backendData.emergencyContactPhone = profileData.emergencyContactPhone;
+      if (profileData.bio) backendData.bio = profileData.bio;
+
+      await api.put('/students/profile', backendData);
+
+      // Fetch updated profile
+      const response = await api.get('/students/profile');
+      const profile = response.data;
+
+      // Update local storage
       const updatedUser: User = {
         id: profile.id.toString(),
         email: profile.email,
-        firstName: profile.first_name,
-        lastName: profile.last_name,
-        userType: profile.user_type,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        userType: profile.userType,
         phone: profile.phone,
-        school: profile.school_name,
-        gradeLevel: profile.grade_level,
-        dateOfBirth: profile.date_of_birth,
-        guardianName: profile.guardian_name,
-        guardianPhone: profile.guardian_phone,
+        school: profile.school,
+        gradeLevel: profile.gradeLevel,
+        dateOfBirth: profile.dateOfBirth,
+        gender: profile.gender,
+        guardianName: profile.guardianName,
+        guardianPhone: profile.guardianPhone,
+        guardianEmail: profile.guardianEmail,
+        emergencyContactName: profile.emergencyContactName,
+        emergencyContactPhone: profile.emergencyContactPhone,
         address: profile.address,
         city: profile.city,
         country: profile.country,
-        fieldOfStudy: profile.field_of_study,
+        fieldOfStudy: profile.fieldOfStudy,
         bio: profile.bio,
-        createdAt: profile.created_at
+        profilePicture: profile.profilePicture,
+        createdAt: profile.createdAt
       };
-      
+
       localStorage.setItem('current_user', JSON.stringify(updatedUser));
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Failed to update profile');
