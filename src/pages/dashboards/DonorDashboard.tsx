@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Users, BookOpen, Eye, Calendar, Heart, User, FileText, Award, GraduationCap, Download, Lock } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { AuthService, MatchingService, CertificateService, ReceiptService, AchievementService, FileService } from '../../utils/auth';
+import { DonorService } from '../../services/serviceFactory';
+import { FileService } from '../../utils/auth';
 import { User as UserType } from '../../types/auth';
 import PasswordChangeModal from '../../components/PasswordChangeModal';
 
@@ -13,46 +14,16 @@ const DonorDashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
-  const loadAssignedStudents = useCallback(() => {
+  const loadAssignedStudents = useCallback(async () => {
     if (!user) return;
-    
+
     try {
-      const matches = MatchingService.getDonorMatches(user.id);
-      const students = matches.map(match => {
-        const student = AuthService.getUsers().find(u => u.id === match.studentId);
-        if (student) {
-          // Add document count and other calculated fields
-          const documentStats = getStudentDocumentStats(student.id);
-          return {
-            ...student,
-            documentCount: documentStats.total,
-            assignedAt: match.createdAt,
-            totalDonors: MatchingService.getStudentMatches(student.id).length,
-            documents: [
-              ...CertificateService.getCertificatesByUser(student.id).map(cert => ({
-                id: cert.id,
-                documentTitle: cert.name,
-                documentType: 'certificate',
-                fileName: cert.fileName || 'Certificate',
-                uploadedAt: cert.uploadedAt
-              })),
-              ...ReceiptService.getReceiptsByUser(student.id).map(receipt => ({
-                id: receipt.id,
-                documentTitle: receipt.description,
-                documentType: 'receipt',
-                fileName: receipt.fileName || 'Receipt',
-                uploadedAt: receipt.uploadedAt
-              }))
-            ]
-          };
-        }
-        return student;
-      }).filter(Boolean) as UserType[];
-      
-      setAssignedStudents(students);
+      setLoading(true);
+      const students = await DonorService.getAssignedStudents();
+      setAssignedStudents(students as UserType[]);
       setError(null);
-    } catch (err) {
-      setError('Failed to load assigned students');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to load assigned students');
       console.error('Error loading students:', err);
     } finally {
       setLoading(false);
@@ -64,18 +35,6 @@ const DonorDashboard: React.FC = () => {
       loadAssignedStudents();
     }
   }, [user, loadAssignedStudents]);
-
-  const getStudentDocumentStats = (studentId: string) => {
-    const certificates = CertificateService.getCertificatesByUser(studentId);
-    const receipts = ReceiptService.getReceiptsByUser(studentId);
-    const achievements = AchievementService.getAchievementsByUser(studentId);
-    return { 
-      certificates: certificates.length, 
-      receipts: receipts.length, 
-      achievements: achievements.length,
-      total: certificates.length + receipts.length
-    };
-  };
 
   const loadStudentDetails = useCallback((studentId: string) => {
     const student = assignedStudents.find(s => s.id === studentId);
