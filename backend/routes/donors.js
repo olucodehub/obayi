@@ -129,38 +129,55 @@ router.get('/students', authenticateToken, requireDonor, async (req, res) => {
             ORDER BY dsa.assigned_at DESC
         `, [donor.id]);
 
-        // Transform to camelCase for frontend
-        const formattedStudents = students.map(student => ({
-            id: student.id,
-            userId: student.user_id,
-            studentId: student.student_id,
-            email: student.email,
-            firstName: student.first_name,
-            lastName: student.last_name,
-            phone: student.phone,
-            userType: 'student',
-            dateOfBirth: student.date_of_birth,
-            gender: student.gender,
-            address: student.address,
-            city: student.city,
-            country: student.country,
-            schoolName: student.school_name,
-            gradeLevel: student.grade_level,
-            fieldOfStudy: student.field_of_study,
-            profilePicture: student.profile_picture_url,
-            emergencyContactName: student.emergency_contact_name,
-            emergencyContactPhone: student.emergency_contact_phone,
-            guardianName: student.guardian_name,
-            guardianPhone: student.guardian_phone,
-            guardianEmail: student.guardian_email,
-            bio: student.bio,
-            assignedAt: student.assigned_at,
-            assignmentNotes: student.assignment_notes,
-            documentCount: parseInt(student.document_count) || 0,
-            totalDonors: parseInt(student.total_donors) || 0,
-            documents: [], // Documents can be fetched separately if needed
-            createdAt: student.created_at,
-            updatedAt: student.updated_at
+        // Fetch documents for each student
+        const formattedStudents = await Promise.all(students.map(async (student) => {
+            // Get documents for this student
+            const documents = await database.all(
+                'SELECT * FROM student_documents WHERE student_id = $1 ORDER BY uploaded_at DESC',
+                [student.id]
+            );
+
+            return {
+                id: student.id,
+                userId: student.user_id,
+                studentId: student.student_id,
+                email: student.email,
+                firstName: student.first_name,
+                lastName: student.last_name,
+                phone: student.phone,
+                userType: 'student',
+                dateOfBirth: student.date_of_birth,
+                gender: student.gender,
+                address: student.address,
+                city: student.city,
+                country: student.country,
+                schoolName: student.school_name,
+                gradeLevel: student.grade_level,
+                fieldOfStudy: student.field_of_study,
+                profilePicture: student.profile_picture_url,
+                emergencyContactName: student.emergency_contact_name,
+                emergencyContactPhone: student.emergency_contact_phone,
+                guardianName: student.guardian_name,
+                guardianPhone: student.guardian_phone,
+                guardianEmail: student.guardian_email,
+                bio: student.bio,
+                assignedAt: student.assigned_at,
+                assignmentNotes: student.assignment_notes,
+                documentCount: parseInt(student.document_count) || 0,
+                totalDonors: parseInt(student.total_donors) || 0,
+                documents: documents.map(doc => ({
+                    id: doc.id,
+                    documentTitle: doc.document_title,
+                    documentType: doc.document_type,
+                    fileName: doc.file_name,
+                    fileUrl: doc.file_url,
+                    uploadedAt: doc.uploaded_at,
+                    description: doc.description,
+                    amount: doc.amount
+                })),
+                createdAt: student.created_at,
+                updatedAt: student.updated_at
+            };
         }));
 
         res.json({ students: formattedStudents });
