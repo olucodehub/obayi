@@ -280,7 +280,7 @@ const DonorDashboard: React.FC = () => {
                   {/* Documents */}
                   <div className="space-y-3">
                     <h4 className="font-medium text-gray-900">Documents</h4>
-                    {selectedStudent.documents.length === 0 ? (
+                    {(!selectedStudent.documents || selectedStudent.documents.length === 0) ? (
                       <p className="text-gray-500 text-sm">No documents uploaded yet</p>
                     ) : (
                       <div className="space-y-2">
