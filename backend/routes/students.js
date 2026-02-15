@@ -1,35 +1,88 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const { body, validationResult } = require('express-validator');
 const database = require('../config/database');
+const azureBlobService = require('../services/azureBlobService');
+const { upload } = require('../middleware/upload');
 const { authenticateToken, requireStudent, requireStudentOrAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Configure multer for memory storage (we'll convert to base64)
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB limit
-    },
-    fileFilter: (req, file, cb) => {
-        // Accept images and PDFs
-        const allowedMimes = [
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        ];
-        
-        if (allowedMimes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error('Invalid file type. Only images, PDFs, and Word documents are allowed.'), false);
+// Get student profile
+router.get('/profile', [authenticateToken, requireStudent], async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Get user info
+        const user = await database.get(
+            'SELECT id, email, first_name, last_name, phone, created_at FROM users WHERE id = $1',
+            [userId]
+        );
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
+
+        // Get student info
+        const student = await database.get(
+            `SELECT s.*, COUNT(dsa.donor_id) as total_donors
+             FROM students s
+             LEFT JOIN donor_student_assignments dsa ON s.id = dsa.student_id AND dsa.is_active = TRUE
+             WHERE s.user_id = $1
+             GROUP BY s.id, s.user_id, s.date_of_birth, s.gender, s.address, s.city, s.country, s.school_name, s.grade_level, s.field_of_study, s.emergency_contact_name, s.emergency_contact_phone, s.guardian_name, s.guardian_phone, s.guardian_email, s.bio, s.profile_picture_url, s.created_at, s.updated_at, s.student_id`,
+            [userId]
+        );
+
+        if (!student) {
+            return res.status(404).json({ error: 'Student profile not found' });
+        }
+
+        // Get documents
+        const documents = await database.all(
+            'SELECT * FROM student_documents WHERE student_id = $1 ORDER BY uploaded_at DESC',
+            [student.id]
+        );
+
+        const profile = {
+            id: user.id,
+            email: user.email,
+            firstName: user.first_name,
+            lastName: user.last_name,
+            phone: user.phone,
+            userType: 'student',
+            // Student-specific fields (camelCase for frontend)
+            school: student.school_name,
+            gradeLevel: student.grade_level,
+            dateOfBirth: student.date_of_birth,
+            gender: student.gender,
+            address: student.address,
+            city: student.city,
+            country: student.country,
+            fieldOfStudy: student.field_of_study,
+            guardianName: student.guardian_name,
+            guardianPhone: student.guardian_phone,
+            guardianEmail: student.guardian_email,
+            emergencyContactName: student.emergency_contact_name,
+            emergencyContactPhone: student.emergency_contact_phone,
+            bio: student.bio,
+            profilePicture: student.profile_picture_url,
+            totalDonors: parseInt(student.total_donors) || 0,
+            createdAt: user.created_at,
+            documents: documents.map(doc => ({
+                id: doc.id,
+                documentTitle: doc.document_title,
+                documentType: doc.document_type,
+                fileName: doc.file_name,
+                fileUrl: doc.file_url,
+                uploadedAt: doc.uploaded_at,
+                description: doc.description,
+                amount: doc.amount
+            }))
+        };
+
+        res.json(profile);
+    } catch (error) {
+        console.error('Error fetching student profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -62,100 +115,160 @@ router.put('/profile', [
         }
 
         const userId = req.user.id;
-        const updateFields = req.body;
+        const {
+            firstName,
+            lastName,
+            phone,
+            dateOfBirth,
+            gender,
+            address,
+            city,
+            country,
+            schoolName,
+            gradeLevel,
+            fieldOfStudy,
+            emergencyContactName,
+            emergencyContactPhone,
+            guardianName,
+            guardianPhone,
+            guardianEmail,
+            bio
+        } = req.body;
 
-        // Separate user fields from student fields
-        const userFields = {};
-        const studentFields = {};
+        // Update users table
+        if (firstName || lastName || phone) {
+            const userUpdates = [];
+            const userParams = [];
+            let placeholderIndex = 1;
 
-        if (updateFields.firstName) userFields.first_name = updateFields.firstName;
-        if (updateFields.lastName) userFields.last_name = updateFields.lastName;
-        if (updateFields.phone) userFields.phone = updateFields.phone;
+            if (firstName) {
+                userUpdates.push(`first_name = $${placeholderIndex}`);
+                userParams.push(firstName);
+                placeholderIndex++;
+            }
+            if (lastName) {
+                userUpdates.push(`last_name = $${placeholderIndex}`);
+                userParams.push(lastName);
+                placeholderIndex++;
+            }
+            if (phone) {
+                userUpdates.push(`phone = $${placeholderIndex}`);
+                userParams.push(phone);
+                placeholderIndex++;
+            }
 
-        if (updateFields.dateOfBirth) studentFields.date_of_birth = updateFields.dateOfBirth;
-        if (updateFields.gender) studentFields.gender = updateFields.gender;
-        if (updateFields.address) studentFields.address = updateFields.address;
-        if (updateFields.city) studentFields.city = updateFields.city;
-        if (updateFields.country) studentFields.country = updateFields.country;
-        if (updateFields.schoolName) studentFields.school_name = updateFields.schoolName;
-        if (updateFields.gradeLevel) studentFields.grade_level = updateFields.gradeLevel;
-        if (updateFields.fieldOfStudy) studentFields.field_of_study = updateFields.fieldOfStudy;
-        if (updateFields.emergencyContactName) studentFields.emergency_contact_name = updateFields.emergencyContactName;
-        if (updateFields.emergencyContactPhone) studentFields.emergency_contact_phone = updateFields.emergencyContactPhone;
-        if (updateFields.guardianName) studentFields.guardian_name = updateFields.guardianName;
-        if (updateFields.guardianPhone) studentFields.guardian_phone = updateFields.guardianPhone;
-        if (updateFields.guardianEmail) studentFields.guardian_email = updateFields.guardianEmail;
-        if (updateFields.bio) studentFields.bio = updateFields.bio;
-
-        // Update user table
-        if (Object.keys(userFields).length > 0) {
-            const keys = Object.keys(userFields);
-            const placeholders = keys.map((_, index) => `${keys[index]} = $${index + 1}`).join(', ');
-            const userUpdateQuery = `UPDATE users SET ${placeholders}, updated_at = CURRENT_TIMESTAMP WHERE id = $${keys.length + 1}`;
-            const userUpdateParams = [...Object.values(userFields), userId];
-            await database.run(userUpdateQuery, userUpdateParams);
+            userParams.push(userId);
+            await database.run(
+                `UPDATE users SET ${userUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = $${placeholderIndex}`,
+                userParams
+            );
         }
 
-        // Update student table
-        if (Object.keys(studentFields).length > 0) {
-            const keys = Object.keys(studentFields);
-            const placeholders = keys.map((_, index) => `${keys[index]} = $${index + 1}`).join(', ');
-            const studentUpdateQuery = `UPDATE students SET ${placeholders}, updated_at = CURRENT_TIMESTAMP WHERE user_id = $${keys.length + 1}`;
-            const studentUpdateParams = [...Object.values(studentFields), userId];
-            await database.run(studentUpdateQuery, studentUpdateParams);
+        // Update students table
+        const studentUpdates = [];
+        const studentParams = [];
+        let placeholderIndex = 1;
+
+        const studentFields = {
+            date_of_birth: dateOfBirth,
+            gender,
+            address,
+            city,
+            country,
+            school_name: schoolName,
+            grade_level: gradeLevel,
+            field_of_study: fieldOfStudy,
+            emergency_contact_name: emergencyContactName,
+            emergency_contact_phone: emergencyContactPhone,
+            guardian_name: guardianName,
+            guardian_phone: guardianPhone,
+            guardian_email: guardianEmail,
+            bio
+        };
+
+        Object.entries(studentFields).forEach(([key, value]) => {
+            if (value !== undefined) {
+                studentUpdates.push(`${key} = $${placeholderIndex}`);
+                studentParams.push(value);
+                placeholderIndex++;
+            }
+        });
+
+        if (studentUpdates.length > 0) {
+            studentParams.push(userId);
+            await database.run(
+                `UPDATE students SET ${studentUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE user_id = $${placeholderIndex}`,
+                studentParams
+            );
         }
 
         res.json({ message: 'Profile updated successfully' });
-
     } catch (error) {
-        console.error('Update student profile error:', error);
-        res.status(500).json({ error: 'Failed to update profile' });
+        console.error('Error updating student profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 // Upload profile picture
-router.post('/profile-picture', 
-    authenticateToken, 
-    requireStudent, 
-    upload.single('profilePicture'), 
-    async (req, res) => {
-        try {
-            if (!req.file) {
-                return res.status(400).json({ error: 'No file uploaded' });
-            }
-
-            const userId = req.user.id;
-            
-            // Convert file to base64
-            const base64Data = req.file.buffer.toString('base64');
-            const dataUrl = `data:${req.file.mimetype};base64,${base64Data}`;
-
-            // Update profile picture in database
-            await database.run(
-                'UPDATE students SET profile_picture = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2',
-                [dataUrl, userId]
-            );
-
-            res.json({ 
-                message: 'Profile picture uploaded successfully',
-                profilePicture: dataUrl
-            });
-
-        } catch (error) {
-            console.error('Upload profile picture error:', error);
-            res.status(500).json({ error: 'Failed to upload profile picture' });
+router.post('/profile-picture', [
+    authenticateToken,
+    requireStudent,
+    upload.single('profilePicture')
+], async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
         }
-    }
-);
 
-// Upload document (school results, receipts, certificates)
+        const userId = req.user.id;
+
+        // Get student info
+        const student = await database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
+        if (!student) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // Upload to Azure Blob Storage
+        const uploadResult = await azureBlobService.uploadProfilePicture(
+            req.file.buffer,
+            req.file.originalname,
+            userId
+        );
+
+        // Clean up old profile picture if exists
+        if (student.profile_picture_url) {
+            const oldBlobName = student.profile_picture_url.split('/').pop();
+            if (oldBlobName) {
+                await azureBlobService.cleanupOldProfilePicture(userId, uploadResult.blobName);
+            }
+        }
+
+        // Update database
+        await database.run(
+            'UPDATE students SET profile_picture_url = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2',
+            [uploadResult.url, userId]
+        );
+
+        res.json({
+            message: 'Profile picture uploaded successfully',
+            profilePictureUrl: uploadResult.url
+        });
+
+    } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        res.status(500).json({ error: 'Failed to upload profile picture' });
+    }
+});
+
+// Upload document
 router.post('/documents', [
     authenticateToken,
     requireStudent,
     upload.single('document'),
-    body('documentType').isIn(['school_result', 'receipt', 'primary_certificate', 'secondary_certificate', 'university_certificate', 'other']),
+    body('documentType').isIn(['school_result', 'receipt', 'certificate', 'primary_certificate', 'secondary_certificate', 'university_certificate', 'other']),
     body('documentTitle').trim().isLength({ min: 1 }),
-    body('description').optional().trim()
+    body('description').optional().trim(),
+    body('amount').optional().isDecimal() // For receipts
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -168,98 +281,68 @@ router.post('/documents', [
         }
 
         const userId = req.user.id;
-        const { documentType, documentTitle, description } = req.body;
+        const { documentType, documentTitle, description, amount } = req.body;
 
-        // Get student ID
-        const student = await database.get(
-            'SELECT id FROM students WHERE user_id = $1',
-            [userId]
-        );
-
+        // Get student info
+        const student = await database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
         if (!student) {
-            return res.status(404).json({ error: 'Student profile not found' });
+            return res.status(404).json({ error: 'Student not found' });
         }
 
-        // Convert file to base64
-        const base64Data = req.file.buffer.toString('base64');
-        const dataUrl = `data:${req.file.mimetype};base64,${base64Data}`;
-
-        // Save document information
-        const result = await database.run(`
-            INSERT INTO student_documents
-            (student_id, document_type, document_title, file_data, file_name, file_size, mime_type, description)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-            RETURNING id
-        `, [
-            student.id,
-            documentType,
-            documentTitle,
-            dataUrl,
+        // Upload to Azure Blob Storage
+        const uploadResult = await azureBlobService.uploadDocument(
+            req.file.buffer,
             req.file.originalname,
-            req.file.size,
-            req.file.mimetype,
-            description || null
-        ]);
+            documentType,
+            userId,
+            student.id
+        );
 
-        res.json({ 
+        // Save to database
+        const result = await database.run(
+            `INSERT INTO student_documents
+             (student_id, document_type, document_title, file_name, file_size, mime_type, file_url, blob_name, description, amount)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+             RETURNING id`,
+            [
+                student.id,
+                documentType,
+                documentTitle,
+                req.file.originalname,
+                uploadResult.size,
+                uploadResult.mimeType,
+                uploadResult.url,
+                uploadResult.blobName,
+                description || null,
+                documentType === 'receipt' ? amount : null
+            ]
+        );
+
+        res.json({
             message: 'Document uploaded successfully',
-            documentId: result.id
+            documentId: result.id,
+            fileUrl: uploadResult.url
         });
 
     } catch (error) {
-        console.error('Upload document error:', error);
+        console.error('Error uploading document:', error);
         res.status(500).json({ error: 'Failed to upload document' });
     }
 });
 
-// Get student's own documents
-router.get('/documents', authenticateToken, requireStudent, async (req, res) => {
-    try {
-        const userId = req.user.id;
-
-        // Get student ID
-        const student = await database.get(
-            'SELECT id FROM students WHERE user_id = $1',
-            [userId]
-        );
-
-        if (!student) {
-            return res.status(404).json({ error: 'Student profile not found' });
-        }
-
-        // Get documents
-        const documents = await database.all(`
-            SELECT id, document_type, document_title, file_name, file_size,
-                   uploaded_at, description, mime_type
-            FROM student_documents
-            WHERE student_id = $1
-            ORDER BY uploaded_at DESC
-        `, [student.id]);
-
-        res.json({ documents });
-
-    } catch (error) {
-        console.error('Get documents error:', error);
-        res.status(500).json({ error: 'Failed to get documents' });
-    }
-});
-
 // Delete document
-router.delete('/documents/:documentId', authenticateToken, requireStudent, async (req, res) => {
+router.delete('/documents/:documentId', [authenticateToken, requireStudent], async (req, res) => {
     try {
         const userId = req.user.id;
         const documentId = req.params.documentId;
 
-        // Get student ID and document
-        const student = await database.get(
-            'SELECT id FROM students WHERE user_id = $1',
-            [userId]
-        );
-
+        // Get student info
+        const student = await database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
         if (!student) {
-            return res.status(404).json({ error: 'Student profile not found' });
+            return res.status(404).json({ error: 'Student not found' });
         }
 
+        // Get document info
         const document = await database.get(
             'SELECT * FROM student_documents WHERE id = $1 AND student_id = $2',
             [documentId, student.id]
@@ -269,137 +352,42 @@ router.delete('/documents/:documentId', authenticateToken, requireStudent, async
             return res.status(404).json({ error: 'Document not found' });
         }
 
-        // File is stored as base64 in database, no filesystem cleanup needed
+        // Delete from Azure Blob Storage
+        await azureBlobService.deleteFile(document.blob_name);
 
         // Delete from database
-        await database.run(
-            'DELETE FROM student_documents WHERE id = $1',
-            [documentId]
-        );
+        await database.run('DELETE FROM student_documents WHERE id = $1', [documentId]);
 
         res.json({ message: 'Document deleted successfully' });
 
     } catch (error) {
-        console.error('Delete document error:', error);
+        console.error('Error deleting document:', error);
         res.status(500).json({ error: 'Failed to delete document' });
     }
 });
 
-// Get assigned donors for the logged-in student
-router.get('/donors', authenticateToken, requireStudent, async (req, res) => {
+// Get documents
+router.get('/documents', [authenticateToken, requireStudent], async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // Get student ID
-        const student = await database.get(
-            'SELECT id FROM students WHERE user_id = $1',
-            [userId]
-        );
-
+        // Get student info
+        const student = await database.get('SELECT * FROM students WHERE user_id = $1', [userId]);
         if (!student) {
-            return res.status(404).json({ error: 'Student profile not found' });
+            return res.status(404).json({ error: 'Student not found' });
         }
 
-        // Get assigned donors
-        const donors = await database.all(`
-            SELECT
-                d.id,
-                d.organization,
-                d.address,
-                d.city,
-                d.country,
-                d.donation_amount,
-                d.donation_frequency,
-                d.preferred_contact,
-                d.bio,
-                u.first_name,
-                u.last_name,
-                u.email,
-                u.phone,
-                dsa.assigned_at,
-                dsa.notes as assignment_notes
-            FROM donor_student_assignments dsa
-            JOIN donors d ON dsa.donor_id = d.id
-            JOIN users u ON d.user_id = u.id
-            WHERE dsa.student_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
-            ORDER BY dsa.assigned_at DESC
-        `, [student.id]);
+        // Get documents
+        const documents = await database.all(
+            'SELECT * FROM student_documents WHERE student_id = $1 ORDER BY uploaded_at DESC',
+            [student.id]
+        );
 
-        res.json({ donors });
+        res.json(documents);
 
     } catch (error) {
-        console.error('Get assigned donors error:', error);
-        res.status(500).json({ error: 'Failed to get assigned donors' });
-    }
-});
-
-// Get donor count (how many donors are supporting this student)
-router.get('/donor-count', authenticateToken, requireStudent, async (req, res) => {
-    try {
-        const userId = req.user.id;
-
-        // Get student ID
-        const student = await database.get(
-            'SELECT id FROM students WHERE user_id = $1',
-            [userId]
-        );
-
-        if (!student) {
-            return res.status(404).json({ error: 'Student profile not found' });
-        }
-
-        // Get donor count
-        const result = await database.get(`
-            SELECT COUNT(*) as count
-            FROM donor_student_assignments dsa
-            JOIN donors d ON dsa.donor_id = d.id
-            JOIN users u ON d.user_id = u.id
-            WHERE dsa.student_id = $1 AND dsa.is_active = TRUE AND u.is_active = TRUE
-        `, [student.id]);
-
-        res.json({ donorCount: result.count });
-
-    } catch (error) {
-        console.error('Get donor count error:', error);
-        res.status(500).json({ error: 'Failed to get donor count' });
-    }
-});
-
-// Get document data (base64)
-router.get('/documents/:documentId/data', authenticateToken, requireStudent, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const documentId = req.params.documentId;
-
-        // Get student ID
-        const student = await database.get(
-            'SELECT id FROM students WHERE user_id = $1',
-            [userId]
-        );
-
-        if (!student) {
-            return res.status(404).json({ error: 'Student profile not found' });
-        }
-
-        // Get document
-        const document = await database.get(
-            'SELECT file_data, file_name, mime_type FROM student_documents WHERE id = $1 AND student_id = $2',
-            [documentId, student.id]
-        );
-
-        if (!document) {
-            return res.status(404).json({ error: 'Document not found' });
-        }
-
-        res.json({
-            fileData: document.file_data,
-            fileName: document.file_name,
-            mimeType: document.mime_type
-        });
-
-    } catch (error) {
-        console.error('Get document data error:', error);
-        res.status(500).json({ error: 'Failed to get document data' });
+        console.error('Error fetching documents:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
