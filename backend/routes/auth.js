@@ -297,9 +297,9 @@ router.get('/profile', authenticateToken, async (req, res) => {
             profileParams = [userId];
         } else if (userType === 'student') {
             profileQuery = `
-                SELECT u.*, s.student_id, s.date_of_birth, s.gender, s.address,
+                SELECT u.*, s.id as student_table_id, s.student_id, s.date_of_birth, s.gender, s.address,
                        s.city, s.country, s.school_name, s.grade_level, s.field_of_study,
-                       s.profile_picture, s.emergency_contact_name, s.emergency_contact_phone,
+                       s.profile_picture_url, s.emergency_contact_name, s.emergency_contact_phone,
                        s.guardian_name, s.guardian_phone, s.guardian_email, s.bio
                 FROM users u
                 LEFT JOIN students s ON u.id = s.user_id
@@ -339,8 +339,12 @@ router.put('/profile', [
     body('school').optional().trim(),
     body('gradeLevel').optional().trim(),
     body('dateOfBirth').optional().trim(),
+    body('gender').optional().isIn(['male', 'female', 'other']),
     body('guardianName').optional().trim(),
     body('guardianPhone').optional().trim(),
+    body('guardianEmail').optional().trim(),
+    body('emergencyContactName').optional().trim(),
+    body('emergencyContactPhone').optional().trim(),
     body('address').optional().trim(),
     body('city').optional().trim(),
     body('country').optional().trim(),
@@ -363,7 +367,8 @@ router.put('/profile', [
         const {
             firstName, lastName, phone, bio,
             // Student fields
-            school, gradeLevel, dateOfBirth, guardianName, guardianPhone, 
+            school, gradeLevel, dateOfBirth, gender, guardianName, guardianPhone, guardianEmail,
+            emergencyContactName, emergencyContactPhone,
             address, city, country, fieldOfStudy,
             // Donor fields
             organization, donationAmount, donationFrequency, preferredContact
@@ -396,8 +401,12 @@ router.put('/profile', [
             if (school !== undefined) { studentFields.push(`school_name = $${studentParamCounter++}`); studentValues.push(school); }
             if (gradeLevel !== undefined) { studentFields.push(`grade_level = $${studentParamCounter++}`); studentValues.push(gradeLevel); }
             if (dateOfBirth !== undefined) { studentFields.push(`date_of_birth = $${studentParamCounter++}`); studentValues.push(dateOfBirth); }
+            if (gender !== undefined) { studentFields.push(`gender = $${studentParamCounter++}`); studentValues.push(gender); }
             if (guardianName !== undefined) { studentFields.push(`guardian_name = $${studentParamCounter++}`); studentValues.push(guardianName); }
             if (guardianPhone !== undefined) { studentFields.push(`guardian_phone = $${studentParamCounter++}`); studentValues.push(guardianPhone); }
+            if (guardianEmail !== undefined) { studentFields.push(`guardian_email = $${studentParamCounter++}`); studentValues.push(guardianEmail); }
+            if (emergencyContactName !== undefined) { studentFields.push(`emergency_contact_name = $${studentParamCounter++}`); studentValues.push(emergencyContactName); }
+            if (emergencyContactPhone !== undefined) { studentFields.push(`emergency_contact_phone = $${studentParamCounter++}`); studentValues.push(emergencyContactPhone); }
             if (address !== undefined) { studentFields.push(`address = $${studentParamCounter++}`); studentValues.push(address); }
             if (city !== undefined) { studentFields.push(`city = $${studentParamCounter++}`); studentValues.push(city); }
             if (country !== undefined) { studentFields.push(`country = $${studentParamCounter++}`); studentValues.push(country); }
