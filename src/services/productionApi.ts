@@ -293,7 +293,7 @@ export class ProductionDonorService {
   static async getAssignedStudents(): Promise<User[]> {
     try {
       const response = await api.get('/donors/students');
-      return response.data;
+      return response.data.students || [];  // Backend returns { students: [...] }
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Failed to fetch assigned students');
     }

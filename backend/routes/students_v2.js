@@ -117,76 +117,72 @@ router.put('/profile', [
             bio
         } = req.body;
         
-        const transaction = database.transaction(() => {
-            // Update users table
-            if (firstName || lastName || phone) {
-                const userUpdates = [];
-                const userParams = [];
-                let placeholderIndex = 1;
-
-                if (firstName) {
-                    userUpdates.push(`first_name = $${placeholderIndex}`);
-                    userParams.push(firstName);
-                    placeholderIndex++;
-                }
-                if (lastName) {
-                    userUpdates.push(`last_name = $${placeholderIndex}`);
-                    userParams.push(lastName);
-                    placeholderIndex++;
-                }
-                if (phone) {
-                    userUpdates.push(`phone = $${placeholderIndex}`);
-                    userParams.push(phone);
-                    placeholderIndex++;
-                }
-
-                userParams.push(userId);
-                database.run(
-                    `UPDATE users SET ${userUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = $${placeholderIndex}`,
-                    userParams
-                );
-            }
-            
-            // Update students table
-            const studentUpdates = [];
-            const studentParams = [];
+        // Update users table
+        if (firstName || lastName || phone) {
+            const userUpdates = [];
+            const userParams = [];
             let placeholderIndex = 1;
 
-            const studentFields = {
-                date_of_birth: dateOfBirth,
-                gender,
-                address,
-                city,
-                country,
-                school_name: schoolName,
-                grade_level: gradeLevel,
-                field_of_study: fieldOfStudy,
-                emergency_contact_name: emergencyContactName,
-                emergency_contact_phone: emergencyContactPhone,
-                guardian_name: guardianName,
-                guardian_phone: guardianPhone,
-                guardian_email: guardianEmail,
-                bio
-            };
+            if (firstName) {
+                userUpdates.push(`first_name = $${placeholderIndex}`);
+                userParams.push(firstName);
+                placeholderIndex++;
+            }
+            if (lastName) {
+                userUpdates.push(`last_name = $${placeholderIndex}`);
+                userParams.push(lastName);
+                placeholderIndex++;
+            }
+            if (phone) {
+                userUpdates.push(`phone = $${placeholderIndex}`);
+                userParams.push(phone);
+                placeholderIndex++;
+            }
 
-            Object.entries(studentFields).forEach(([key, value]) => {
-                if (value !== undefined) {
-                    studentUpdates.push(`${key} = $${placeholderIndex}`);
-                    studentParams.push(value);
-                    placeholderIndex++;
-                }
-            });
+            userParams.push(userId);
+            await database.run(
+                `UPDATE users SET ${userUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = $${placeholderIndex}`,
+                userParams
+            );
+        }
 
-            if (studentUpdates.length > 0) {
-                studentParams.push(userId);
-                database.run(
-                    `UPDATE students SET ${studentUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE user_id = $${placeholderIndex}`,
-                    studentParams
-                );
+        // Update students table
+        const studentUpdates = [];
+        const studentParams = [];
+        let placeholderIndex = 1;
+
+        const studentFields = {
+            date_of_birth: dateOfBirth,
+            gender,
+            address,
+            city,
+            country,
+            school_name: schoolName,
+            grade_level: gradeLevel,
+            field_of_study: fieldOfStudy,
+            emergency_contact_name: emergencyContactName,
+            emergency_contact_phone: emergencyContactPhone,
+            guardian_name: guardianName,
+            guardian_phone: guardianPhone,
+            guardian_email: guardianEmail,
+            bio
+        };
+
+        Object.entries(studentFields).forEach(([key, value]) => {
+            if (value !== undefined) {
+                studentUpdates.push(`${key} = $${placeholderIndex}`);
+                studentParams.push(value);
+                placeholderIndex++;
             }
         });
-        
-        transaction();
+
+        if (studentUpdates.length > 0) {
+            studentParams.push(userId);
+            await database.run(
+                `UPDATE students SET ${studentUpdates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE user_id = $${placeholderIndex}`,
+                studentParams
+            );
+        }
         
         res.json({ message: 'Profile updated successfully' });
     } catch (error) {
