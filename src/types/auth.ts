@@ -14,13 +14,21 @@ export interface User {
   school?: string;
   gradeLevel?: string;
   dateOfBirth?: string;
+  gender?: string;
   guardianName?: string;
   guardianPhone?: string;
+  guardianEmail?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
   address?: string;
+  city?: string;
+  country?: string;
+  fieldOfStudy?: string;
   profilePicture?: string;
   // Donor specific fields
   occupation?: string;
   company?: string;
+  organization?: string;
 }
 
 export interface Match {
