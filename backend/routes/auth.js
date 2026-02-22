@@ -279,14 +279,18 @@ router.post('/reset-password', [
 
 // Get current user profile
 router.get('/profile', authenticateToken, async (req, res) => {
+    console.log('=== GET /profile endpoint called ===');
     try {
+        console.log('req.user:', JSON.stringify(req.user, null, 2));
         const userId = req.user.id;
         const userType = req.user.user_type;
+        console.log('userId:', userId, 'userType:', userType);
 
         let profileQuery;
         let profileParams;
 
         if (userType === 'donor') {
+            console.log('Building donor profile query...');
             profileQuery = `
                 SELECT u.*, d.organization, d.address, d.city, d.country,
                        d.donation_amount, d.donation_frequency, d.preferred_contact, d.bio
@@ -296,6 +300,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
             `;
             profileParams = [userId];
         } else if (userType === 'student') {
+            console.log('Building student profile query...');
             profileQuery = `
                 SELECT u.*, s.id as student_table_id, s.student_id, s.date_of_birth, s.gender, s.address,
                        s.city, s.country, s.school_name, s.grade_level, s.field_of_study,
@@ -306,12 +311,22 @@ router.get('/profile', authenticateToken, async (req, res) => {
                 WHERE u.id = $1
             `;
             profileParams = [userId];
+            console.log('Student query:', profileQuery);
+            console.log('Query params:', profileParams);
         } else {
+            console.log('Building admin/other profile query...');
             profileQuery = 'SELECT * FROM users WHERE id = $1';
             profileParams = [userId];
         }
 
+        console.log('Executing database query...');
         const profile = await database.get(profileQuery, profileParams);
+        console.log('Query completed. Profile found:', !!profile);
+
+        if (profile) {
+            console.log('Profile data keys:', Object.keys(profile));
+            console.log('Profile student_table_id:', profile.student_table_id);
+        }
 
         if (!profile) {
             console.error('Profile not found for user:', userId);
@@ -322,6 +337,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
         if (userType === 'student' && !profile.student_table_id) {
             console.error('Student record not found for user:', userId);
             console.log('User exists but student record is missing. This might be due to incomplete registration.');
+            console.log('Returning basic profile without student fields...');
             // Return basic profile without student-specific fields
             delete profile.password_hash;
             res.json({
@@ -358,6 +374,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
         // Remove sensitive data
         delete profile.password_hash;
 
+        console.log('Sending successful profile response...');
         res.json({ profile });
 
     } catch (error) {
