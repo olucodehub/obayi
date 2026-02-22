@@ -7,9 +7,10 @@ const Login: React.FC = () => {
   usePageTitle('Login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
     console.log('Login attempt for:', email);
 
     try {
-      await login(email, password);
+      await login(email, password, rememberMe);
       navigate(from, { replace: true });
     } catch (err) {
       console.log('Login failed:', err);
@@ -116,6 +117,20 @@ const Login: React.FC = () => {
                 placeholder="Enter your password"
               />
             </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="remember-me"
+              name="remember-me"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded cursor-pointer"
+            />
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 cursor-pointer">
+              Remember me (stay logged in)
+            </label>
           </div>
 
           <button

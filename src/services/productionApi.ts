@@ -12,7 +12,8 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('auth_token');
+    // Check sessionStorage first (session-based), then localStorage (remember me)
+    const token = sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -38,12 +39,14 @@ api.interceptors.response.use(
 );
 
 export class ProductionAuthService {
-  static async login(email: string, password: string): Promise<User> {
+  static async login(email: string, password: string, rememberMe: boolean = false): Promise<User> {
     try {
       const response = await api.post('/auth/login', { email, password });
       const { user, token } = response.data;
 
-      localStorage.setItem('auth_token', token);
+      // Use localStorage if rememberMe is true, sessionStorage otherwise
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem('auth_token', token);
 
       // Fetch complete profile after login
       const profileResponse = await api.get('/auth/profile');
@@ -80,7 +83,7 @@ export class ProductionAuthService {
         createdAt: profile.created_at
       };
 
-      localStorage.setItem('current_user', JSON.stringify(completeUser));
+      storage.setItem('current_user', JSON.stringify(completeUser));
 
       return completeUser;
     } catch (error: any) {
@@ -98,6 +101,7 @@ export class ProductionAuthService {
       const response = await api.post('/auth/register', userData);
       const { user, token } = response.data;
 
+      // Default to localStorage for registration (users can logout and choose session next time)
       localStorage.setItem('auth_token', token);
       localStorage.setItem('current_user', JSON.stringify(user));
 
@@ -118,28 +122,33 @@ export class ProductionAuthService {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Clear both storages
       localStorage.removeItem('auth_token');
       localStorage.removeItem('current_user');
+      sessionStorage.removeItem('auth_token');
+      sessionStorage.removeItem('current_user');
     }
   }
 
   static getCurrentUser(): User | null {
-    const user = localStorage.getItem('current_user');
+    // Check sessionStorage first (session-based login), then localStorage (remember me)
+    const user = sessionStorage.getItem('current_user') || localStorage.getItem('current_user');
     return user ? JSON.parse(user) : null;
   }
 
   static isAuthenticated(): boolean {
-    return localStorage.getItem('auth_token') !== null;
+    // Check both sessionStorage and localStorage for auth token
+    return sessionStorage.getItem('auth_token') !== null || localStorage.getItem('auth_token') !== null;
   }
 
   static async updateProfile(profileData: any): Promise<void> {
     try {
       await api.put('/auth/profile', profileData);
-      
-      // Update local storage with new user data
+
+      // Update storage with new user data
       const response = await api.get('/auth/profile');
       const { profile } = response.data;
-      
+
       const updatedUser: User = {
         id: profile.id.toString(),
         email: profile.email,
@@ -160,8 +169,10 @@ export class ProductionAuthService {
         organization: profile.organization,
         createdAt: profile.created_at
       };
-      
-      localStorage.setItem('current_user', JSON.stringify(updatedUser));
+
+      // Save to the storage that has the token (maintains session type)
+      const storage = sessionStorage.getItem('auth_token') ? sessionStorage : localStorage;
+      storage.setItem('current_user', JSON.stringify(updatedUser));
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Failed to update profile');
     }
@@ -245,7 +256,7 @@ export class ProductionStudentService {
       const response = await api.get('/students/profile');
       const profile = response.data;
 
-      // Update local storage
+      // Update storage
       const updatedUser: User = {
         id: profile.id.toString(),
         email: profile.email,
@@ -271,7 +282,9 @@ export class ProductionStudentService {
         createdAt: profile.createdAt
       };
 
-      localStorage.setItem('current_user', JSON.stringify(updatedUser));
+      // Save to the storage that has the token (maintains session type)
+      const storage = sessionStorage.getItem('auth_token') ? sessionStorage : localStorage;
+      storage.setItem('current_user', JSON.stringify(updatedUser));
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Failed to update profile');
     }
@@ -361,11 +374,11 @@ export class ProductionDonorService {
   static async updateProfile(profileData: Partial<User>): Promise<void> {
     try {
       await api.put('/auth/profile', profileData);
-      
-      // Update local storage with new user data
+
+      // Update storage with new user data
       const response = await api.get('/auth/profile');
       const { profile } = response.data;
-      
+
       const updatedUser: User = {
         id: profile.id.toString(),
         email: profile.email,
@@ -383,8 +396,10 @@ export class ProductionDonorService {
         bio: profile.bio,
         createdAt: profile.created_at
       };
-      
-      localStorage.setItem('current_user', JSON.stringify(updatedUser));
+
+      // Save to the storage that has the token (maintains session type)
+      const storage = sessionStorage.getItem('auth_token') ? sessionStorage : localStorage;
+      storage.setItem('current_user', JSON.stringify(updatedUser));
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Failed to update profile');
     }
