@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { AuthService, MatchingService, FileService, CertificateService, ReceiptService, AchievementService } from '../../utils/auth';
+import { AuthService, MatchingService, FileService, AchievementService } from '../../utils/auth';
 import { StudentService } from '../../services/serviceFactory';
 import { User } from '../../types/auth';
 import { User as UserIcon, Heart, FileText, Upload, Camera, Plus, X, Check, AlertCircle, Award, Star, Trophy, Lock, Settings } from 'lucide-react';
@@ -118,6 +118,9 @@ const StudentDashboard: React.FC = () => {
     guardianName: user?.guardianName || '',
     guardianPhone: user?.guardianPhone || '',
     address: user?.address || '',
+    city: user?.city || '',
+    country: user?.country || '',
+    fieldOfStudy: user?.fieldOfStudy || '',
     bio: user?.bio || '',
   });
 
@@ -140,25 +143,52 @@ const StudentDashboard: React.FC = () => {
     setMyFiles(files);
   }, [user]);
 
-  const loadSavedDocuments = useCallback(() => {
+  const loadSavedDocuments = useCallback(async () => {
     if (!user) return;
-    
-    const certs = CertificateService.getCertificatesByUser(user.id);
-    const recs = ReceiptService.getReceiptsByUser(user.id);
-    setSavedCertificates(certs);
-    setSavedReceipts(recs);
-    
-    // Load profile picture
-    const profileFiles = FileService.getFilesByUser(user.id, 'profile');
-    if (profileFiles.length > 0) {
-      const latestProfile = profileFiles[profileFiles.length - 1];
-      const fileData = FileService.getFileById(latestProfile.id);
-      if (fileData && fileData.data) {
-        setProfilePicture(fileData.data);
+
+    try {
+      // Fetch profile with documents from API
+      const profile: any = await StudentService.getProfile();
+
+      // Separate documents by type
+      const certificates = profile.documents?.filter((doc: any) =>
+        doc.documentType === 'certificate' ||
+        doc.documentType === 'primary_certificate' ||
+        doc.documentType === 'secondary_certificate' ||
+        doc.documentType === 'university_certificate'
+      ) || [];
+
+      const receipts = profile.documents?.filter((doc: any) =>
+        doc.documentType === 'receipt'
+      ) || [];
+
+      setSavedCertificates(certificates.map((doc: any) => ({
+        id: doc.id,
+        userId: user.id,
+        name: doc.documentTitle,
+        description: doc.description || '',
+        fileName: doc.fileName,
+        uploadedAt: doc.uploadedAt
+      })));
+
+      setSavedReceipts(receipts.map((doc: any) => ({
+        id: doc.id,
+        userId: user.id,
+        description: doc.documentTitle,
+        amount: doc.amount || '0',
+        fileName: doc.fileName,
+        uploadedAt: doc.uploadedAt
+      })));
+
+      // Set profile picture if exists
+      if (profile.profilePicture) {
+        setProfilePicture(profile.profilePicture);
       }
+    } catch (error) {
+      console.error('Failed to load documents from API:', error);
     }
-    
-    // Load achievements
+
+    // Load achievements (still using localStorage for now)
     const userAchievements = AchievementService.getAchievementsByUser(user.id);
     setAchievements(userAchievements);
   }, [user]);
@@ -255,8 +285,8 @@ const StudentDashboard: React.FC = () => {
   };
 
   const handleCertificateFileUpload = async (id: string, file: File) => {
-    setCertificates(certs => 
-      certs.map(cert => 
+    setCertificates(certs =>
+      certs.map(cert =>
         cert.id === id ? { ...cert, isUploading: true, file, fileName: file.name } : cert
       )
     );
@@ -264,22 +294,24 @@ const StudentDashboard: React.FC = () => {
     try {
       const cert = certificates.find(c => c.id === id);
       if (cert && user) {
-        await CertificateService.addCertificate(user.id, cert.name, cert.description, file);
-        
-        setCertificates(certs => 
-          certs.map(cert => 
-            cert.id === id 
-              ? { ...cert, isUploading: false, uploadSuccess: true, isSaved: true, uploadedAt: new Date().toISOString() } 
+        // Upload to database via API
+        await StudentService.uploadDocument(file, 'certificate', cert.name, cert.description);
+
+        setCertificates(certs =>
+          certs.map(cert =>
+            cert.id === id
+              ? { ...cert, isUploading: false, uploadSuccess: true, isSaved: true, uploadedAt: new Date().toISOString() }
               : cert
           )
         );
-        
-        // Refresh saved certificates
+
+        // Refresh saved certificates from database
         loadSavedDocuments();
       }
     } catch (error) {
-      setCertificates(certs => 
-        certs.map(cert => 
+      console.error('Failed to upload certificate:', error);
+      setCertificates(certs =>
+        certs.map(cert =>
           cert.id === id ? { ...cert, isUploading: false, uploadSuccess: false } : cert
         )
       );
@@ -306,8 +338,8 @@ const StudentDashboard: React.FC = () => {
   };
 
   const handleReceiptFileUpload = async (id: string, file: File) => {
-    setReceipts(recs => 
-      recs.map(rec => 
+    setReceipts(recs =>
+      recs.map(rec =>
         rec.id === id ? { ...rec, isUploading: true, file, fileName: file.name } : rec
       )
     );
@@ -315,22 +347,24 @@ const StudentDashboard: React.FC = () => {
     try {
       const receipt = receipts.find(r => r.id === id);
       if (receipt && user) {
-        await ReceiptService.addReceipt(user.id, receipt.description, receipt.amount, file);
-        
-        setReceipts(recs => 
-          recs.map(rec => 
-            rec.id === id 
-              ? { ...rec, isUploading: false, uploadSuccess: true, isSaved: true, uploadedAt: new Date().toISOString() } 
+        // Upload to database via API
+        await StudentService.uploadDocument(file, 'receipt', receipt.description, receipt.description, receipt.amount);
+
+        setReceipts(recs =>
+          recs.map(rec =>
+            rec.id === id
+              ? { ...rec, isUploading: false, uploadSuccess: true, isSaved: true, uploadedAt: new Date().toISOString() }
               : rec
           )
         );
-        
-        // Refresh saved receipts
+
+        // Refresh saved receipts from database
         loadSavedDocuments();
       }
     } catch (error) {
-      setReceipts(recs => 
-        recs.map(rec => 
+      console.error('Failed to upload receipt:', error);
+      setReceipts(recs =>
+        recs.map(rec =>
           rec.id === id ? { ...rec, isUploading: false, uploadSuccess: false } : rec
         )
       );
@@ -341,9 +375,13 @@ const StudentDashboard: React.FC = () => {
     setReceipts(recs => recs.filter(rec => rec.id !== id));
   };
 
-  const deleteSavedReceipt = (id: string) => {
-    ReceiptService.deleteReceipt(id);
-    loadSavedDocuments();
+  const deleteSavedReceipt = async (id: string) => {
+    try {
+      await StudentService.deleteDocument(id);
+      loadSavedDocuments();
+    } catch (error) {
+      console.error('Failed to delete receipt:', error);
+    }
   };
 
   const formatDateTime = (dateString: string) => {
