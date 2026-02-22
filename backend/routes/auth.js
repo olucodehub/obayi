@@ -314,7 +314,45 @@ router.get('/profile', authenticateToken, async (req, res) => {
         const profile = await database.get(profileQuery, profileParams);
 
         if (!profile) {
+            console.error('Profile not found for user:', userId);
             return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        // For students, check if student record exists
+        if (userType === 'student' && !profile.student_table_id) {
+            console.error('Student record not found for user:', userId);
+            console.log('User exists but student record is missing. This might be due to incomplete registration.');
+            // Return basic profile without student-specific fields
+            delete profile.password_hash;
+            res.json({
+                profile: {
+                    id: profile.id,
+                    email: profile.email,
+                    first_name: profile.first_name,
+                    last_name: profile.last_name,
+                    user_type: profile.user_type,
+                    phone: profile.phone,
+                    created_at: profile.created_at,
+                    // Set student fields to null
+                    student_id: null,
+                    date_of_birth: null,
+                    gender: null,
+                    address: null,
+                    city: null,
+                    country: null,
+                    school_name: null,
+                    grade_level: null,
+                    field_of_study: null,
+                    profile_picture_url: null,
+                    emergency_contact_name: null,
+                    emergency_contact_phone: null,
+                    guardian_name: null,
+                    guardian_phone: null,
+                    guardian_email: null,
+                    bio: null
+                }
+            });
+            return;
         }
 
         // Remove sensitive data
@@ -324,7 +362,16 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
     } catch (error) {
         console.error('Get profile error:', error);
-        res.status(500).json({ error: 'Failed to get profile' });
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            userId: req.user?.id,
+            userType: req.user?.user_type
+        });
+        res.status(500).json({
+            error: 'Failed to get profile',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 
