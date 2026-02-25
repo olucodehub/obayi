@@ -43,6 +43,19 @@ const Press: React.FC = () => {
 
   const pressItems: PressItem[] = [
     {
+      id: 9,
+      title:
+        'Donation of Maths, English and Science Textbooks to Siniensi JHs and Primary School Ghana',
+      date: '2026-02-05',
+      type: 'news',
+      excerpt:
+        'On 5th February 2026, Obayi for Education Foundation, in partnership with Homeland Ghana Educational Foundation, donated Mathematics, English, and Science textbooks to the students of Siniensi JHS and Primary School in Siniensi, Ghana.',
+      content: `On 5th February 2026, Obayi for Education Foundation, in partnership with Homeland Ghana Educational Foundation @homeland_ghana, donated Mathematics, English, and Science textbooks to the students of Siniensi JHS and Primary School in Siniensi, Ghana.
+
+We are deeply grateful for the continued support and collaboration that make initiatives like this possible. Together, we remain committed to spreading our mission of improving access to quality education across the continent.`,
+      youtubeUrl: 'https://www.youtube.com/watch?v=8gSnaoo6X_E',
+    },
+    {
       id: 8,
       title:
         'Obayi For Education Foundation Participates in Nigeria Education Forum (NEF) 2025',
