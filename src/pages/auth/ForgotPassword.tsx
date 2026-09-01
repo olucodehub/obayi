@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import axios from 'axios';
 import usePageTitle from '../../hooks/usePageTitle';
 
@@ -11,6 +12,7 @@ const ForgotPassword: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +21,13 @@ const ForgotPassword: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/forgot-password`, { email });
+      // Get reCAPTCHA token
+      let captchaToken = '';
+      if (executeRecaptcha) {
+        captchaToken = await executeRecaptcha('forgotPassword');
+      }
+
+      const response = await axios.post(`${API_BASE_URL}/auth/forgot-password`, { email, captchaToken });
       setSuccess(true);
       console.log('Password reset response:', response.data);
 

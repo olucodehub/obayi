@@ -3,8 +3,12 @@ const { body, validationResult } = require('express-validator');
 const database = require('../config/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const emailService = require('../utils/emailService');
+const { adminLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
+
+// Apply admin rate limiter to all admin routes
+router.use(adminLimiter);
 
 // Get all donors
 router.get('/donors', authenticateToken, requireAdmin, async (req, res) => {

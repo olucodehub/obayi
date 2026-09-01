@@ -77,11 +77,13 @@ export interface RegisterData {
   guardianName?: string;
   guardianPhone?: string;
   address?: string;
+  // Security
+  captchaToken?: string;
 }
 
 export interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
+  login: (email: string, password: string, rememberMe?: boolean, captchaToken?: string) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;

@@ -6,6 +6,12 @@ const crypto = require('crypto');
 const database = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
 const emailService = require('../utils/emailService');
+const {
+  loginLimiter,
+  registerLimiter,
+  passwordResetLimiter
+} = require('../middleware/rateLimiter');
+const { verifyCaptcha } = require('../middleware/captcha');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -20,25 +26,29 @@ const generateToken = (userId, userType) => {
 };
 
 // Register endpoint
-router.post('/register', [
-    body('email').isEmail().normalizeEmail(),
-    body('password').isLength({ min: 6 }),
-    body('firstName').trim().isLength({ min: 1 }),
-    body('lastName').trim().isLength({ min: 1 }),
-    body('userType').isIn(['donor', 'student']),
-    body('phone').optional().trim(),
-    body('bio').optional().trim(),
-    // Student fields
-    body('school').optional().trim(),
-    body('gradeLevel').optional().trim(),
-    body('dateOfBirth').optional().trim(),
-    body('guardianName').optional().trim(),
-    body('guardianPhone').optional().trim(),
-    body('address').optional().trim(),
-    // Donor fields
-    body('occupation').optional().trim(),
-    body('company').optional().trim()
-], async (req, res) => {
+router.post('/register',
+    registerLimiter,
+    verifyCaptcha,
+    [
+        body('email').isEmail().normalizeEmail(),
+        body('password').isLength({ min: 6 }),
+        body('firstName').trim().isLength({ min: 1 }),
+        body('lastName').trim().isLength({ min: 1 }),
+        body('userType').isIn(['donor', 'student']),
+        body('phone').optional().trim(),
+        body('bio').optional().trim(),
+        // Student fields
+        body('school').optional().trim(),
+        body('gradeLevel').optional().trim(),
+        body('dateOfBirth').optional().trim(),
+        body('guardianName').optional().trim(),
+        body('guardianPhone').optional().trim(),
+        body('address').optional().trim(),
+        // Donor fields
+        body('occupation').optional().trim(),
+        body('company').optional().trim()
+    ],
+    async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -131,10 +141,14 @@ router.post('/register', [
 });
 
 // Login endpoint
-router.post('/login', [
-    body('email').isEmail().normalizeEmail(),
-    body('password').exists()
-], async (req, res) => {
+router.post('/login',
+    loginLimiter,
+    verifyCaptcha,
+    [
+        body('email').isEmail().normalizeEmail(),
+        body('password').exists()
+    ],
+    async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -180,9 +194,13 @@ router.post('/login', [
 });
 
 // Request password reset
-router.post('/forgot-password', [
-    body('email').isEmail().normalizeEmail()
-], async (req, res) => {
+router.post('/forgot-password',
+    passwordResetLimiter,
+    verifyCaptcha,
+    [
+        body('email').isEmail().normalizeEmail()
+    ],
+    async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -228,10 +246,13 @@ router.post('/forgot-password', [
 });
 
 // Reset password
-router.post('/reset-password', [
-    body('token').exists(),
-    body('newPassword').isLength({ min: 6 })
-], async (req, res) => {
+router.post('/reset-password',
+    passwordResetLimiter,
+    [
+        body('token').exists(),
+        body('newPassword').isLength({ min: 6 })
+    ],
+    async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

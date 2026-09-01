@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types/auth';
 import usePageTitle from '../../hooks/usePageTitle';
@@ -34,6 +35,7 @@ const Register: React.FC = () => {
 
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -59,12 +61,19 @@ const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // Get reCAPTCHA token
+      let captchaToken = '';
+      if (executeRecaptcha) {
+        captchaToken = await executeRecaptcha('register');
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { confirmPassword, role, occupation, company, school, gradeLevel, dateOfBirth, guardianName, guardianPhone, address, ...baseData } = formData;
-      
+
       let userData = {
         ...baseData,
-        userType: role as 'donor' | 'student'
+        userType: role as 'donor' | 'student',
+        captchaToken
       };
 
       // Add role-specific fields

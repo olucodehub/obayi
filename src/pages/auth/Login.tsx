@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useAuth } from '../../contexts/AuthContext';
 import usePageTitle from '../../hooks/usePageTitle';
 
@@ -14,6 +15,7 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const from = location.state?.from?.pathname || '/dashboard';
 
@@ -25,7 +27,13 @@ const Login: React.FC = () => {
     console.log('Login attempt for:', email);
 
     try {
-      await login(email, password, rememberMe);
+      // Get reCAPTCHA token
+      let captchaToken = '';
+      if (executeRecaptcha) {
+        captchaToken = await executeRecaptcha('login');
+      }
+
+      await login(email, password, rememberMe, captchaToken);
       navigate(from, { replace: true });
     } catch (err) {
       console.log('Login failed:', err);

@@ -39,9 +39,9 @@ api.interceptors.response.use(
 );
 
 export class ProductionAuthService {
-  static async login(email: string, password: string, rememberMe: boolean = false): Promise<User> {
+  static async login(email: string, password: string, rememberMe: boolean = false, captchaToken?: string): Promise<User> {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/auth/login', { email, password, captchaToken });
       const { user, token } = response.data;
 
       // Use localStorage if rememberMe is true, sessionStorage otherwise

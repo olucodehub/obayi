@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CreditCard, Heart, BarChart3, Clock, Building } from 'lucide-react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import Button from '../components/Button'; // Assuming Button component is correctly imported
 import usePageTitle from '../hooks/usePageTitle';
 
@@ -24,23 +25,56 @@ const paystackLinks = {
 
 const Donate: React.FC = () => {
   usePageTitle('Donate');
-  
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   // State to manage whether the donation type is one-time or monthly
   const [donationType, setDonationType] = useState<'one-time' | 'monthly'>('one-time');
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  // Function to verify CAPTCHA before proceeding with payment
+  const verifyCaptchaAndProceed = async (paymentAction: () => void, actionName: string) => {
+    if (isVerifying) return; // Prevent multiple clicks
+
+    setIsVerifying(true);
+    try {
+      if (executeRecaptcha) {
+        // Verify user is human before opening payment link
+        const token = await executeRecaptcha(actionName);
+        console.log('CAPTCHA verified for donation:', actionName);
+
+        // Proceed with payment
+        paymentAction();
+      } else {
+        // Fallback if CAPTCHA not loaded (shouldn't happen in production)
+        paymentAction();
+      }
+    } catch (error) {
+      console.error('CAPTCHA verification failed:', error);
+      alert('Security verification failed. Please try again.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
 
   // Function to handle PayPal donations
   const handlePayPalDonation = () => {
-    window.open('https://www.paypal.com/donate/?hosted_button_id=C6FJBTX4REUGG', '_blank');
+    verifyCaptchaAndProceed(() => {
+      window.open('https://www.paypal.com/donate/?hosted_button_id=C6FJBTX4REUGG', '_blank');
+    }, 'donate_paypal');
   };
 
   // Function to handle Stripe donations for one-time payments
   const handleStripeDonation = () => {
-    window.open(oneTimeStripeLink, '_blank');
+    verifyCaptchaAndProceed(() => {
+      window.open(oneTimeStripeLink, '_blank');
+    }, 'donate_stripe_onetime');
   };
 
   // Function to handle Stripe donations for monthly payments
   const handleMonthlyStripeDonation = () => {
-    window.open(monthlyStripeLink, '_blank');
+    verifyCaptchaAndProceed(() => {
+      window.open(monthlyStripeLink, '_blank');
+    }, 'donate_stripe_monthly');
   };
 
   // Function to copy bank account details to the clipboard
@@ -59,7 +93,22 @@ const Donate: React.FC = () => {
 
   // Function to handle Paystack donations based on selected amount
   const handlePaystackDonation = (amount: 'monthly6k' | 'monthly12k' | 'monthly20k' | 'oneTime') => {
-    window.open(paystackLinks[amount], '_blank');
+    verifyCaptchaAndProceed(() => {
+      window.open(paystackLinks[amount], '_blank');
+    }, `donate_paystack_${amount}`);
+  };
+
+  // Function to handle donation option card clicks with CAPTCHA
+  const handleDonationOptionClick = (option: any) => {
+    if (option.isInternal) {
+      // Internal links (like /contact) don't need CAPTCHA
+      window.location.href = option.link;
+    } else {
+      // External payment links require CAPTCHA verification
+      verifyCaptchaAndProceed(() => {
+        window.open(option.link, '_blank');
+      }, `donate_option_${option.title.replace(/\s+/g, '_').toLowerCase()}`);
+    }
   };
 
   // Array of predefined donation options
@@ -131,16 +180,10 @@ const Donate: React.FC = () => {
             <h2 className="text-3xl font-bold text-center mb-12">Ways You Can Help</h2>
             <div className="grid md:grid-cols-3 gap-6">
             {donationOptions.map((option, index) => (
-              <div 
-                key={index} 
-                className="bg-gray-50 rounded-lg p-6 text-center cursor-pointer hover:shadow-lg transition-all"
-                onClick={() => {
-                  if (option.isInternal) {
-                    window.location.href = option.link;
-                  } else {
-                    window.open(option.link, '_blank');
-                  }
-                }}
+              <div
+                key={index}
+                className={`bg-gray-50 rounded-lg p-6 text-center cursor-pointer hover:shadow-lg transition-all ${isVerifying ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => !isVerifying && handleDonationOptionClick(option)}
               >
                 <h3 className="text-xl font-bold mb-2">{option.title}</h3>
                 {option.amount ? (
@@ -254,8 +297,14 @@ const Donate: React.FC = () => {
                       Quick and secure payment through PayPal. Accept all major credit cards.
                     </p>
                   </div>
-                  <Button variant="primary" onClick={handlePayPalDonation} fullWidth className="mt-auto">
-                    Donate via PayPal
+                  <Button
+                    variant="primary"
+                    onClick={handlePayPalDonation}
+                    fullWidth
+                    className="mt-auto"
+                    disabled={isVerifying}
+                  >
+                    {isVerifying ? 'Verifying...' : 'Donate via PayPal'}
                   </Button>
                 </div>
 
@@ -276,8 +325,9 @@ const Donate: React.FC = () => {
                     onClick={donationType === 'monthly' ? handleMonthlyStripeDonation : handleStripeDonation}
                     fullWidth
                     className="mt-auto"
+                    disabled={isVerifying}
                   >
-                    Donate via Stripe
+                    {isVerifying ? 'Verifying...' : 'Donate via Stripe'}
                   </Button>
                 </div>
 
@@ -348,8 +398,9 @@ const Donate: React.FC = () => {
                     onClick={() => handlePaystackDonation(donationType === 'monthly' ? 'monthly6k' : 'oneTime')}
                     fullWidth
                     className="mt-auto"
+                    disabled={isVerifying}
                   >
-                    Donate via Paystack
+                    {isVerifying ? 'Verifying...' : 'Donate via Paystack'}
                   </Button>
                 </div>
               </div>
@@ -357,7 +408,18 @@ const Donate: React.FC = () => {
               {/* Security and Tax Information */}
               <div className="mt-8 bg-gray-50 p-4 rounded-md">
                 <p className="text-sm text-gray-600 text-center">
-                  Your donation is secure and encrypted. We never store your payment information.
+                  🔒 Your donation is secure and encrypted. We never store your payment information.
+                </p>
+                <p className="text-xs text-gray-500 text-center mt-2">
+                  This site is protected by reCAPTCHA and the Google{' '}
+                  <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline">
+                    Privacy Policy
+                  </a>
+                  {' '}and{' '}
+                  <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline">
+                    Terms of Service
+                  </a>
+                  {' '}apply.
                 </p>
               </div>
             </div>

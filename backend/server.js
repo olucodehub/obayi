@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const helmet = require('helmet');
 require('dotenv').config();
 
 const database = require('./config/database');
@@ -9,6 +10,7 @@ const authRoutes = require('./routes/auth');
 const donorRoutes = require('./routes/donors');
 const studentRoutes = require('./routes/students');
 const adminRoutes = require('./routes/admin');
+const { apiLimiter, speedLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -45,9 +47,19 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization']
 };
 
+// Security middleware - must be early in the middleware chain
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow file access from frontend
+    contentSecurityPolicy: false // Disable CSP as we're serving an API
+}));
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply general rate limiting to all API routes
+app.use('/api/', apiLimiter);
+app.use('/api/', speedLimiter);
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

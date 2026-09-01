@@ -51,9 +51,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
-  const login = async (email: string, password: string, rememberMe: boolean = false): Promise<void> => {
+  const login = async (email: string, password: string, rememberMe: boolean = false, captchaToken?: string): Promise<void> => {
     try {
-      const user = await AuthService.login(email, password, rememberMe);
+      const user = await AuthService.login(email, password, rememberMe, captchaToken);
       setUser(user);
     } catch (error) {
       throw error;
